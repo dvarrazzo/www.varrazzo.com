@@ -10,13 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="img/favicon.png">
     <!-- plugins' css -->
-    <link rel="stylesheet" href="css/plugins.css">
+    <link rel="stylesheet" href="{{'css/plugins.css' | asseturl}}">
     <!-- google fonts -->
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,700,300%7cPoppins:400,300,500,700,600' rel='stylesheet' type='text/css'>
     <!-- main css file -->
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="{{'css/main.css' | asseturl}}">
     <!-- modernizr -->
-    <script src="js/lib/modernizr-2.6.2.min.js"></script>
+    <script src="{{'js/lib/modernizr-2.6.2.min.js' | asseturl}}"></script>
   </head>
 
   <body>
@@ -29,7 +29,7 @@
           {%- for slide in bag(this.slides_bag or 'borano.landing.' + this.layout) %}
           <div class="swiper-slide">
             {%- for url in slide.images %}
-            <div data-background="{{url}}"></div>
+            <div data-background="{{url | asseturl}}"></div>
             {%- endfor %}
           </div>
           {%- endfor %}
@@ -47,10 +47,10 @@
     <!-- /MAIN-WRAPPER -->
 
     <!-- js -->
-    <script src="js/lib/jquery.min.js"></script>
-    <script src="js/lib/scripts.js"></script>
+    <script src="{{'js/lib/jquery.min.js' | asseturl}}"></script>
+    <script src="{{'js/lib/scripts.js' | asseturl}}"></script>
     <!-- main js -->
-    <script src="js/main.js"></script>
+    <script src="{{'js/main.js' | asseturl}}"></script>
 
   </body>
 </html>
