@@ -1,57 +1,23 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-  <head>
-    <meta charset="utf-8">
-    <title>{{this.title}}</title>
-    <meta name="description" content="{{this.description}}">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="img/favicon.png">
-    <!-- plugins' css -->
-    <link rel="stylesheet" href="{{'css/plugins.css' | asseturl}}">
-    <!-- google fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Oswald:400,700,300%7cPoppins:400,300,500,700,600' rel='stylesheet' type='text/css'>
-    <!-- main css file -->
-    <link rel="stylesheet" href="{{'css/main.css' | asseturl}}">
-    <!-- modernizr -->
-    <script src="{{'js/lib/modernizr-2.6.2.min.js' | asseturl}}"></script>
-  </head>
+{% extends "borano-layout.html" %}
 
-  <body>
-    <!-- MAIN_WRAPPER -->
-    <div class="main-wrapper animsition">
-
-      <!-- LANDING PAGE SLIDESHOW -->
-      <div class="landing-slideshow {{this.layout}} swiper-container" data-autoplay="true" data-interval="{{this.interval}}">
-        <div class="swiper-wrapper">
-          {%- for slide in bag(this.slides_bag or 'borano.landing.' + this.layout) %}
-          <div class="swiper-slide">
-            {%- for url in slide.images %}
-            <div data-background="{{url | asseturl}}"></div>
-            {%- endfor %}
-          </div>
-          {%- endfor %}
-        </div>
+{% block main %}
+  {#- landing page slideshow #}
+  <div class="landing-slideshow {{this.layout}} swiper-container" data-autoplay="true" data-interval="{{this.interval}}">
+    <div class="swiper-wrapper">
+      {%- for slide in bag(this.slides_bag or 'borano.landing.' + this.layout) %}
+      <div class="swiper-slide">
+        {%- for url in slide.images %}
+        <div data-background="{{url | asseturl}}"></div>
+        {%- endfor %}
       </div>
-      <!-- LANDING PAGE SLIDESHOW -->
-
-      <!-- ENTRANCE LINK -->
-      <a href="index.html" class="entrance">
-        <h3 class="title">{{this.title}}</h3>
-      </a>
-      <!-- /ENTRANCE LINK -->
-
+      {%- endfor %}
     </div>
-    <!-- /MAIN-WRAPPER -->
+  </div>
 
-    <!-- js -->
-    <script src="{{'js/lib/jquery.min.js' | asseturl}}"></script>
-    <script src="{{'js/lib/scripts.js' | asseturl}}"></script>
-    <!-- main js -->
-    <script src="{{'js/main.js' | asseturl}}"></script>
+  {#- entrance link #}
+  <a href="index.html" class="entrance">
+    <h3 class="title">{{this.title}}</h3>
+  </a>
+{% endblock %}
 
-  </body>
-</html>
-{#- vim: set filetype=htmldjango: #}
+{# vim: set filetype=htmldjango: #}
