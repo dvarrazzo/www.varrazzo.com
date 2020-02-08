@@ -1,0 +1,67 @@
+{
+    "landing": {
+        "landing-1": [
+            {
+                "images": [
+                    "http://placehold.it/1920x1280/FF0000/000000"
+                ]
+            },
+            {
+                "images": [
+                    "http://placehold.it/1920x1280/00FF00/000000"
+                ]
+            },
+            {
+                "images": [
+                    "http://placehold.it/1920x1280/0000FF/FFFFFF"
+                ]
+            }
+        ],
+        "landing-2": [
+            {
+                "images": [
+                    "http://placehold.it/900x1200/FF0000/000000",
+                    "http://placehold.it/900x1200/0000FF/FFFFFF"
+                ]
+            },
+            {
+                "images": [
+                    "http://placehold.it/900x1200/00FF00/000000",
+                    "http://placehold.it/900x1200/FF0000/000000"
+                ]
+            },
+            {
+                "images": [
+                    "http://placehold.it/900x1200/0000FF/FFFFFF",
+                    "http://placehold.it/900x1200/00FF00/000000"
+                ]
+            }
+        ],
+        "landing-3": [
+            {
+                "images": [
+                    "http://placehold.it/1200x900/FF0000/000000",
+                    "http://placehold.it/1200x900/0000FF/FFFFFF",
+                    "http://placehold.it/1200x900/00FF00/FFFFFF",
+                    "http://placehold.it/1200x900/808080/000000"
+                ]
+            },
+            {
+                "images": [
+                    "http://placehold.it/1200x900/0000FF/FFFFFF",
+                    "http://placehold.it/1200x900/00FF00/FFFFFF",
+                    "http://placehold.it/1200x900/808080/000000",
+                    "http://placehold.it/1200x900/FF0000/000000"
+                ]
+            },
+            {
+                "images": [
+                    "http://placehold.it/1200x900/00FF00/FFFFFF",
+                    "http://placehold.it/1200x900/808080/000000",
+                    "http://placehold.it/1200x900/FF0000/000000",
+                    "http://placehold.it/1200x900/0000FF/FFFFFF"
+                ]
+            }
+        ]
+    }
+}

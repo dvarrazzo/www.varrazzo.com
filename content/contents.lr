@@ -1,0 +1,11 @@
+_model: borano-landing
+---
+title: Daniele Varrazzo
+---
+description: Personal website of Daniele Varrazzo: developer, photographer
+---
+layout: landing-2
+---
+slides_bag: landing.slides
+---
+interval: 5000

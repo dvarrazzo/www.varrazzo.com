@@ -1,0 +1,8 @@
+[project]
+name = Daniele Varrazzo's website
+url = https://varrazzo.com/
+included_assets = _static,_sources,.nojekyll,.gitignore
+url_style = absolute
+
+[packages]
+lektor-rst = 0.2.0
