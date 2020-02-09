@@ -6,6 +6,10 @@ description: Personal website of Daniele Varrazzo: developer, photographer
 ---
 layout: landing-2
 ---
-slides_bag: landing.slides
+slides_bag: website.landing_slides
 ---
 interval: 5000
+---
+next_page: /about
+---
+theme: default

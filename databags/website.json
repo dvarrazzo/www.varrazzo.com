@@ -1,0 +1,74 @@
+{
+    "theme": "light",
+
+    "header_menu": [
+        {
+            "label": "About",
+            "url": "/about"
+        },
+        {
+            "label": "Software",
+            "url": "/software"
+        },
+        {
+            "label": "Photography",
+            "url": "/photo",
+            "menu": [
+                {
+                    "label": "sub1",
+                    "url": "#"
+                },
+                {
+                    "label": "sub2",
+                    "url": "#",
+                    "menu": [
+                        {
+                            "label": "sub2,1",
+                            "url": "#"
+                        },
+                        {
+                            "label": "sub2,2",
+                            "url": "#"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Contact",
+            "url": "/contact"
+        }
+    ],
+
+    "landing_slides": [
+        {
+            "images": [
+                "/img/landing/piedimonte1.jpg",
+                "/img/landing/piedimonte2.jpg"
+            ]
+        },
+        {
+            "images": [
+                "/img/landing/bournemouth.jpg",
+                "/img/landing/brighton.jpg"
+            ]
+        },
+        {
+            "images": [
+                "/img/landing/gifu.jpg",
+                "/img/landing/tokyo.jpg"
+            ]
+        }
+    ],
+
+    "about_buttons": [
+        {
+            "label": "Free Software",
+            "url": "#"
+        },
+        {
+            "label": "Photography",
+            "url": "#"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+_model: borano-about-me
+---
+body:
+
+Something kind of
+
+*Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis maiores tempora deleniti distinctio? Eos optio sunt officia accusamus hic, blanditiis in sint necessitatibus distinctio dolor. Unde sed, ipsum enim est.*
+
+---
+tooltip: 
+---
+title: I am Daniele, I wear many hats
+---
+buttons_bag: website.about_buttons
+---
+background: img/hammersmith.jpg
+---
+theme: default

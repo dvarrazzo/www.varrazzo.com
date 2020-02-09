@@ -63,5 +63,18 @@
                 ]
             }
         ]
+    },
+
+    "about": {
+        "buttons": [
+            {
+                "label": "button 1",
+                "url": "#"
+            },
+            {
+                "label": "button 2",
+                "url": "#"
+            }
+        ]
     }
 }

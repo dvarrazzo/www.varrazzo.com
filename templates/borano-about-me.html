@@ -1,0 +1,35 @@
+{% extends "borano-layout.html" %}
+
+{% from "macros/header.html" import render_header %}
+
+{% block main %}
+{{- render_header() }}
+
+<div class="container fullwidth no-padding">
+
+  {# image background #}
+  <div class="col-md-6 col-sm-5 fullscreen-height fixed hidden-xs" data-background="
+    {%- if this.background %}{{this.background|asseturl}}
+    {% else %}http://placehold.it/1200x900{% endif -%}">
+  </div>
+
+  {# body #}
+  <div class="col-md-6 col-sm-7 col-md-offset-6 col-sm-offset-5 fullscreen-height">
+    <div class="vcenter-outer p70 pt130">
+      <div class="vcenter-inner">
+        {% if this.tooltip %}
+          <h5 class="title-tooltip">{{this.tooltip}}</h5>
+        {% endif %}
+        <h3 class="title mt0">{{this.title}}</h3>
+        <p class="separator-left mb20"></p>
+        {{this.body}}
+        {% for button in bag(this.buttons_bag or 'borano.about.buttons') %}
+          <a href="{{button.url}}" class="button mt10">{{button.label}}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{# vim: set filetype=htmldjango: #}
