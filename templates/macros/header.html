@@ -14,9 +14,9 @@
 {% macro render_header() %}
 <header id="header" class="fixed has-border">
   <!-- LOGO -->
-  <a href="index.html" class="logo">
-    <img src="img/logo.png" class="logo-dark" alt="">
-    <img src="img/logo-light.png" class="logo-light" alt="">
+  <a href="{{(bag('website.logo_link_url') or '/')|url}}" class="logo">
+    <img src="{{'/img/logo.png'|asseturl}}" class="logo-dark" alt="">
+    <img src="{{'/img/logo-light.png'|asseturl}}" class="logo-light" alt="">
   </a>
   <!-- MOBILE MENU ICON -->
   <a href="#" class="mob-menu"><i class="fa fa-bars"></i></a>
