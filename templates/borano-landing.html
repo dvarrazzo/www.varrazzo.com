@@ -2,7 +2,8 @@
 
 {% block main %}
   {#- landing page slideshow #}
-  <div class="landing-slideshow {{this.layout}} swiper-container" data-autoplay="true" data-interval="{{this.interval}}">
+  <div class="landing-slideshow {{this.layout}} swiper-container mousewheel keyboard"
+      data-autoplay="true" data-interval="{{this.interval}}">
     <div class="swiper-wrapper">
       {%- for slide in bag(this.slides_bag or 'borano.landing.' + this.layout) %}
       <div class="swiper-slide">
