@@ -6,7 +6,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
-    <title>{{this.title}}</title>
+    <title>{{this.title}} &mdash; Daniele Varrazzo</title>
     {% if this.description %}
     <meta name="description" content="{{this.description}}">
     {% endif %}
@@ -24,7 +24,7 @@
     {%- endif %}>
     <div class="main-wrapper animsition">
       {{- render_header(this) }}
-      {%- block main %}{% endblock %}
+      {%- block main %}{{this.body}}{% endblock %}
       {{- render_footer(this) }}
     </div>
     <script src="{{'js/lib/jquery.min.js' | asseturl}}"></script>

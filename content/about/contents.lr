@@ -17,6 +17,6 @@ background: img/hammersmith.jpg
 ---
 theme: default
 ---
-header: border
+header_class: fixed has-border
 ---
-footer: no
+footer_class: none

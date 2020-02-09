@@ -1,14 +1,14 @@
 {% macro render_header(this) %}
-{%- if this.header != 'no' %}
-<header id="header" class="fixed {% if this.header == 'border' %}has-border{% endif %}">
-  {# logo #}
+{%- if this.header_class != 'none' %}
+<header id="header" class="{{this.header_class}}">
+  {#- logo #}
   <a href="{{(bag('website.logo_link_url') or '/')|url}}" class="logo">
     <img src="{{'/img/logo.png'|asseturl}}" class="logo-dark" alt="">
     <img src="{{'/img/logo-light.png'|asseturl}}" class="logo-light" alt="">
   </a>
-  {# mobile menu icon #}
+  {#- mobile menu icon #}
   <a href="#" class="mob-menu"><i class="fa fa-bars"></i></a>
-  {# menu #}
+  {#- menu #}
   <nav>
     <ul class="main-menu">
       {{- render_menu(bag('website.header_menu') or bag('borano.header_menu')) }}
@@ -34,13 +34,14 @@
 
 
 {%- macro render_footer(this) %}
-{%- if this.footer != 'no' %}
-<footer id="footer" class="{% if this.header == 'border' %}has-border{% endif %}">
+{%- if this.footer_class != 'none' %}
+<footer id="footer" class="{{this.footer_class}}">
   <div class="footer-links">
     &copy; 2020. By Daniele Varrazzo. |
+    <a href="https://github.com/dvarrazzo/">GitHub</a> |
     <a href="https://www.linkedin.com/in/danielevarrazzo/">LinkedIn</a> |
     <a href="https://www.instagram.com/dvarrazzo/">Instagram</a> |
-    <a href="https://github.com/dvarrazzo/">GitHub</a>
+    <a href="https://www.flickr.com/photos/dvarrazzo/">Flickr</a>
   </div>
 
 </footer>
