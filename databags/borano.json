@@ -65,6 +65,41 @@
         ]
     },
 
+    "header_menu": [
+        {
+            "label": "Home",
+            "url": "/"
+        },
+        {
+            "label": "Menu 1",
+            "url": "#",
+            "menu": [
+                {
+                    "label": "Menu 1 1",
+                    "url": "#"
+                },
+                {
+                    "label": "Menu 1 2",
+                    "url": "#",
+                    "menu": [
+                        {
+                            "label": "Menu 1 2 1",
+                            "url": "#"
+                        },
+                        {
+                            "label": "Menu 1 2 2",
+                            "url": "#"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Menu 2",
+            "url": "#"
+        }
+    ],
+
     "about": {
         "buttons": [
             {

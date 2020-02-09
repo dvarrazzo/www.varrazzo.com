@@ -23,7 +23,7 @@
   <!-- MENU -->
   <nav>
     <ul class="main-menu">
-      {{- render_menu(bag('website.header_menu')) }}
+      {{- render_menu(bag('website.header_menu') or bag('borano.header_menu')) }}
     </ul>
   </nav>
 </header>
