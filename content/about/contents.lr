@@ -16,3 +16,7 @@ buttons_bag: website.about_buttons
 background: img/hammersmith.jpg
 ---
 theme: default
+---
+header: border
+---
+footer: no
