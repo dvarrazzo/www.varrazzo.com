@@ -1,0 +1,25 @@
+<div class="container fullwidth equal-height-cols">
+  <div class="row">
+    <div class="col-md-6
+      {%- if this.image_position == 'right' %} col-md-push-6{% endif -%}
+      " data-background="{{this.image}}"></div>
+    <div class="col-md-6 p100 pt140 pb140
+      {%- if this.image_position == 'right' %} col-md-pull-6{% endif -%}
+      {%- if this.background == 'dark' %} bg-dark text-light{% endif -%}
+      ">
+      {% if this.title %}
+        {% if this.title_style == 'title' %}
+          <h1 class="title">{{this.title}}</h1>
+          <p class="separator-left"></p>
+        {% elif this.title_style == 'balloon' %}
+          <h3 class="title title-tooltip
+            {%- if this.background == 'dark' %} title-tooltip-white{% endif -%}
+            {%- if this.background == 'light' %} title-tooltip-black{% endif -%}
+          ">{{this.title}}</h3>
+        {% endif %}
+      {% endif %}
+      {{-this.body}}
+    </div>
+  </div>
+</div>
+{#- vim: set filetype=htmldjango: #}
