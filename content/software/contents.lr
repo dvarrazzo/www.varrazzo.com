@@ -47,13 +47,23 @@ background: light
 ----
 body:
 
-The de-facto standard for interoperation between Python and PostgreSQL.
+`psycopg2`_ is the de-facto standard for interoperation between Python and
+PostgreSQL.
 
-* `Homepage <https://www.psycopg.org/>`__
-* `Source code <https://github.com/psycopg/psycopg2/>`__
-* `Bug report <https://github.com/psycopg/psycopg2/issues>`__
+I have been involved in development and testing since inception (when psycopg 1
+was a thing), and since about 2010 have been maintaining the project: first
+writing documentation, completing a test grid, setting up the web presence
+(website, mailing list), and finally finding myself responsible for the
+codebase.
 
-`More... </software/psycopg2/>`__
+Please refer to the `psycopg homepage`__ for any information about the project.
+
+.. __: psycopg2_
+.. _psycopg2: https://www.psycopg.org/
+.. _Python: https://www.python.org/
+.. _PostgreSQL: https://www.postgresql.org/
+
+
 #### row2 ####
 title: psycopg3
 ----
@@ -67,8 +77,15 @@ background: light
 ----
 body:
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et accusantium, modi
-nemo nesciunt quasi quae impedit, suscipit obcaecati dicta, magnam in. Esse,
-saepe quibusdam, quis nostrum modi iure eveniet perspiciatis.
+psycopg3 is not here yet, but I have been thinking about a psycopg successor
+for a long time.
+
+I would like to design the interface based on years of understanding where
+psycopg2 users have found the most problems, using more up-to-date
+communication protocols to the database server, maybe taking the change to
+review the whole DB-API standard and bring it to modern time.
+
+More to follow, in a couple of articles.
+
 ---
 text_style: p100
