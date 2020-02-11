@@ -1,0 +1,22 @@
+{% extends "borano-page.html" %}
+
+{% block main %}
+<div class="container fullwidth pt140 pb140" data-background="{{this.image}}">
+  <div class="pt140 pb140">
+    <div class="entrance">
+      <h2 class="title">{{this.title}}</h2>
+      <p class="separator"></p>
+      <p class="small capitalize serif">{{this.pub_date}}</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="container mt70 mb70 equal-height-cols">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      {{- this.body }}
+  </div>
+</div>
+{% endblock %}
+{# vim: set filetype=htmldjango: #}

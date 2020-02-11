@@ -1,0 +1,20 @@
+{% extends "borano-page.html" %}
+
+{% from "macros/pagination.html" import render_pagination %}
+
+{%- block main %}
+  {%- for child in this.pagination.items %}
+<div class="container pt140 pb140" data-background="{{child.image}}">
+  <div class="pt140 pb140">
+    <a href="{{child|url}}" class="entrance">
+      <h3 class="title">{{child.title}}</h3>
+      <p class="separator"></p>
+      <p class="small capitalize serif">{{child.pub_date}}</p>
+    </a>
+  </div>
+</div>
+  {%- endfor %}
+{# TODO {{ render_pagination(this.pagination) }} #}
+{%- endblock %}
+
+{# vim: set filetype=htmldjango: #}
