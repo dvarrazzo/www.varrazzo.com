@@ -13,27 +13,7 @@
         },
         {
             "label": "Photography",
-            "url": "/photo",
-            "menu": [
-                {
-                    "label": "sub1",
-                    "url": "#"
-                },
-                {
-                    "label": "sub2",
-                    "url": "#",
-                    "menu": [
-                        {
-                            "label": "sub2,1",
-                            "url": "#"
-                        },
-                        {
-                            "label": "sub2,2",
-                            "url": "#"
-                        }
-                    ]
-                }
-            ]
+            "url": "/photo"
         },
         {
             "label": "Contact",
