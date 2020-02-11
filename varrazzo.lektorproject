@@ -1,6 +1,6 @@
 [project]
 name = Daniele Varrazzo's website
-url = https://varrazzo.com/
+url = https://www.varrazzo.com/
 included_assets = _static,_sources,.nojekyll,.gitignore
 url_style = absolute
 
