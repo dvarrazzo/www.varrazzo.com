@@ -39,7 +39,7 @@ title: psycopg2
 ----
 title_style: balloon
 ----
-image: http://placehold.it/1200x800
+image: /img/software/psycopg.jpg
 ----
 image_position: right
 ----
@@ -59,7 +59,7 @@ title: psycopg3
 ----
 title_style: balloon
 ----
-image: http://placehold.it/1200x800
+image: /img/software/psycopg3.jpg
 ----
 image_position: left
 ----
