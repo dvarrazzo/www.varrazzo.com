@@ -3,7 +3,7 @@
     <div class="col-md-6
       {%- if this.image_position == 'right' %} col-md-push-6{% endif -%}
       " data-background="{{this.image}}"></div>
-    <div class="col-md-6 p100 pt140 pb140
+    <div class="col-md-6 {{this.text_style or record.text_style}}
       {%- if this.image_position == 'right' %} col-md-pull-6{% endif -%}
       {%- if this.background == 'dark' %} bg-dark text-light{% endif -%}
       ">

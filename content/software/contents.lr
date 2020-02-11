@@ -14,15 +14,15 @@ title: Software projects
 rows:
 
 #### row2 ####
+title: Free Software projects
+----
+title_style: title
+----
 image: http://placehold.it/1200x800
 ----
 image_position: left
 ----
 background: light
-----
-title: Free Software projects
-----
-title_style: title
 ----
 body:
 
@@ -34,17 +34,16 @@ effort.
 If you would like to encourage their development, or would like to develop
 certain features, `your contribution is welcome
 <https://github.com/sponsors/dvarrazzo/>`__.
-
 #### row2 ####
+title: psycopg2
+----
+title_style: balloon
+----
 image: http://placehold.it/1200x800
 ----
 image_position: right
 ----
 background: light
-----
-title: psycopg2
-----
-title_style: balloon
 ----
 body:
 
@@ -55,20 +54,21 @@ The de-facto standard for interoperation between Python and PostgreSQL.
 * `Bug report <https://github.com/psycopg/psycopg2/issues>`__
 
 `More... </software/psycopg2/>`__
-
 #### row2 ####
+title: psycopg3
+----
+title_style: balloon
+----
 image: http://placehold.it/1200x800
 ----
 image_position: left
 ----
 background: light
 ----
-title: psycopg3
-----
-title_style: balloon
-----
 body:
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et accusantium, modi
 nemo nesciunt quasi quae impedit, suscipit obcaecati dicta, magnam in. Esse,
 saepe quibusdam, quis nostrum modi iure eveniet perspiciatis.
+---
+text_style: p100
