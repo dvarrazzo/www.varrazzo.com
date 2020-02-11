@@ -2,9 +2,18 @@ _model: borano-about-me
 ---
 body:
 
-Something kind of
+I am an Italian software developer, with mathematical background, currently
+based in London.
 
-*Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis maiores tempora deleniti distinctio? Eos optio sunt officia accusamus hic, blanditiis in sint necessitatibus distinctio dolor. Unde sed, ipsum enim est.*
+Software development has long been my passion, before becoming py profession.
+Outside my paid-for development, I have been involved in several `Free Software
+projects </software>`__. I would love to pay more attention to some of these
+projects: if you would like to encourage development in some of these pojects
+please `consider a sponsorship <https://github.com/sponsors/dvarrazzo>`__.
+
+Outside of software development I appreciate art, especially visual art, and I
+practice `photography </photo>`__ as the right intersection, in my brain,
+between the artistic and the scientific mind.
 
 ---
 tooltip: 

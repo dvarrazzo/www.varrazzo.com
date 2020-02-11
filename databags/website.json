@@ -64,12 +64,12 @@
 
     "about_buttons": [
         {
-            "label": "Free Software",
-            "url": "#"
+            "label": "Software",
+            "url": "/software"
         },
         {
             "label": "Photography",
-            "url": "#"
+            "url": "/photo"
         }
     ]
 }
