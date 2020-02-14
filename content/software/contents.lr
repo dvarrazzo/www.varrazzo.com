@@ -31,9 +31,11 @@ A selection of free software I maintain or contribute to.
 Some of these projects are actively maintained: some might use some extra
 effort.
 
-If you would like to encourage their development, or would like to develop
-certain features, `your contribution is welcome
-<https://github.com/sponsors/dvarrazzo/>`__.
+If you would like to encourage their development, or would like to steer
+development towards features you are interested into, `your contribution is
+welcome <https://github.com/sponsors/dvarrazzo/>`__.
+
+
 #### row2 ####
 title: psycopg2
 ----
@@ -77,7 +79,7 @@ background: light
 ----
 body:
 
-psycopg3 is not here yet, but I have been thinking about a psycopg successor
+psycopg3 is not here yet, but I have been thinking about a psycopg2 successor
 for a long time.
 
 I would like to design the interface based on years of understanding where
