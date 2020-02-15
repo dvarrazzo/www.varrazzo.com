@@ -1,6 +1,6 @@
 title: Thinking psycopg3
 ---
-pub_date: 2020-02-11
+pub_date: 2020-02-15
 ---
 author: Daniele Varrazzo
 ---
@@ -176,4 +176,4 @@ love to see a psycopg3 even more performing and easier to use, please consider
 ---
 image: /img/software/londiste.jpg
 ---
-_discoverable: no
+_discoverable: yes

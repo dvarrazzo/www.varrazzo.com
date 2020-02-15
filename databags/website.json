@@ -16,6 +16,10 @@
             "url": "/photo"
         },
         {
+            "label": "Blog",
+            "url": "/blog"
+        },
+        {
             "label": "Contact",
             "url": "/contact"
         }
