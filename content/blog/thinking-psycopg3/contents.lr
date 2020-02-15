@@ -12,19 +12,125 @@ design
 ---
 body:
 
-Looks like building Psycopg on OS X is tricky: the code needs no tweak, but linking against the right library seems problematic.
+I have been psycopg2_ maintainer since 2010; before that, `git says`__ that my
+first contribution was in 2005. At that time, psycopg (one) was the tool to
+use, and psycopg2 was an interesting experiment.
 
-..
-  CUT-HERE
+.. _psycopg2: https://www.psycopg.org/
+.. __: https://github.com/psycopg/psycopg2/commit/4805a935690b1d618247267318a0ef7aa06c2378
 
-Here is a list of articles I've found about the matter or I've been suggested: please take a look at these and leave a comment if you wish to suggest anything else or share your experience.
+In many years of using psycopg2 daily and reading about the expectations,
+frustrations, surprises experienced by its users, I have been making my mind
+about a better system, and if I had to release a version incompatible with the
+past, those are some of the things I would change.
 
-1. `Installing psycopg2 on OS X <http://blog.jonypawks.net/2008/06/20/installing-psycopg2-on-os-x/>`__
-2. `psycopg2 and 64-bit Apache on Leopard <http://ronny.haryan.to/archives/2008/09/12/psycopg2-and-64-bit-apache-on-leopard/>`__
-3. `psycopg2 OS X – _PQbackendPID <http://blog.timc3.com/2010/08/20/psycopg2-os-x-_pqbackendpid/>`__
-4. `Python, psycopg2, postgresql84 and Mac OS X Snow Leopard <http://blog.serverhorror.com/2010/04/28/python-psycopg2-postgresql>`__
 
-If you know enough to write a comprehensive article you are welcome!
+Adaptation system
+=================
+
+psycopg2 composes the queries (binding the arguments to the placeholders in
+the SQL string) on the client, and sends to the server the complete query with
+its values. It does it right, so it doesn't result in SQL injection
+vulnerabilities, however the correct way of doing it should be to send the
+query and its parameters separately (i.e. using the |PQexecParams|_ libpq
+function rather than |PQexec|_).
+
+On the pro side, separating the statements is a huge help for the query parser
+and saves memory at parsing time. However the behaviour of the library would
+change slightly:
+
+- |PQexecParams| supports only one command at time: it would be no more
+  possible to send several queries separated by semicolon in a single
+  ``execute()``.
+
+- psycopg2 helps solving some types ambiguities by attaching casts to the
+  types represented as strings (e.g. the date 1/1/2020 is currently merged to
+  the query as ``'2010-01-01'::date``). Using |PQexecParams| the trick
+  wouldn't be available anymore (although the type can be specified otherwise
+  in the query).
+
+- Custom-defined adapters should be rewritten.
+
+.. |PQexec| replace:: ``PQexec``
+.. _PQexec: https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXEC
+.. |PQexecParams| replace:: ``PQexecParams``
+.. _PQexecParams: https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS
+
+The main difference between the old adaptation protocol (called |ISQLQuote|_)
+and the new one (which doesn't have a name yet, and probably should be
+``ISQL``) is the use of the quotes, whereby the string ``O'Connor`` is passed
+to the query as ``'O''Connor'``. In ``ISQL`` the string wouldn't undergo the
+same transformation to add and escape quotes, and other types would be just
+converted into strings in the PostgreSQL syntax, but wouldn't need to be
+wrapped in quotes to create a SQL literal. Using ``ISQL`` as the fundamental
+adaptation steps there would be some interesting improvements:
+
+- adapting composite types and arrays would be a much straightforward matter,
+- it opens the door to the use of `prepared statements`__, but especially
+- the ``COPY FROM`` operation could take an iterable object yielding Python
+  types instead of a file-like object to read; similarly ``COPY TO`` could
+  return an iterable object yielding Python types.
+
+.. __: https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE
+
+I mean: this would be great! |COPY|_ is by far the most efficient way to
+insert data into the database: using it via psycopg2 requires exposing the
+data via a `file-like object`__, which not only is a weird interface, but it
+requires people to roll their own adaptation format. Looking forward for:
+
+.. code:: python
+
+    curs.copy("COPY song (artist, title) FROM STDIN", [
+        ("Sinead O'Connor", "Nothing Compares 2 U"),
+        ('REM', "Losing my Religion"),
+    ])
+
+.. |ISQLQuote| replace:: ``ISQLQuote``
+.. _ISQLQuote: https://www.psycopg.org/docs/extensions.html#psycopg2.extensions.ISQLQuote
+.. |COPY| replace:: ``COPY``
+.. _COPY: https://www.postgresql.org/docs/current/sql-copy.html
+.. __: https://www.psycopg.org/docs/usage.html#using-copy-to-and-copy-from
+
+
+Optional C module
+=================
+
+psycopg2 is a C extension module wrapping the libpq, the PostgreSQL client
+library. As such, in order to build, it requires a C compiler, Python, and
+libpq development packages. It is a relatively low bar, but it can be a pain 
+nonetheless for several beginner users.
+
+In order to support PyPI, during the years, a few "python-only"
+implementations have been developed: first a `ctypes implementation`__, to
+which I contributed but which hasn't been maintained at the same feature level
+of the C psycopg2. It was further forked into a `cffi implementation`__, whose
+release numbers don't follow the original one, which is mighty confusing.
+
+.. __: https://github.com/mvantellingen/psycopg2-ctypes
+.. __: https://github.com/chtd/psycopg2cffi
+
+What I think is that psycopg3 should follow an approach similar to PyYAML
+(I've seen it doing, I have to check how...), which tries to compile an
+optimized version of the library and falls back to a Python implementation if
+it fails.
+
+psycopg3 would try to use the C module in preference of the Python module, but
+if someone wanted to enforce the use of one specific implementation, an
+environment variable could be used for the task, such as
+``PSYCOPG3_IMPL={C|PYTHON}``.
+
+
+Other improvements
+==================
+
+I've noted some of the ideas to implement in `a trello board`__ and in `an
+issues milestone`__. Some of them weren't actually incompatible and ended up
+implemented in psycopg2 versions; some will have to wait.
+
+.. __: https://trello.com/b/6tF2oHJ0/psycopg3
+.. __: https://github.com/psycopg/psycopg2/milestone/4
+
+
 ---
 image: /img/software/londiste.jpg
 ---

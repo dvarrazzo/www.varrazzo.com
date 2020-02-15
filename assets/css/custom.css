@@ -1,0 +1,9 @@
+/* override values in borano theme */
+
+p {
+    color: #222;
+}
+
+ul {
+    padding-left: 1.5em;
+}
