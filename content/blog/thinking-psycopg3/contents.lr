@@ -95,12 +95,24 @@ requires people to roll their own adaptation format. Looking forward for:
 Optional C module
 =================
 
-psycopg2 is a C extension module wrapping the libpq, the PostgreSQL client
+psycopg2 is a C extension module wrapping the libpq_, the PostgreSQL client
 library. As such, in order to build, it requires a C compiler, Python, and
-libpq development packages. It is a relatively low bar, but it can be a pain 
+libpq development packages. It is a relatively low bar, but it can be a pain
 nonetheless for several beginner users.
 
-In order to support PyPI, during the years, a few "python-only"
+We tried to avoid the problem shipping a `wheel package`_, but the experience
+has been `far from being a success`__,  marred by issues such as the possible
+incompatibility between the libcrypto used by Python and by the libpq, the
+lack of support for musl libc/Alpine Linux, broken assumptions (like `glibc
+breaking backwards compatibility`__)... There's too magic in that.
+
+.. _wheel package: https://pythonwheels.com/
+.. __: https://github.com/psycopg/psycopg2/issues?utf8=%E2%9C%93&q=+label%3Awheel
+.. __: https://github.com/pypa/manylinux/issues/305
+
+.. _libpq: https://www.postgresql.org/docs/current/libpq.html
+
+Mostly in order to support PyPy, during the years a few "python-only"
 implementations have been developed: first a `ctypes implementation`__, to
 which I contributed but which hasn't been maintained at the same feature level
 of the C psycopg2. It was further forked into a `cffi implementation`__, whose
@@ -117,7 +129,8 @@ it fails.
 psycopg3 would try to use the C module in preference of the Python module, but
 if someone wanted to enforce the use of one specific implementation, an
 environment variable could be used for the task, such as
-``PSYCOPG3_IMPL={C|PYTHON}``.
+``PSYCOPG3_IMPL={C|PYTHON}``, which would make the import fail if the
+requested implementation is not found.
 
 
 Other improvements
@@ -130,6 +143,35 @@ implemented in psycopg2 versions; some will have to wait.
 .. __: https://trello.com/b/6tF2oHJ0/psycopg3
 .. __: https://github.com/psycopg/psycopg2/milestone/4
 
+A lot can be done if there is will:
+
+- an async interface based on asyncio_ (as aiopg_ offess)
+- async COPY methods (see `issue #428`_)
+- better support for SQL_ASCII databases (which unlike their name are actually
+  unencoded 8 bits, see `issue #519`_)
+- `preparing cursors`_
+- reorganising the extensions_ and extras_ module, which contain an
+  heterogeneous assortment of objects, functions, constants...
+
+.. _asyncio: https://docs.python.org/3.8/library/asyncio.html
+.. _aiopg: https://github.com/aio-libs/aiopg
+.. _issue #428: https://github.com/psycopg/psycopg2/issues/428
+.. _issue #519: https://github.com/psycopg/psycopg2/issues/519
+.. _preparing cursors: https://gist.github.com/dvarrazzo/3797445
+.. _extensions: https://www.psycopg.org/docs/extensions.html
+.. _extras: https://www.psycopg.org/docs/extras.html
+
+I would be interested in starting the development of this project, and would
+love to hear what areas should be the focus: I would like some discussion to
+happen on the `Mailing List`_, so please subscribe_ and participate!
+
+And if psycopg2 has been useful so far for you and your business and would
+love to see a psycopg3 even more performing and easier to use, please consider
+`sponsoring the development`__, thank you! 💓
+
+.. _mailing list: https://www.postgresql.org/list/psycopg/
+.. _subscribe: https://lists.postgresql.org/
+.. __: https://github.com/sponsors/dvarrazzo/
 
 ---
 image: /img/software/londiste.jpg
