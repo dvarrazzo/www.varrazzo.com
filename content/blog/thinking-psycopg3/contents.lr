@@ -92,6 +92,70 @@ requires people to roll their own adaptation format. Looking forward for:
 .. __: https://www.psycopg.org/docs/usage.html#using-copy-to-and-copy-from
 
 
+Context managers and transactions
+=================================
+
+psycopg2 follows a de-facto standard (which was `widely discussed`__ but never
+landed in the DBAPI specs), whereby connections manage a transaction when used
+as context manager, by committing/rolling back on ``__exit__``. So the way to
+use it would be:
+
+.. code:: python
+
+    conn = connect(DSN)
+    try:
+        # these are two separate transactions
+        with conn:
+            do_something(conn)
+        with conn:
+            do_something_else(conn)
+
+.. __: https://mail.python.org/pipermail/db-sig/2012-November/thread.html
+
+This is very useful, but it is a surprising behaviour: developers usually
+expect an object implementing ``close()`` to be closed on context exit (as
+files, and even cursors do). It also get in the way of managing different life
+cycles on the connection, for instance if there is a pool a connection is
+taken from:
+
+.. code:: python
+
+    with pool.getconn() as conn:
+        with conn.cursor() as curs:
+            do_someting(curs)
+
+it is expected (and `vocally requested`__) that the connection is returned to the
+pool at the end of the block.
+
+.. __: https://github.com/psycopg/psycopg2/pull/17
+
+Talking about transactions, PostgreSQL support for ``SAVEPOINT`` makes
+possible to implement nested transactions (already implemented on top of
+psycopg2 e.g. `by Django`__ and `in a stand-alone module`__).
+
+.. __: https://docs.djangoproject.com/en/3.0/topics/db/transactions/#django.db.transaction.atomic
+.. __: https://github.com/asqui/psycopg-nestedtransactions
+
+Maybe it would be useful to add an explicit method to start an atomic block
+(either a transaction or a savepoint, according to the current connection
+state):
+
+.. code:: python
+
+    with connect(DSN) as conn:
+        with conn.transaction():
+            do_something()
+            with conn.transaction():
+                do_something_nested()
+
+        with conn.transaction() as tx:
+            do_something_else()
+            # we were just testing and we don't really want to do this
+            tx.rollback()
+
+    # and here the connection is closed
+
+
 Optional C module
 =================
 
@@ -116,7 +180,7 @@ Mostly in order to support PyPy, during the years a few "python-only"
 implementations have been developed: first a `ctypes implementation`__, to
 which I contributed but which hasn't been maintained at the same feature level
 of the C psycopg2. It was further forked into a `cffi implementation`__, whose
-release numbers don't follow the original one, which is mighty confusing.
+release numbers don't follow the original ones, which is mighty confusing.
 
 .. __: https://github.com/mvantellingen/psycopg2-ctypes
 .. __: https://github.com/chtd/psycopg2cffi
@@ -129,8 +193,8 @@ it fails.
 psycopg3 would try to use the C module in preference of the Python module, but
 if someone wanted to enforce the use of one specific implementation, an
 environment variable could be used for the task, such as
-``PSYCOPG3_IMPL={C|PYTHON}``, which would make the import fail if the
-requested implementation is not found.
+``PSYCOPG3_IMPL={C|PYTHON}``, in the presence of which importing the module
+would fail in case the requested implementation is not available.
 
 
 Other improvements
@@ -138,14 +202,14 @@ Other improvements
 
 I've noted some of the ideas to implement in `a trello board`__ and in `an
 issues milestone`__. Some of them weren't actually incompatible and ended up
-implemented in psycopg2 versions; some will have to wait.
+implemented in psycopg2; some will have to wait.
 
 .. __: https://trello.com/b/6tF2oHJ0/psycopg3
 .. __: https://github.com/psycopg/psycopg2/milestone/4
 
 A lot can be done if there is will:
 
-- an async interface based on asyncio_ (as aiopg_ offess)
+- an async interface based on asyncio_ (as aiopg_ offers)
 - async COPY methods (see `issue #428`_)
 - better support for SQL_ASCII databases (which unlike their name are actually
   unencoded 8 bits, see `issue #519`_)
