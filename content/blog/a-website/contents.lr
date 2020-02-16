@@ -1,0 +1,115 @@
+title: A Website!
+---
+pub_date: 2020-02-10
+---
+author: Daniele Varrazzo
+---
+tags:
+
+blog
+website
+rant
+---
+body:
+
+There's something broken on the internet.
+
+Walled gardens are taking over. Facebook, Twitter, Instagram are becoming
+synonym for Internet, and people is surprised by how limited that turns out to
+be, by how little their ideas stick in a flow of unrelated news.
+
+I think this generation of people users, who never considered running their
+own website, is missing out all the freedom the 90's neckbeards were designing
+for them. On the other hand I'm not exactly a chatty dude: speaking up my mind
+hasn't often be on top of my thoughts, so I never got around having my own
+presence.
+
+So, late, very late, well after Google murdered RSS syndication, and the
+orange icon is a thing of the past, here is a blog!
+
+
+How was it made
+===============
+
+Unless you need concurrent content editing by several users with different
+permissions and with no technical competence, a database-backed website is not
+really needed. And if a website is just a bunch of static pages, nice things
+will happen:
+
+- you can version it in Git or your favourite other SCM;
+- it's very simple to serve: just a bunch of files on a webserver,
+- it will never be pwned,
+- you can easily find someone to serve it for you: `GitHub pages`__ for
+  instance.
+
+.. __: https://pages.github.com/
+
+Of course I don't want to write HTML by hand. So off I went looking for a
+static website generator. As we mentioned GitHub pages, Jekyll__ did come to
+mind, but it has two shortcomings:
+
+.. __: https://jekyllrb.com/docs/github-pages/
+
+- it's written in Ruby, which is not my expertise, so in case I need a quick
+  hack it would be a lot of overhead to hack together;
+- it uses Markdown_ as markup languages, which is `immensely inferior`__ to
+  reStructuredText_ in design and tooling.
+
+.. _Markdown: https://daringfireball.net/projects/markdown/
+.. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
+.. __: http://www.zverovich.net/2016/06/16/rst-vs-markdown.html
+
+Shopping around I found Lektor_, which seems actually a nifty thing. It also
+uses Markdown out-of the box, but it is easy to `add reST using a plugin`__.
+
+.. _Lektor: https://www.getlektor.com/
+.. __: https://github.com/fschulze/lektor-rst
+
+I tried this setup with the `psycopg website`__, which I migrated from being a
+Django website to `static content`__, and it was quite a simple task.
+
+.. __: https://www.psycopg.org/
+.. __: https://github.com/psycopg/psycopg-website/
+
+Then I went around shopping for a nice template: I found a cool one called
+Borano_ (look at this portfolio__, it is a joy...). Lektor supports Jinja_
+templates to spit HTML, so I am now in the process, as I create some content
+and work out what is that I have to say, to convert__ the template to Jinja.
+
+.. _Jinja: https://palletsprojects.com/p/jinja/
+.. _Borano: achtungthemes.com/borano/
+.. __: http://achtungthemes.com/borano/index-portfolio.html
+.. __: https://github.com/dvarrazzo/www.varrazzo.com/blob/30dc51b3d8c8a8a9220c8a77f2585d69d22947e2/templates/borano-page.html
+
+The workflow
+============
+
+All it takes to work on the website is:
+
+- use my favourite editor (no pesky HTML textarea) to create and edit pages;
+- running ``make serve`` the website preview is immediately available on
+  ``http://localhost:5000/``;
+- commit and push to `the website repos`__.
+
+This is where the work to add or change content finishes. What will happen
+behind the scene will be:
+
+- `Travis will render the pages`__ and push the result `on another repos`__;
+- from there the website is immediately published on https://www.varrazzo.com/.
+
+That's it.
+
+.. __: https://github.com/dvarrazzo/www.varrazzo.com/
+.. __: https://travis-ci.org/dvarrazzo/www.varrazzo.com
+.. __: https://github.com/dvarrazzo/dvarrazzo.github.io
+
+I don't think the system can work for everyone. I could probably set up the
+system to some non tech friend and explain what to do, but they should at
+least be able to use git for their regular workflow. It might be actually not
+such a high bar: if someone would like to try and start publishing a small
+website please let me know!
+
+---
+image: /img/blog/portopalo.jpg
+---
+_discoverable: yes
