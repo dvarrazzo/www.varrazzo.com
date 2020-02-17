@@ -1,60 +1,49 @@
 {
-    "theme": "light",
-    "logo_link_url": "/about/",
-    "animsition": false,
+  "theme": "light",
+  "logo_link_url": "/about/",
+  "animsition": false,
 
-    "header_menu": [
-        {
-            "label": "About",
-            "url": "/about"
-        },
-        {
-            "label": "Software",
-            "url": "/software"
-        },
-        {
-            "label": "Photography",
-            "url": "/photo"
-        },
-        {
-            "label": "Blog",
-            "url": "/blog"
-        },
-        {
-            "label": "Contact",
-            "url": "/contact"
-        }
-    ],
+  "header_menu": [
+    {
+      "label": "About",
+      "url": "/about"
+    },
+    {
+      "label": "Software",
+      "url": "/software"
+    },
+    {
+      "label": "Photography",
+      "url": "/photo"
+    },
+    {
+      "label": "Blog",
+      "url": "/blog"
+    },
+    {
+      "label": "Contact",
+      "url": "/contact"
+    }
+  ],
 
-    "landing_slides": [
-        {
-            "images": [
-                "/img/landing/piedimonte1.jpg",
-                "/img/landing/piedimonte2.jpg"
-            ]
-        },
-        {
-            "images": [
-                "/img/landing/bournemouth.jpg",
-                "/img/landing/brighton.jpg"
-            ]
-        },
-        {
-            "images": [
-                "/img/landing/gifu.jpg",
-                "/img/landing/tokyo.jpg"
-            ]
-        }
-    ],
-
-    "about_buttons": [
-        {
-            "label": "Software",
-            "url": "/software"
-        },
-        {
-            "label": "Photography",
-            "url": "/photo"
-        }
-    ]
+  "landing_slides": [
+    {
+      "images": [
+        "/img/landing/piedimonte1.jpg",
+        "/img/landing/piedimonte2.jpg"
+      ]
+    },
+    {
+      "images": [
+        "/img/landing/bournemouth.jpg",
+        "/img/landing/brighton.jpg"
+      ]
+    },
+    {
+      "images": [
+        "/img/landing/gifu.jpg",
+        "/img/landing/tokyo.jpg"
+      ]
+    }
+  ]
 }

@@ -20,9 +20,7 @@
         <h3 class="title mt0">{{this.title}}</h3>
         <p class="separator-left mb20"></p>
         {{this.body}}
-        {% for button in bag(this.buttons_bag or 'borano.about.buttons') %}
-          <a href="{{button.url}}" class="button mt10">{{button.label}}</a>
-        {% endfor %}
+        {{this.buttons}}
       </div>
     </div>
   </div>

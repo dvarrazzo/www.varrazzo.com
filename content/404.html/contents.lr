@@ -1,0 +1,19 @@
+_model: about-me
+---
+title: 404 Not Found
+---
+body:
+
+I couldn't find what you were looking for.
+
+If you think there should have been something here please `let me know`__.
+
+Thank you!
+
+.. __: https://github.com/dvarrazzo/www.varrazzo.com/issues
+---
+_discoverable: no
+---
+tooltip: Oops...
+---
+background: img/404.jpeg

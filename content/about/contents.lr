@@ -32,3 +32,14 @@ theme: default
 header_class: fixed has-border
 ---
 footer_class: __none__
+---
+buttons:
+
+#### button ####
+label: Software
+----
+url: /software
+#### button ####
+label: Photography
+----
+url: /photo
