@@ -79,7 +79,7 @@ and work out what is that I have to say, to convert__ the template to Jinja.
 .. _Jinja: https://palletsprojects.com/p/jinja/
 .. _Borano: achtungthemes.com/borano/
 .. __: http://achtungthemes.com/borano/index-portfolio.html
-.. __: https://github.com/dvarrazzo/www.varrazzo.com/blob/30dc51b3d8c8a8a9220c8a77f2585d69d22947e2/templates/borano-page.html
+.. __: https://github.com/dvarrazzo/www.varrazzo.com/blob/e02696529e58b1b72bb9067c91e1c783895b8912/templates/page.html
 
 The workflow
 ============
