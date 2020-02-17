@@ -15,3 +15,7 @@ next_page: /about
 theme: default
 ---
 animsition: yes
+---
+footer_class: __none__
+---
+header_class: __none__

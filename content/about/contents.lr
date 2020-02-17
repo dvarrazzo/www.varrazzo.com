@@ -31,4 +31,4 @@ theme: default
 ---
 header_class: fixed has-border
 ---
-footer_class: none
+footer_class: __none__
