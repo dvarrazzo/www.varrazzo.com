@@ -22,9 +22,16 @@
 
   <body
     {%- if this.theme == 'dark'
-      or (this.theme == 'default' and bag('website.theme') == 'dark') %} class="dark-theme"
-    {%- endif %}>
-    <div class="main-wrapper animsition">
+        or (this.theme == 'default' and bag('website.theme') == 'dark')
+    %} class="dark-theme"
+   {%- endif -%}
+  >
+    <div class="main-wrapper
+      {%- if this.animsition == 'yes'
+          or (this.animsition == 'default' and bag('website.animsition'))
+      %} animsition
+      {%- endif -%}
+    ">
       {{- render_header(this) }}
       {%- block main %}{{this.body}}{% endblock %}
       {{- render_footer(this) }}

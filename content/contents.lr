@@ -13,3 +13,5 @@ interval: 5000
 next_page: /about
 ---
 theme: default
+---
+animsition: yes

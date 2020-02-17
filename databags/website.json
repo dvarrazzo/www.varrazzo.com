@@ -1,6 +1,7 @@
 {
     "theme": "light",
     "logo_link_url": "/about/",
+    "animsition": false,
 
     "header_menu": [
         {
