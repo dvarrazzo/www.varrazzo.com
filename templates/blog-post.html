@@ -7,6 +7,13 @@
       <h2 class="title">{{this.title}}</h2>
       <p class="separator"></p>
       <p class="small capitalize serif">{{this.pub_date}}</p>
+      {% if this.tags %}
+        <p class="small">
+        {% for tag in this.tags %}
+          <a href="{{ ('/blog@tag/' ~ tag.lower())|url }}">#{{tag}}</a>
+        {% endfor %}
+        </p>
+      {% endif %}
     </div>
 
   </div>

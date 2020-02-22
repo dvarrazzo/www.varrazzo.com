@@ -1,10 +1,11 @@
 {% extends "page.html" %}
 
-{# {% from "macros/pagination.html" import render_pagination %} #}
 {% from "macros/blog.html" import render_blog_index %}
 
+{% block title %}Articles tagged {{ this.tag }}{% endblock %}
+
 {%- block main %}
-  {%- for child in this.pagination.items %}
+  {%- for child in this.items %}
   {{- render_blog_index(child) }}
   {%- endfor %}
 {# TODO {{ render_pagination(this.pagination) }} #}

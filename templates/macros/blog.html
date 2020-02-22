@@ -1,0 +1,20 @@
+{%- macro render_blog_index(post) %}
+<div class="container pt140 pb140" data-background="{{post.image}}">
+  <div class="pt140 pb140">
+    <a href="{{post|url}}" class="entrance">
+      <h3 class="title">{{post.title}}</h3>
+      <p class="separator"></p>
+      <p class="small capitalize serif">{{post.pub_date}}</p>
+      {%-if post.tags %}
+        <p class="small">
+        {%-for tag in post.tags %}
+          <span href="#">#{{tag}} </span>
+        {%-endfor %}
+        </p>
+      {%-endif %}
+    </a>
+  </div>
+</div>
+{%- endmacro %}
+
+{# vim: set filetype=htmldjango: #}
