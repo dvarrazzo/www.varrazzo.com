@@ -9,19 +9,46 @@ Software development has long been my passion, before becoming py profession.
 Outside of my paid-for job, I have been involved in several `Free Software
 projects </software>`__.
 
+.. raw:: html
+
+    <p>
+        <a class="button mb10" href="/software/">
+            <i class="fa fa-code fa-lg"></i>
+            Software
+        </a>
+    </p>
+
 I would love to pay more attention to some of these projects: if you would like
 to encourage their development, or to steer it towards features you are
 interested into, please `consider a sponsorship
 <https://github.com/sponsors/dvarrazzo>`__.
 
+.. raw:: html
+
+    <p>
+        <a class="button mb10" href="https://github.com/sponsors/dvarrazzo/">
+            <i class="fa fa-heart fa-lg" style="color: #ea4aaa;"></i>
+            Funding
+        </a>
+    </p>
+
 Outside of software development I appreciate art, especially visual art, and I
 practice `photography </photo>`__ as the right intersection between the
 artistic and the scientific mind.
 
+.. raw:: html
+
+    <p>
+        <a class="button mb10" href="/photo/">
+            <i class="fa fa-camera-retro fa-lg"></i>
+            Photography
+        </a>
+    </p>
+
 ---
-tooltip: 
+tooltip:
 ---
-title: I am Daniele, I wear many hats
+title: My name is Daniele, I wear many hats
 ---
 buttons_bag: website.about_buttons
 ---
@@ -32,18 +59,3 @@ theme: default
 header_class: fixed has-border
 ---
 footer_class: __none__
----
-buttons:
-
-#### button ####
-label: Software
-----
-url: /software
-----
-icon: code
-#### button ####
-label: Photography
-----
-url: /photo
-----
-icon: camera-retro

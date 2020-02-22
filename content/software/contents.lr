@@ -37,7 +37,7 @@ welcome <https://github.com/sponsors/dvarrazzo/>`__.
 
 .. raw:: html
 
-    <a href="https://github.com/sponsors/dvarrazzo/" class="button mt10">
+    <a class="button" href="https://github.com/sponsors/dvarrazzo/">
         <i class="fa fa-heart fa-lg" style="color: #ea4aaa;"></i>
         Funding
     </a>
