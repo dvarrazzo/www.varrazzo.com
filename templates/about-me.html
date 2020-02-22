@@ -1,5 +1,12 @@
 {% extends "page.html" %}
 
+{% block head %}
+<link rel="alternate" type="application/atom+xml" title="Blog posts"
+  href="{{'/blog.xml'|url}}" />
+<link rel="alternate" type="application/atom+xml" title="Articles about software"
+  href="{{'/software.xml'|url}}" />
+{% endblock %}
+
 {% block main %}
 
 <div class="container fullwidth no-padding">
