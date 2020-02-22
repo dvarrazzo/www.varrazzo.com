@@ -6,9 +6,7 @@ author: Daniele Varrazzo
 ---
 tags:
 
-psycopg
 software
-design
 ---
 body:
 
@@ -240,4 +238,4 @@ love to see a psycopg3 even more performing and easier to use, please consider
 ---
 image: /img/software/londiste.jpg
 ---
-_discoverable: yes
+_discoverable: no
