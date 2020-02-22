@@ -1,1 +1,4 @@
-<a href="{{this.url}}" class="button mt10">{{this.label}}</a>
+<a href="{{this.url|url}}" class="button mt10">
+  {%- if this.icon %}<i class="fa fa-{{this.icon}} fa-lg"></i> {% endif -%}
+  {{this.label}}
+</a>

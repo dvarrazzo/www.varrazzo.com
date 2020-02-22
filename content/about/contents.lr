@@ -39,7 +39,11 @@ buttons:
 label: Software
 ----
 url: /software
+----
+icon: code
 #### button ####
 label: Photography
 ----
 url: /photo
+----
+icon: camera-retro

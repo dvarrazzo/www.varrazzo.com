@@ -35,6 +35,12 @@ If you would like to encourage their development, or would like to steer
 development towards features you are interested into, `your contribution is
 welcome <https://github.com/sponsors/dvarrazzo/>`__.
 
+.. raw:: html
+
+    <a href="https://github.com/sponsors/dvarrazzo/" class="button mt10">
+        <i class="fa fa-heart fa-lg" style="color: #ea4aaa;"></i>
+        Funding
+    </a>
 
 #### row2 ####
 title: psycopg2
