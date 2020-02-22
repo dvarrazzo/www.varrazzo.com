@@ -8,21 +8,20 @@ tags:
 
 blog
 website
-rant
+meta
 ---
 body:
 
-There's something broken on the internet.
+There's something broken on the internet. This blog will fix it all!
 
-Walled gardens are taking over. Facebook, Twitter, Instagram are becoming
-synonym for Internet, and people is surprised by how limited that turns out to
-be, by how little their ideas stick in a flow of unrelated news.
+Nevermind being late to the party some good 20 years...
 
-I think this generation of people users, who never considered running their
-own website, is missing out all the freedom the 90's neckbeards were designing
-for them. On the other hand I'm not exactly a chatty dude: speaking up my mind
-hasn't often be on top of my thoughts, so I never got around having my own
-presence.
+However I find myself with a `body of works`__ I would like to present, news I
+would like to give, `photos`__ I would like to show and talk about... I was
+starting to need a place of my own.
+
+.. __: /software/
+.. __: /photos/
 
 So, late, very late, well after Google murdered RSS syndication, and the
 orange icon is a thing of the past, here is a blog!
@@ -36,7 +35,7 @@ permissions and with no technical competence, a database-backed website is not
 really needed. And if a website is just a bunch of static pages, nice things
 will happen:
 
-- you can version it in Git or your favourite other SCM;
+- you can version it in Git or in your favourite SCM of the past,
 - it's very simple to serve: just a bunch of files on a webserver,
 - it will never be pwned,
 - you can easily find someone to serve it for you: `GitHub pages`__ for
@@ -44,14 +43,14 @@ will happen:
 
 .. __: https://pages.github.com/
 
-Of course I don't want to write HTML by hand. So off I went looking for a
+Of course I don't want to write HTML by hand, so off I went looking for a
 static website generator. As we mentioned GitHub pages, Jekyll__ did come to
-mind, but it has two shortcomings:
+mind, but it has a couple of shortcomings:
 
 .. __: https://jekyllrb.com/docs/github-pages/
 
-- it's written in Ruby, which is not my expertise, so in case I need a quick
-  hack it would be a lot of overhead to hack together;
+- it's written in Ruby, which is not my expertise so, in case I needed a quick
+  hack, there would be a lot of overhead;
 - it uses Markdown_ as markup languages, which is `immensely inferior`__ to
   reStructuredText_ in design and tooling.
 
@@ -59,11 +58,13 @@ mind, but it has two shortcomings:
 .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
 .. __: http://www.zverovich.net/2016/06/16/rst-vs-markdown.html
 
-Shopping around I found Lektor_, which seems actually a nifty thing. It also
-uses Markdown out-of the box, but it is easy to `add reST using a plugin`__.
+Shopping around, I found Lektor_, which seems actually a nifty thing. It uses
+Markdown out-of the box as well, but it is easy to `add reST using a
+plugin`__. For an example, `this is this article source`__.
 
 .. _Lektor: https://www.getlektor.com/
 .. __: https://github.com/fschulze/lektor-rst
+.. __: https://raw.githubusercontent.com/dvarrazzo/www.varrazzo.com/master/content/blog/a-website/contents.lr
 
 I tried this setup with the `psycopg website`__, which I migrated from being a
 Django website to `static content`__, and it was quite a simple task.
@@ -80,6 +81,7 @@ and work out what is that I have to say, to convert__ the template to Jinja.
 .. _Borano: achtungthemes.com/borano/
 .. __: http://achtungthemes.com/borano/index-portfolio.html
 .. __: https://github.com/dvarrazzo/www.varrazzo.com/blob/e02696529e58b1b72bb9067c91e1c783895b8912/templates/page.html
+
 
 The workflow
 ============
@@ -108,6 +110,23 @@ system to some non tech friend and explain what to do, but they should at
 least be able to use git for their regular workflow. It might be actually not
 such a high bar: if someone would like to try and start publishing a small
 website please let me know!
+
+
+Bonus: comments
+===============
+
+A blog is not a blog if it doesn't have comments. But open comments take spam
+with them, which in my experience got very boring to administer.
+
+I was thinking to use GitHub issues to store my comments, in order to leverage
+their anti-spam system, whilst still being able to take them out in case I'd
+like to migrate to something else. But apparently it's difficult to have a new
+idea on Internet, and I found a few implementations already written.
+
+utteranc.es__ seems a very good one and quick to set up, so here it is... 👇
+
+.. __: https://utteranc.es/
+
 
 ---
 image: /img/blog/portopalo.jpg
