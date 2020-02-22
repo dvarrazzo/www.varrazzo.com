@@ -29,3 +29,10 @@ ul {
         width: 100%;
     }
 }
+
+/* Unbreak unclickable entrance links.
+ * It breaks the animation effect around the entrance box though.
+ */
+.entrance:after {
+    content: initial;
+}
