@@ -10,7 +10,24 @@
     },
     {
       "label": "Software",
-      "url": "/software"
+      "url": "/software",
+      "menu": [
+        {
+          "label": "psycopg2",
+          "url": "https://www.psycopg.org/",
+          "target": "_blank"
+        },
+        {
+          "label": "pgmp",
+          "url": "https://www.varrazzo.com/pgmp/",
+          "target": "_blank"
+        },
+        {
+          "label": "PGXN Client",
+          "url": "https://pgxn.github.io/pgxnclient/",
+          "target": "_blank"
+        }
+      ]
     },
     {
       "label": "Photography",

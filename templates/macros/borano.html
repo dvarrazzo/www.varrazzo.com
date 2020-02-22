@@ -22,7 +22,9 @@
 {% macro render_menu(menu) %}
 {%- for entry in menu %}
 <li>
-  <a href="{{entry.url|url}}">{{entry.label}}</a>
+  <a href="{{entry.url|maybeurl}}"
+     {%- if entry.target %} target="_blank"{% endif -%}
+  >{{entry.label}}</a>
   {%- if entry.menu %}
   <ul>
   {{- render_menu(entry.menu) }}
