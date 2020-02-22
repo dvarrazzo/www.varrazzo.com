@@ -7,3 +7,25 @@ p {
 ul {
     padding-left: 1.5em;
 }
+
+.row2flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.row2flex.reverse {
+    flex-direction: row-reverse;
+}
+
+.row2flex > div {
+    min-height: 200px;
+    width: 50%;
+}
+
+@media only screen and (max-width: 800px) {
+    .row2flex > div {
+        width: 100%;
+    }
+}
