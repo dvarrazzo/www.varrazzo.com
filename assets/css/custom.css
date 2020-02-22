@@ -36,3 +36,11 @@ ul {
 .entrance:after {
     content: initial;
 }
+
+.entrance h3 a {
+    text-decoration: none;
+}
+
+.entrance h3 a:hover {
+    text-decoration: underline;
+}
