@@ -1,7 +1,5 @@
 _model: redirect
 ---
-target: https://www.flickr.com/photos/dvarrazzo/sets/72157627599162127
----
-absolute: yes
+target: /photo
 ---
 _discoverable: no

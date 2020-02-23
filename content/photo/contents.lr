@@ -1,7 +1,162 @@
-_model: redirect
+_model: portfolio-grid
 ---
-target: https://www.flickr.com/photos/dvarrazzo/sets/72157627599162127
+columns: 3
 ---
-absolute: yes
+description: Photography Portfolio
 ---
-_discoverable: no
+gutter: 5
+---
+title: Photography
+---
+entries:
+
+#### grid-entry ####
+title: bantry
+----
+wide: 
+----
+tall: yes
+----
+image: /img/portfolio/bantry.jpg
+----
+target: 
+#### grid-entry ####
+title: bosa
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/bosa.jpg
+----
+target: 
+#### grid-entry ####
+title: kerry
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/kerry.jpg
+----
+target: 
+#### grid-entry ####
+title: enoshima
+----
+wide: yes
+----
+tall: yes
+----
+image: /img/portfolio/enoshima.jpg
+----
+target: 
+#### grid-entry ####
+title: hammersmith
+----
+wide: 
+----
+tall: yes
+----
+image: /img/portfolio/hammersmith.jpg
+----
+target: 
+#### grid-entry ####
+title: gifu
+----
+wide: 
+----
+tall: yes
+----
+image: /img/portfolio/gifu.jpg
+----
+target: 
+#### grid-entry ####
+title: stmichel
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/stmichel.jpg
+----
+target: 
+#### grid-entry ####
+title: lifesaver
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/lifesaver.jpg
+----
+target: 
+#### grid-entry ####
+title: bournemouth
+----
+wide: yes
+----
+tall: 
+----
+image: /img/portfolio/bournemouth.jpg
+----
+target: 
+#### grid-entry ####
+title: brighton
+----
+wide: yes
+----
+tall: yes
+----
+image: /img/portfolio/brighton.jpg
+----
+target: 
+#### grid-entry ####
+title: richmond
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/richmond.jpg
+----
+target: 
+#### grid-entry ####
+title: tokyo
+----
+wide: 
+----
+tall: yes
+----
+image: /img/portfolio/tokyo.jpg
+----
+target: 
+#### grid-entry ####
+title: stromboli
+----
+wide: 
+----
+tall: yes
+----
+image: /img/portfolio/stromboli.jpg
+----
+target: 
+#### grid-entry ####
+title: strombolicchio
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/strombolicchio.jpg
+----
+target: 
+#### grid-entry ####
+title: stazzo
+----
+wide: 
+----
+tall: 
+----
+image: /img/portfolio/stazzo.jpg
+----
+target: 
