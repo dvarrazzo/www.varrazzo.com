@@ -1,0 +1,14 @@
+_model: contact-minimal
+---
+title: Get in touch
+---
+body:
+
+**Mail**: daniele.varrazzo@gmail.com
+
+---
+background: img/ventotene.jpg
+---
+header_class: fixed
+---
+footer_class: fixed

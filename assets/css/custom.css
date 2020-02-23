@@ -46,3 +46,13 @@ ul.simple > li {
 .entrance h3 a:hover {
     text-decoration: underline;
 }
+
+
+/* adapt the contact info to reST-generated content */
+.contact-info strong {
+    font-size: 13px;
+}
+
+.contact-info a {
+    display: initial;
+}

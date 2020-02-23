@@ -6,11 +6,11 @@
   "header_menu": [
     {
       "label": "About",
-      "url": "/about"
+      "url": "/about/"
     },
     {
       "label": "Software",
-      "url": "/software",
+      "url": "/software/",
       "menu": [
         {
           "label": "psycopg2",
@@ -37,11 +37,15 @@
     },
     {
       "label": "Photography",
-      "url": "/photo"
+      "url": "/photo/"
     },
     {
       "label": "Blog",
-      "url": "/blog"
+      "url": "/blog/"
+    },
+    {
+      "label": "Contact",
+      "url": "/contact/"
     }
   ],
 

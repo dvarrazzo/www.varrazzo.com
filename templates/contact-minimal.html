@@ -1,0 +1,17 @@
+{% extends "page.html" %}
+
+{% block main %}
+<div class="fullwidth fullscreen-height" data-background="
+    {%- if this.background %}{{this.background|asseturl}}
+    {% else %}http://placehold.it/1920x1280{% endif -%}">
+  <div class="entrance">
+    <h2 class="title mb0">{{this.title}}</h2>
+    <p class="separator mb10"></p>
+    <div class="contact-info">
+      {{this.body}}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{# vim: set filetype=htmldjango: #}
