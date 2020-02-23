@@ -1,0 +1,14 @@
+<div class="grid-item
+    {%- if this.wide %} wide{% endif -%}
+    {%- if this.tall %} tall{% endif -%}
+  ">
+  <a href="{{this.target|default('#')}}">
+    <div class="img" data-background="{{this.image|maybeasset}}"></div>
+    <div class="hover">
+      <div class="centered">
+        <h5>{{this.title}}</h5>
+      </div>
+    </div>
+  </a>
+</div>
+{#- vim: set filetype=htmldjango: #}

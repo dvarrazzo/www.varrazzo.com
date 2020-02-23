@@ -1,0 +1,12 @@
+{% extends "page.html" %}
+
+{% block main %}
+<div class="container {%-if this.fullwidth %} fullwidth{% endif -%}">
+  <div class="grid portfolio"
+      data-gutter="{{this.gutter}}" data-columns="{{this.columns}}">
+{{-this.entries}}
+  </div>
+</div>
+{% endblock %}
+
+{# vim: set filetype=htmldjango: #}
