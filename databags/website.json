@@ -26,7 +26,13 @@
           "label": "PGXN Client",
           "url": "https://pgxn.github.io/pgxnclient/",
           "target": "_blank"
+        },
+        {
+          "label": "pg_repack",
+          "url": "https://reorg.github.io/pg_repack/",
+          "target": "_blank"
         }
+
       ]
     },
     {

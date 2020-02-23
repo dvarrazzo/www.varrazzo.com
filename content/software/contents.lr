@@ -99,5 +99,74 @@ review the whole DB-API standard and bring it to a modern time.
     Please check the `thinking psycopg3 </blog/2020/02/15/thinking-psycopg3/>`__
     article for an introduction to the project.
 
+#### row2 ####
+title: mature software
+----
+title_style: balloon
+----
+image: /img/software/egham.jpg
+----
+image_position: right
+----
+background: light
+----
+body:
+
+A selection of widely used packages I've written. Some of them are relatively
+active, others are only rarely maintained.
+
+If you would like to have new features developed please get in touch.
+
+- `pgmp <https://www.varrazzo.com/pgmp/>`__: PostgreSQL Multiple Precision
+  Arithmetic
+
+- `PGXN Client <https://pgxn.github.io/pgxnclient/>`__: the package manager
+  for the `PostgreSQL Extension Network <https://pgxn.org/>`__
+
+- `pg_repack <https://reorg.github.io/pg_repack/>`__: remove bloat from
+  PostgreSQL tables
+
+- `py-setproctitle <https://github.com/dvarrazzo/py-setproctitle>`__:
+  customize process names in Python programs
+
+#### row2 ####
+title: experimental software
+----
+title_style: balloon
+----
+image: /img/software/uphill.jpg
+----
+image_position: left
+----
+background: light
+----
+body:
+
+These project are in development or design stage and haven't reached maturity
+yet. Some of them have been used in production environment for specific cases
+but they are not generic enough.
+
+I am especially interested in bringing those projects to maturity: if you are
+interested in their development it would be great to know!
+
+- `pg_seldump <https://github.com/dvarrazzo/pg_seldump>`__: create selective
+  data dump from PostgreSQL
+
+- `replisome <https://github.com/dvarrazzo/replisome>`__: The most flexible
+  logical replication system for PostgreSQL
+
+- `bromine <https://github.com/dvarrazzo/bromine>`__: Pythonic wrapper from
+  Selenium web testing
+
+- `pgaudit <https://github.com/dvarrazzo/pgaudit>`__: audit trail for
+  PostgreSQL
+
+- `weeder <https://github.com/dvarrazzo/weeder>`__: Remove unneeded historical
+  files
+
+- **pg_cash**: a double-entry system for PostgreSQL
+
+- **bacon**: an OLAP cube for PostgreSQL
+
 ---
 text_style: p100
