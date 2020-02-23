@@ -33,11 +33,10 @@ ul.simple > li {
     }
 }
 
-/* Unbreak unclickable entrance links.
- * It breaks the animation effect around the entrance box though.
- */
-.entrance:after {
-    content: initial;
+/* bump up the content of the entrance to allow clicking on the <a>s */
+.entrance div.bumper {
+    position: relative;
+    z-index: 11;
 }
 
 .entrance h3 a {
