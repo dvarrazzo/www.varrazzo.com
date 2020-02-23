@@ -13,7 +13,7 @@
       "url": "/software/",
       "menu": [
         {
-          "label": "psycopg2",
+          "label": "psycopg",
           "url": "https://www.psycopg.org/",
           "target": "_blank"
         },
