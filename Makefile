@@ -3,6 +3,8 @@
 PYTHON=$(CURDIR)/env/bin/python
 LEKTOR=$(CURDIR)/env/bin/lektor
 
+TRACKING_ID = $(shell jq --raw-output '.tracking_id' databags/analytics.json)
+
 build: assets/pgmp/index.html
 	echo 'y' | $(LEKTOR) build -O build
 
@@ -23,7 +25,7 @@ assets/pgmp/index.html: pgmp/docs/html/index.html
 
 pgmp/docs/html/index.html: pgmp-docs
 
-pgmp-docs: pgmp/docs/env
+pgmp-docs: pgmp/docs/env pgmp/docs/_templates/layout.html
 	make PYTHON=$(PYTHON) -C pgmp/docs
 
 pgmp/docs/env: pgmp/README.rst
@@ -33,3 +35,7 @@ pgmp/README.rst:
 	test -d pgmp/.git \
 		|| git clone https://github.com/dvarrazzo/pgmp.git
 	git -C pgmp pull
+
+pgmp/docs/_templates/layout.html: templates/sphinx-layout.html databags/analytics.json
+	mkdir -p $(dir $@)
+	TRACKING_ID=${TRACKING_ID} envsubst < $< > $@
