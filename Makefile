@@ -1,11 +1,15 @@
-.PHONY: build serve setup docs publish pgmp-docs
+.PHONY: build serve setup publish pgmp pgmp-docs
 
 PYTHON=$(CURDIR)/env/bin/python
 LEKTOR=$(CURDIR)/env/bin/lektor
 
 TRACKING_ID = $(shell jq --raw-output '.tracking_id' databags/analytics.json)
 
-build: assets/pgmp/index.html
+default: build
+
+all: pgmp-docs build
+
+build:
 	echo 'y' | $(LEKTOR) build -O build
 
 serve:
@@ -25,13 +29,13 @@ assets/pgmp/index.html: pgmp/docs/html/index.html
 
 pgmp/docs/html/index.html: pgmp-docs
 
-pgmp-docs: pgmp/docs/env pgmp/docs/_templates/layout.html
+pgmp-docs: pgmp pgmp/docs/env pgmp/docs/_templates/layout.html
 	make PYTHON=$(PYTHON) -C pgmp/docs
 
-pgmp/docs/env: pgmp/README.rst
+pgmp/docs/env:
 	make PYTHON=$(PYTHON) -C pgmp/docs env
 
-pgmp/README.rst:
+pgmp:
 	test -d pgmp/.git \
 		|| git clone https://github.com/dvarrazzo/pgmp.git
 	git -C pgmp pull

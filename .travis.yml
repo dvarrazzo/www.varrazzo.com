@@ -9,7 +9,7 @@ install:
   make setup
 
 script:
-  make
+  make all
 
 deploy:
   provider: pages
