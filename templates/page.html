@@ -1,5 +1,6 @@
-{%- from "macros/borano.html" import render_header, render_footer -%}
 <!DOCTYPE html>
+{%- from "macros/borano.html" import render_header, render_footer -%}
+{%- from "macros/analytics.html" import render_analytics %}
 <html class="no-js">
   <head>
     <meta charset="utf-8">
@@ -8,6 +9,7 @@
     <meta name="description" content="{{this.description}}">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
+{{- render_analytics() }}
     <link rel="shortcut icon" href="img/favicon.png">
     <link rel="stylesheet" href="{{'css/plugins.css' | asseturl}}">
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,700,300%7cPoppins:400,300,500,700,600' rel='stylesheet' type='text/css'>
