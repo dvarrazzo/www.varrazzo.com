@@ -1,0 +1,26 @@
+_model: gallery-grid
+---
+columns: 3
+---
+description: Long exposures
+---
+gutter: 5
+---
+title: Long exposures
+---
+type: gallery
+---
+entries: 
+---
+body:
+
+Put some words here thank you.
+
+---
+thumbnail_quality: 60
+---
+thumbnail_width: 382
+---
+footer_class: has-border
+---
+header_class: has-border

@@ -59,7 +59,7 @@ tall: yes
 ----
 image: /img/portfolio/hammersmith.jpg
 ----
-target: 
+target: /photo/longexp/
 #### grid-entry ####
 title: Gifu, Japan
 ----
@@ -109,7 +109,7 @@ tall: yes
 ----
 image: /img/portfolio/brighton.jpg
 ----
-target: 
+target: /photo/longexp/
 #### grid-entry ####
 title: Richmond, England
 ----

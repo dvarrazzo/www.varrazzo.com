@@ -16,8 +16,10 @@
           img.thumbnail(
             this.thumbnail_width, 
             quality=this.thumbnail_quality)
-          |url
-          }}" data-rel="lightcase:gal"></a>
+          |url}}" data-rel="lightcase:gal"
+          {%- if img.exif.description %} title="{{img.exif.description}}"
+          {%- endif -%}
+          ></a>
     </div>
     {%-endfor %}
   </div>

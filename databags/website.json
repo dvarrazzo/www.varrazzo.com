@@ -37,7 +37,17 @@
     },
     {
       "label": "Photography",
-      "url": "/photo/"
+      "url": "/photo/",
+      "menu": [
+          {
+              "label": "Long exposures",
+              "url": "/photo/longexp/"
+          },
+          {
+              "label": "Ireland, 2019",
+              "url": "/photo/ireland/"
+          }
+      ]
     },
     {
       "label": "Blog",
