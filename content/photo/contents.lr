@@ -19,7 +19,7 @@ tall: yes
 ----
 image: /img/portfolio/bantry.jpg
 ----
-target: 
+target: /photo/ireland/
 #### grid-entry ####
 title: Bosa, Sardegna, Italy
 ----
@@ -39,7 +39,7 @@ tall:
 ----
 image: /img/portfolio/kerry.jpg
 ----
-target: 
+target: /photo/ireland/
 #### grid-entry ####
 title: Enoshima, Japan
 ----

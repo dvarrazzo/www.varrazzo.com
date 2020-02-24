@@ -1,0 +1,26 @@
+_model: gallery-grid
+---
+columns: 3
+---
+description: Ireland, 2019
+---
+gutter: 5
+---
+title: Ireland, 2019
+---
+type: gallery
+---
+entries: 
+---
+body:
+
+A journey in the longest days of summer, in the south west of the island,
+between the fingers of Kerry and Beara and the Atlantic.
+---
+thumbnail_quality: 60
+---
+thumbnail_width: 382
+---
+footer_class: has-border
+---
+header_class: has-border

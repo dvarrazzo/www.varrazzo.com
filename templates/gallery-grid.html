@@ -1,0 +1,27 @@
+{% extends "page.html" %}
+
+{% block main %}
+<div class="text-center p100 mb50">
+  <h2 class="title">{{this.title}}</h2>
+  <p class="separator"></p>
+  {{this.body}}
+</div>
+
+<div class="mb100 container {%-if this.fullwidth %} fullwidth{% endif -%}">
+  <div class="grid gallery"
+      data-gutter="{{this.gutter}}" data-columns="{{this.columns}}">
+    {%-for img in this.attachments.images|sort(attribute="path") %}
+    <div class="grid-item">
+      <a href="{{img|url}}" data-background="{{
+          img.thumbnail(
+            this.thumbnail_width, 
+            quality=this.thumbnail_quality)
+          |url
+          }}" data-rel="lightcase:gal"></a>
+    </div>
+    {%-endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{# vim: set filetype=htmldjango: #}
