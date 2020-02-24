@@ -2,7 +2,7 @@
     {%- if this.wide %} wide{% endif -%}
     {%- if this.tall %} tall{% endif -%}
   ">
-  <a href="{{this.target|default('#')}}">
+  <a{% if this.target %} href="{{this.target}}"{% endif %}>
     <div class="img" data-background="{{this.image|maybeasset}}"></div>
     <div class="hover">
       <div class="centered">

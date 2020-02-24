@@ -49,7 +49,7 @@ tall: yes
 ----
 image: /img/portfolio/enoshima.jpg
 ----
-target: 
+target: /photo/japan/
 #### grid-entry ####
 title: Hammersmith, London
 ----
@@ -69,7 +69,7 @@ tall: yes
 ----
 image: /img/portfolio/gifu.jpg
 ----
-target: 
+target: /photo/japan/
 #### grid-entry ####
 title: Cancale, France
 ----
@@ -129,7 +129,7 @@ tall: yes
 ----
 image: /img/portfolio/tokyo.jpg
 ----
-target: 
+target: /photo/japan/
 #### grid-entry ####
 title: Stromboli, Eolie, Italy
 ----

@@ -3,8 +3,10 @@
 {% block main %}
 <div class="text-center p100 mb50">
   <h2 class="title">{{this.title}}</h2>
-  <p class="separator"></p>
-  {{this.body}}
+  {% if this.body %}
+    <p class="separator"></p>
+    {{this.body}}
+  {% endif %}
 </div>
 
 <div class="mb100 container {%-if this.fullwidth %} fullwidth{% endif -%}">
