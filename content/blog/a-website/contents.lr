@@ -11,28 +11,43 @@ software
 ---
 body:
 
-There's something broken on the internet. This blog will fix it all!
+Time of changes.
 
-Nevermind being late to the party some good 20 years...
+Last week, after 12 years working for the same company, I have terminated my
+employment. It was a destabilising moment, followed by a wave of excitement
+that I'm still riding, about what is to come.
 
-However I find myself with a `body of works`__ I would like to present, news I
-would like to give, `photos`__ I would like to show and talk about... I was
-starting to need a place of my own.
+I still don't know about my next moves: for sure a break, and a journey
+already organized in a couple of weeks, after which I doubt I will be able to
+remain without working for a long time...
+
+My biggest desire would be to try and earn some living with `free software
+projects`__. Some of my projects are already widely used, and I have new
+features in mind to write. Other projects haven't been widely released, but I
+have used them in my previous company and they are very promising. I have
+recently set up a `funding page`__: and I'm curious to see if it will become
+anything relevant.
 
 .. __: /software/
-.. __: /photos/
+.. __: https://github.com/sponsors/dvarrazzo/
 
-So, late, very late, well after Google murdered RSS syndication, and the
-orange icon is a thing of the past, here is a blog!
+At the same time, I am enjoying more and more practicing photography__, so I
+was also feeling the need to put somewhere an photographic portfolio, not only
+a software one.
+
+.. __: /photo/
+
+But let's stop talking about me. Let's talk about this website, because
+putting it together was actually cool.
 
 
 How was it made
 ===============
 
-Unless you need concurrent content editing by several users with different
-permissions and with no technical competence, a database-backed website is not
-really needed. And if a website is just a bunch of static pages, nice things
-will happen:
+Unless you need to support several users editing the same content
+concurrently, each one with different permissions, a database-backed website
+is not really needed. And if a website is just a bunch of static pages, nice
+things will happen:
 
 - you can version it in Git or in your favourite SCM of the past,
 - it's very simple to serve: just a bunch of files on a webserver,
@@ -50,7 +65,7 @@ mind, but it has a couple of shortcomings:
 
 - it's written in Ruby, which is not my expertise so, in case I needed a quick
   hack, there would be a lot of overhead;
-- it uses Markdown_ as markup languages, which is `immensely inferior`__ to
+- it uses Markdown_ as markup languages, which is `largely inferior`__ to
   reStructuredText_ in design and tooling.
 
 .. _Markdown: https://daringfireball.net/projects/markdown/
@@ -58,7 +73,7 @@ mind, but it has a couple of shortcomings:
 .. __: http://www.zverovich.net/2016/06/16/rst-vs-markdown.html
 
 Shopping around, I found Lektor_, which seems actually a nifty thing. It uses
-Markdown out-of the box as well, but it is easy to `add reST using a
+Markdown out-of-the-box as well, but it is easy to `add reST using a
 plugin`__. For an example, `this is this article source`__.
 
 .. _Lektor: https://www.getlektor.com/
@@ -72,30 +87,33 @@ Django website to `static content`__, and it was quite a simple task.
 .. __: https://github.com/psycopg/psycopg-website/
 
 Then I went around shopping for a nice template: I found a cool one called
-Borano_ (look at this portfolio__, it is a joy...). Lektor supports Jinja_
-templates to spit HTML, so I am now in the process, as I create some content
-and work out what is that I have to say, to convert__ the template to Jinja.
+Borano_ (look at the portfolio__, it is a joy...). Lektor supports Jinja_
+templates to spit HTML, so now I am in the process of converting__ the
+template to Jinja, while at the same time I try and and work out what is that
+I have to say.
 
 .. _Jinja: https://palletsprojects.com/p/jinja/
 .. _Borano: achtungthemes.com/borano/
-.. __: http://achtungthemes.com/borano/index-portfolio.html
+.. __: /photo/
 .. __: https://github.com/dvarrazzo/www.varrazzo.com/blob/e02696529e58b1b72bb9067c91e1c783895b8912/templates/page.html
 
 
 The workflow
 ============
 
-All it takes to work on the website is:
+All it takes to edit the website is:
 
 - use my favourite editor (no pesky HTML textarea) to create and edit pages;
 - running ``make serve`` the website preview is immediately available on
   ``http://localhost:5000/``;
 - commit and push to `the website repos`__.
 
-This is where the work to add or change content finishes. What will happen
-behind the scene will be:
+This is where the human work of adding or changing content finishes. What will
+happen behind the scene will be:
 
-- `Travis will render the pages`__ and push the result `on another repos`__;
+- `Travis will render the pages`__ and push the result to `the GitHub pages
+  repos`__;
+
 - from there the website is immediately published on https://www.varrazzo.com/.
 
 That's it.
@@ -104,11 +122,11 @@ That's it.
 .. __: https://travis-ci.org/dvarrazzo/www.varrazzo.com
 .. __: https://github.com/dvarrazzo/dvarrazzo.github.io
 
-I don't think the system can work for everyone. I could probably set up the
+I don't think this setup can work for everyone. I could probably set up the
 system to some non tech friend and explain what to do, but they should at
-least be able to use git for their regular workflow. It might be actually not
-such a high bar: if someone would like to try and start publishing a small
-website please let me know!
+least be comfortable to use git for their regular workflow. It might be
+actually not such a high bar: if someone would like to try and start
+publishing a small website please let me know!
 
 
 Bonus: comments
