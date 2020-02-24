@@ -1,5 +1,7 @@
 {% extends "page.html" %}
 
+{% block title %}{{this.title}}{% endblock %}
+
 {% block main %}
   {#- landing page slideshow #}
   <div class="landing-slideshow {{this.layout}} swiper-container mousewheel keyboard"

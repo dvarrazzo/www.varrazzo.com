@@ -4,7 +4,7 @@
 <html class="no-js">
   <head>
     <meta charset="utf-8">
-    <title>{{this.title}} &mdash; Daniele Varrazzo</title>
+    <title>{% block title %}{{this.title}} &mdash; Daniele Varrazzo{% endblock %}</title>
     {% if this.description %}
     <meta name="description" content="{{this.description}}">
     {% endif %}

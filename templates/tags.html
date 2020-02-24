@@ -2,7 +2,9 @@
 
 {% from "macros/blog.html" import render_blog_index %}
 
-{% block title %}Articles tagged {{ this.tag }}{% endblock %}
+{% block title -%}
+Articles tagged "{{ this.tag }}" &mdash; Daniele Varrazzo
+{%- endblock %}
 
 {%- block main %}
   {%- for child in this.items %}
