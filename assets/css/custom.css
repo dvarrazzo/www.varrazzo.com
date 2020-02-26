@@ -4,10 +4,12 @@ p {
     color: #222;
 }
 
-ul.simple {
+/* indented bullet list but only in the main content, not in the menu */
+
+.main-wrapper > div ul {
     padding-left: 2em;
 }
-ul.simple > li {
+.main-wrapper > div ul > li {
     padding-left: 0.25em;
 }
 

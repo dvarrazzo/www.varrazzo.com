@@ -1,6 +1,6 @@
 title: Thinking psycopg3
 ---
-pub_date: 2020-02-15
+pub_date: 2020-02-25
 ---
 author: Daniele Varrazzo
 ---
@@ -17,35 +17,47 @@ use, and psycopg2 was an interesting experiment.
 .. _psycopg2: https://www.psycopg.org/
 .. __: https://github.com/psycopg/psycopg2/commit/4805a935690b1d618247267318a0ef7aa06c2378
 
-In many years of using psycopg2 daily and reading about the expectations,
-frustrations, surprises experienced by its users, I have been making my mind
+In several years of using psycopg2 daily and reading about expectations,
+frustrations, surprises experienced by other users, I have been making my mind
 about a better system, and if I had to release a version incompatible with the
 past, those are some of the things I would change.
 
 
-Adaptation system
-=================
+Query parameters adaptation
+===========================
 
-psycopg2 composes the queries (binding the arguments to the placeholders in
-the SQL string) on the client, and sends to the server the complete query with
-its values. It does it right, so it doesn't result in SQL injection
-vulnerabilities, however the correct way of doing it should be to send the
-query and its parameters separately (i.e. using the |PQexecParams|_ libpq
-function rather than |PQexec|_).
+psycopg2 composes queries (replacing the placeholders in the SQL strings with
+the values supplied by the user) on the client, and sends a complete query to
+the server.
 
-On the pro side, separating the statements is a huge help for the query parser
-and saves memory at parsing time. However the behaviour of the library would
-change slightly:
+.. image:: seq-psycopg2.png
+    :alt: Sequence diagram for psycopg2
+    :class: mb10
 
-- |PQexecParams| supports only one command at time: it would be no more
-  possible to send several queries separated by semicolon in a single
-  ``execute()``.
+It does its job right, so it doesn't result in SQL injection vulnerabilities.
+However the correct way of doing it, as far as PostgreSQL is concerned, should
+be to send the query and its parameters separately (i.e. using the
+|PQexecParams|_ libpq function rather than |PQexec|_).
 
-- psycopg2 helps solving some types ambiguities by attaching casts to the
-  types represented as strings (e.g. the date 1/1/2020 is currently merged to
-  the query as ``'2010-01-01'::date``). Using |PQexecParams| the trick
-  wouldn't be available anymore (although the type can be specified otherwise
-  in the query).
+.. image:: seq-psycopg3.png
+    :alt: Sequence diagram for psycopg3
+    :class: mb10
+
+Separating the statement from the parameters improves performance and memory
+usage at parsing time. However the behaviour of the library would change
+slightly, for instance:
+
+- |PQexecParams| only supports one command at time: it wouldn't be possible
+  anymore to send a batch of queries separated by semicolon in a single
+  ``execute()`` call.
+
+- psycopg2 helps solving some type casting ambiguities by attaching casts to
+  the types represented as strings (e.g. the date 1/1/2020 is currently merged
+  to the query as ``'2010-01-01'::date``); using |PQexecParams| the trick
+  wouldn't be available anymore. It might be possible maybe to suggest the
+  type in other ways, but if that's not the case then queries should be
+  modified by applying explicit casts next to their placeholders (e.g.
+  ``%s::date``).
 
 - Custom-defined adapters should be rewritten.
 
@@ -55,15 +67,17 @@ change slightly:
 .. _PQexecParams: https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS
 
 The main difference between the old adaptation protocol (called |ISQLQuote|_)
-and the new one (which doesn't have a name yet, and probably should be
+and the new one (which doesn't have a name yet, it could be probably called
 ``ISQL``) is the use of the quotes, whereby the string ``O'Connor`` is passed
-to the query as ``'O''Connor'``. In ``ISQL`` the string wouldn't undergo the
-same transformation to add and escape quotes, and other types would be just
-converted into strings in the PostgreSQL syntax, but wouldn't need to be
-wrapped in quotes to create a SQL literal. Using ``ISQL`` as the fundamental
-adaptation steps there would be some interesting improvements:
+to the query as ``'O''Connor'``, with wrapping quotes and doubled-up quotes in
+the content. In ``ISQL`` the string wouldn't undergo the same transformation
+to add and escape quotes; other types would only have to be converted into
+strings in the PostgreSQL syntax, but wouldn't need to be wrapped in quotes to
+create a SQL literal. Using ``ISQL`` as the fundamental adaptation steps there
+would be some interesting improvements:
 
-- adapting composite types and arrays would be a much straightforward matter,
+- adapting composite types and arrays would be a much more straightforward
+  matter,
 - it opens the door to the use of `prepared statements`__, but especially
 - the ``COPY FROM`` operation could take an iterable object yielding Python
   types instead of a file-like object to read; similarly ``COPY TO`` could
@@ -94,9 +108,9 @@ Context managers and transactions
 =================================
 
 psycopg2 follows a de-facto standard (which was `widely discussed`__ but never
-landed in the DBAPI specs), whereby connections manage a transaction when used
-as context manager, by committing/rolling back on ``__exit__``. So the way to
-use it would be:
+landed in the `DBAPI specs`__), whereby connections used as context managers
+wrap a transaction, committing it if leaving on success or rolling it back in
+case of error. So the way to use it would be:
 
 .. code:: python
 
@@ -109,11 +123,12 @@ use it would be:
             do_something_else(conn)
 
 .. __: https://mail.python.org/pipermail/db-sig/2012-November/thread.html
+.. __: https://www.python.org/dev/peps/pep-0249/
 
-This is very useful, but it is a surprising behaviour: developers usually
-expect an object implementing ``close()`` to be closed on context exit (as
-files, and even cursors do). It also get in the way of managing different life
-cycles on the connection, for instance if there is a pool a connection is
+This idea has its usefulness,  but it is a surprising behaviour: developers
+usually expect an object implementing ``close()`` to be closed on context exit
+(as files, and even cursors do). It also get in the way of managing different
+life cycles on the connection, for instance if there is a pool a connection is
 taken from:
 
 .. code:: python
@@ -122,8 +137,8 @@ taken from:
         with conn.cursor() as curs:
             do_someting(curs)
 
-it is expected (and `vocally requested`__) that the connection is returned to the
-pool at the end of the block.
+it is expected (and `vocally requested`__) that the connection is returned to
+the pool at the end of the block.
 
 .. __: https://github.com/psycopg/psycopg2/pull/17
 
@@ -160,13 +175,14 @@ Optional C module
 psycopg2 is a C extension module wrapping the libpq_, the PostgreSQL client
 library. As such, in order to build, it requires a C compiler, Python, and
 libpq development packages. It is a relatively low bar, but it can be a pain
-nonetheless for several beginner users.
+nonetheless for beginner users.
 
 We tried to avoid the problem shipping a `wheel package`_, but the experience
 has been `far from being a success`__,  marred by issues such as the possible
 incompatibility between the libcrypto used by Python and by the libpq, the
 lack of support for musl libc/Alpine Linux, broken assumptions (like `glibc
-breaking backwards compatibility`__)... There's too magic in that.
+breaking backwards compatibility`__)... There's too much magic in that,
+honestly.
 
 .. _wheel package: https://pythonwheels.com/
 .. __: https://github.com/psycopg/psycopg2/issues?utf8=%E2%9C%93&q=+label%3Awheel
@@ -174,46 +190,59 @@ breaking backwards compatibility`__)... There's too magic in that.
 
 .. _libpq: https://www.postgresql.org/docs/current/libpq.html
 
-Mostly in order to support PyPy, during the years a few "python-only"
-implementations have been developed: first a `ctypes implementation`__, to
-which I contributed but which hasn't been maintained at the same feature level
-of the C psycopg2. It was further forked into a `cffi implementation`__, whose
-release numbers don't follow the original ones, which is mighty confusing.
+Mostly in order to support PyPy_, in the past years a few "python-only"
+psycopg2 implementations have been developed: first a `ctypes
+implementation`__, to which I contributed but which hasn't been maintained at
+the same feature level of the reference C psycopg2. This package was further
+forked into a `cffi implementation`__, which seems to be more active, but
+whose release numbers don't follow the original ones, which is mighty
+confusing.
 
+.. _PyPy: https://www.pypy.org/
 .. __: https://github.com/mvantellingen/psycopg2-ctypes
 .. __: https://github.com/chtd/psycopg2cffi
 
-What I think is that psycopg3 should follow an approach similar to PyYAML
-(I've seen it doing, I have to check how...), which tries to compile an
-optimized version of the library and falls back to a Python implementation if
-it fails.
+psycopg3 might follow an approach I've used in a other extension modules such
+as PyYAML, which try to compile an optimized version of the library and
+fall back to a Python implementation if that fails.
 
-psycopg3 would try to use the C module in preference of the Python module, but
-if someone wanted to enforce the use of one specific implementation, an
-environment variable could be used for the task, such as
-``PSYCOPG3_IMPL={C|PYTHON}``, in the presence of which importing the module
-would fail in case the requested implementation is not available.
+psycopg3 would try to use the C module in preference over the Python module,
+but if could still be possible to enforce the use of one specific
+implementation, for instance using a ``PSYCOPG3_IMPL={C|PYTHON}`` environment
+variable, in the presence of which importing the module would fail if the
+requested implementation was not available.
 
 
 Other improvements
 ==================
 
-I've noted some of the ideas to implement in `a trello board`__ and in `an
-issues milestone`__. Some of them weren't actually incompatible and ended up
-implemented in psycopg2; some will have to wait.
+I've written down some of the ideas to implement on `a Trello board`__ and in
+`an issues milestone`__. As the board shows, some of the improvements weren't
+actually incompatible with psycopg2 and over the years they have already
+landed in in its releases; some other ones will have to wait.
 
 .. __: https://trello.com/b/6tF2oHJ0/psycopg3
 .. __: https://github.com/psycopg/psycopg2/milestone/4
 
-A lot can be done if there is will:
+Some of what could be improved over psycopg2:
 
-- an async interface based on asyncio_ (as aiopg_ offers)
-- async COPY methods (see `issue #428`_)
-- better support for SQL_ASCII databases (which unlike their name are actually
-  unencoded 8 bits, see `issue #519`_)
-- `preparing cursors`_
-- reorganising the extensions_ and extras_ module, which contain an
-  heterogeneous assortment of objects, functions, constants...
+- an async interface based on asyncio_ (as aiopg_ offers);
+- async COPY methods (see `issue #428`_);
+- better support for SQL_ASCII databases (which, unlike what their name
+  suggests, are actually unencoded 8 bits, see `issue #519`_);
+- `preparing cursors`_;
+- return value on ``execute()``:
+
+  .. code:: python
+
+    for record in cur.execute(query):
+        # ...
+
+- connection and cursor-scoped adapters (currently you can scope the
+  adaptation rules from Postgres to Python but the rules from Python to
+  Postgres can only be global);
+- reorganising the extensions_ and extras_ module, which at the moment contain
+  an heterogeneous assortment of objects, functions, constants...
 
 .. _asyncio: https://docs.python.org/3.8/library/asyncio.html
 .. _aiopg: https://github.com/aio-libs/aiopg
@@ -223,19 +252,20 @@ A lot can be done if there is will:
 .. _extensions: https://www.psycopg.org/docs/extensions.html
 .. _extras: https://www.psycopg.org/docs/extras.html
 
-I would be interested in starting the development of this project, and would
-love to hear what areas should be the focus: I would like some discussion to
-happen on the `Mailing List`_, so please subscribe_ and participate!
+I would be interested in starting the development of this project soon. If you
+have opinions, or interest in the project, please let us know on the `Mailing
+List`_ (you can `subscribe here`__).
 
-And if psycopg2 has been useful so far for you and your business and would
-love to see a psycopg3 even more performing and easier to use, please consider
-`sponsoring the development`__, thank you! 💓
-
+.. __: https://lists.postgresql.org/
 .. _mailing list: https://www.postgresql.org/list/psycopg/
-.. _subscribe: https://lists.postgresql.org/
+
+...and if psycopg2 has been useful so far for you and for your business and
+would love to see a psycopg3 even more performing and easier to use, please
+consider `sponsoring the development`__, thank you! 💜
+
 .. __: https://github.com/sponsors/dvarrazzo/
 
 ---
-image: /img/software/londiste.jpg
+image: /img/blog/disks.jpg
 ---
 _discoverable: no
