@@ -16,10 +16,10 @@ database
 ---
 body:
 
-Developing database-backed applications, I've often had the need to extract
-a meaningful selection of data from a production database. Maybe to set up a
-development environment, or a testing environment, or to try out a complex
-migration on smaller data.
+Developing database-backed applications, I've often had the need to extract a
+meaningful selection of data out of a production database. Maybe in order to
+set up a development environment, or a testing environment, or to try out a
+complex migration on smaller dataset.
 
 However a ``pg_dump`` of the production db is not necessarily a good idea:
 
@@ -34,14 +34,15 @@ saving a script to keep the unwieldy command line, and still that does not
 make you able to modify in any way the data dumped from the table, for
 instance to omit the ``password`` column. You might use ``COPY TO`` for that,
 but that's an entirely different beast from ``pg_dump`` and the resulting file
-is only data: it will bear no context about how it should be restored (now
-that you dropped the ``password`` column the data won't align anymore for a
-trivial ``COPY FROM``...)
+is *only* data: not even the columns names. It will bear no context about how
+it should be restored (and now that you dropped the ``password`` column the
+data won't align anymore and you won't be able to just run a ``COPY FROM``...)
 
-A few months ago I decided to scratch the itch properly, and I started writing
-an tool that turned out to be pg_seldump_. The idea behind the tool is to
-define a YAML_ file with a description of the dumping rule to apply to
-different tables. For instance:
+A few months ago I decided to scratch this itch properly, and I started
+writing a tool that, after some improvement, was deemed to be good enough out
+to be declared a version 0.1 of pg_seldump_. The idea of the tool is to define
+a YAML_ file containing a description of the rule to apply to different
+database objects to dump. For instance:
 
 .. _pg_seldump: https://github.com/dvarrazzo/pg_seldump
 .. _YAML: https://en.wikipedia.org/wiki/YAML
@@ -69,12 +70,17 @@ different tables. For instance:
         replace:
           telephone: "+44 7853 123456"
 
+This description would produce a data-only dump as a text file containing the
+data and enough statements to restore them by piping the entire file into
+`psql`.
+
 The program isn't finished yet, but it is already quite interesting: the
 ``pg_seldump`` command takes in input one or more configuration files like the
 one in the example and introspects the database looking for the objects to
 dump. The objects are matched against all the rules and, inspired to CSS, it
 picks the one with the highest selectivity. It also understand what fields use
-what sequences, and if the field is dumped the sequence will be saved as well.
+what sequences, and if the field is dumped then the sequence state will be
+saved as well.
 
 There is one large feature I'm about to develop: automatically navigating
 foreign keys in order to collect all the data necessary to create a consistent
@@ -104,11 +110,12 @@ types JSON can handle it will work no problem.
 
 .. _JSON Schema: https://json-schema.org/
 
-JSON Schemas are quite simple to define: it didn't take too long to put
-together a `schema for pg_seldump configuration file`__ (in YAML of course).
-However, performing validation (using the jsonschema_ Python package) the
-results are not entirely satisfactory. For instance, this is a configuration
-file containing 4 errors:
+JSON Schemas are quite simple to define: I started thinking "noooo, another
+huge thing to learn just for a simple thing..." but actually it's not
+difficult at all: it didn't take too long to put together a `schema for
+pg_seldump configuration file`__ (in YAML of course). However, performing
+validation (using the jsonschema_ Python package) the results are not entirely
+satisfactory. For instance, this is a configuration file containing 4 errors:
 
 .. __: https://github.com/dvarrazzo/pg_seldump/blob/eae1d8634444b0fd1bfeff4f75f89116a975b736/seldump/schema/config.yaml
 .. _jsonschema: https://pypi.org/project/jsonschema/
@@ -148,27 +155,31 @@ expressed in a YAML file: everything is based on Python plain objects
 (scalars, dicts, lists) and the information of what line in what file that
 value came from is long lost.
 
-In order to overcome the problem, the idea is to attach these information,
-available at parsing time, to the parsed objects. In a previous approximation
-of the solution I had `only the dictionaries`__ "decorated" with their
-position. In case of error the name of the file and the first line of the
-dictionary would have been printed: better than nothing I guess, but not
-perfect (in the above example any error would have been reported at line 3).
+In order to overcome the problem, the idea is to attach file and line
+information, available at parsing time, to the parsed objects. In a previous
+approximation of the solution I had `only the dictionaries`__ subclassed to
+attach them their position. In case of error, the name of the file and the
+first line of the dictionary would have been printed: better than nothing I
+guess, but not perfect (in the above example any error would have been
+reported at line 3).
 
 .. __: https://github.com/dvarrazzo/pg_seldump/blob/96c811b272130d7492c62ba89216ab537dbd4d41/seldump/yaml.py
 
 With the introduction of the JSON schema validator I got back on the
-customized yaml parser. First I used more hooks to memorize the position of
-lists and scalar types too. The scalars themselves don't remember the
-attribute they are attached to: that ``10`` above knows it's at line 3, but
-not that it was the tentative ``name`` of an object. So the idea was to
-further instrument the dictionaries returned by YAML and memorize, item by
-item, what line the value was parsed from. When a schema validation error is
-found, ``jsonschema`` errors have an useful ``path`` attribute describing in
-what object the error was found. So, if the last element is a string and the
-penultimate is a dictionary, there is enough information to `associate it back
-to the original file and position`__.
+customized YAML parser. First I used `more customization`__, subclassing lists
+and wrapping scalars to memorize their positions and the position of their
+content. The scalars themselves don't remember the attribute they are attached
+to: the ``10`` above knows it came from line 3 of a file, but not that it was
+the tentative ``name`` of an object. So the idea was to further instrument the
+containers returned by the YAML parser, and memorize item by item what line
+the values are parsed from. When a schema validation error is found,
+``jsonschema`` errors have an useful ``path`` attribute describing in what
+object the error was found (for instance ``['db_objects', 0, 'name']`` for the
+first error). So, if the last element is a string and the penultimate is a
+dictionary, there is enough information to `associate it back to the original
+file and position`__.
 
+.. __: https://github.com/dvarrazzo/pg_seldump/blob/eae1d8634444b0fd1bfeff4f75f89116a975b736/seldump/yaml.py#L89
 .. __: https://github.com/dvarrazzo/pg_seldump/blob/eae1d8634444b0fd1bfeff4f75f89116a975b736/seldump/config.py#L135-L167
 
 The result I think is very user friendly::
@@ -179,15 +190,19 @@ The result I think is very user friendly::
     ERROR at badconfig.yaml:4: adjust_score: 'a' is not of type 'integer'
     ERROR at badconfig.yaml:6: action: 'trip' is not one of ['dump', 'skip', 'error']
 
-Interesting that the errors are not in line order: I'll try and sort them.
-Also, it wasn't possible to express everything in the JSON schema: demanding
-at most one between ``name`` and ``names`` for each object seems quite
-difficult and I don't think there exist a regular expression to state that
-``names`` must be a valid regular expression, so certain things are still
-demanded to a step after validation. However, emitting all the errors in one
-go and the precise location of where they occur was a good usability step.
-This is a program I would like to use.
+Interesting that the errors are not in line order: I'll have to sort them.
 
-Looking forward to diving into graph traversal matters to gather the set of
-all the records recursively referred by the selected records, and the
-recursive queries to generate them...
+It wasn't possible to express everything in the JSON schema: demanding at most
+one between ``name`` and ``names`` for in rule objects seems quite difficult
+and... I don't think a regular expression exists to verify that a certain
+string is a valid regular expression, does it? So certain finer checks are
+still performed a step after schema validation, but still before handing
+control to the rest of the program. However, emitting all the errors in one
+go, together with the precise location where they occurred, makes the program
+an ally rather than an opponent. *This is a program I would like to use.*
+
+Enough of YAML and configuration! Now I'm looking forward to dive into the
+problem of navigating the graph of the tables across foreign keys and to
+generate dynamically the nested queries to extract a consistent sample of
+data, watching for the pitfalls of circular foreign keys and self-referencing
+tables...
