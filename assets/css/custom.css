@@ -58,3 +58,7 @@ p {
 .contact-info a {
     display: initial;
 }
+
+tt.docutils.literal {
+    font-weight: bold;
+}

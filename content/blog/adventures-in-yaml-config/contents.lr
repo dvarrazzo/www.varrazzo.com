@@ -1,0 +1,193 @@
+title: Adventures in YAML config
+---
+pub_date: 2020-02-29
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/elephants.jpg
+---
+_discoverable: yes
+---
+tags:
+
+software
+design
+database
+---
+body:
+
+Developing database-backed applications, I've often had the need to extract
+a meaningful selection of data from a production database. Maybe to set up a
+development environment, or a testing environment, or to try out a complex
+migration on smaller data.
+
+However a ``pg_dump`` of the production db is not necessarily a good idea:
+
+- the production data may be YUGE;
+- the production data may contain sensitive information;
+- some of the data in the production db might be bulky and irrelevant, for
+  instance audit tables.
+
+Still, googling around, you don't get much to help: people still advise to use
+``pg_dump`` with a plethora of ``--table``, but this results in the need of
+saving a script to keep the unwieldy command line, and still that does not
+make you able to modify in any way the data dumped from the table, for
+instance to omit the ``password`` column. You might use ``COPY TO`` for that,
+but that's an entirely different beast from ``pg_dump`` and the resulting file
+is only data: it will bear no context about how it should be restored (now
+that you dropped the ``password`` column the data won't align anymore for a
+trivial ``COPY FROM``...)
+
+A few months ago I decided to scratch the itch properly, and I started writing
+an tool that turned out to be pg_seldump_. The idea behind the tool is to
+define a YAML_ file with a description of the dumping rule to apply to
+different tables. For instance:
+
+.. _pg_seldump: https://github.com/dvarrazzo/pg_seldump
+.. _YAML: https://en.wikipedia.org/wiki/YAML
+
+.. code:: YAML
+
+    # A YAML file is similar in content to a JSON file, but easier for human
+    # to edit: more compact, less noisy, and can be commented.
+    db_objects:
+
+      # dump all the tables in the schema 'myapp'
+      - schema: myapp
+        action: dump
+
+      # but not the one starting with 'audit_'
+      - schema: myapp
+        names: "^audit_.*"
+        action: skip
+
+      # don't dump customers passwords, and replace their telephone no. with a dummy
+      - schema: myapp
+        name: customer
+        no_columns:
+          - password
+        replace:
+          telephone: "+44 7853 123456"
+
+The program isn't finished yet, but it is already quite interesting: the
+``pg_seldump`` command takes in input one or more configuration files like the
+one in the example and introspects the database looking for the objects to
+dump. The objects are matched against all the rules and, inspired to CSS, it
+picks the one with the highest selectivity. It also understand what fields use
+what sequences, and if the field is dumped the sequence will be saved as well.
+
+There is one large feature I'm about to develop: automatically navigating
+foreign keys in order to collect all the data necessary to create a consistent
+sample of the data. I started yesterday working at that feature, but
+there is something else I wanted to do before...
+
+
+What's into a configuration file?
+=================================
+
+So far, the program had a `parser for the configuration file`__ to create
+"rule" objects out of what found in the YAML. While it works, it's quite
+verbose, it stops at the first error, and it's hard to understand from it what
+is really allowed in the file. I find working with unstructured data really
+impractical: every single property is optional, every typo (``schmea``) should
+be explicitly checked.
+
+.. __: https://github.com/dvarrazzo/pg_seldump/blob/96c811b272130d7492c62ba89216ab537dbd4d41/seldump/dumprule.py#L103
+
+In order to check the configuration entirely before throwing it into the rest
+of the program, and in order to be able to document precisely what is a valid
+configuration file, I've taken a look at `JSON Schema`_. Now, that's
+deceiving: validating YAML with JSON Schema? That turns out to be no problem,
+because the validation doesn't happen at syntactical level, but it is
+performed on the objects after parsing. Limiting the YAML to the same data
+types JSON can handle it will work no problem.
+
+.. _JSON Schema: https://json-schema.org/
+
+JSON Schemas are quite simple to define: it didn't take too long to put
+together a `schema for pg_seldump configuration file`__ (in YAML of course).
+However, performing validation (using the jsonschema_ Python package) the
+results are not entirely satisfactory. For instance, this is a configuration
+file containing 4 errors:
+
+.. __: https://github.com/dvarrazzo/pg_seldump/blob/eae1d8634444b0fd1bfeff4f75f89116a975b736/seldump/schema/config.yaml
+.. _jsonschema: https://pypi.org/project/jsonschema/
+
+.. code:: YAML
+    :number-lines:
+
+    # badconfig.yaml
+    db_objects:
+      - name: 10
+        adjust_score: a
+        kind: wat
+        action: trip
+
+It can be easily validated against the schema:
+
+.. code:: pycon
+
+    >>> import jsonschema
+    >>> import yaml
+
+    >>> schema = yaml.load(open("seldump/schema/config.yaml"))
+    >>> validator = jsonschema.Draft7Validator(schema)
+
+    >>> config = yaml.load(open("badconfig.yaml"))
+    >>> print('\n'.join(e.message for e in validator.iter_errors(config)))
+    10 is not of type 'string'
+    'wat' is not one of ['table', 'sequence', 'partitioned table', 'materialized view']
+    'a' is not of type 'integer'
+    'trip' is not one of ['dump', 'skip', 'error']
+
+However these error messages, as informative as they can be, have lost the
+context of where they originated. Sure 10 is not a string, but good luck
+finding the right "10" into a large file. The problem comes from that same
+characteristic that allowed us to validate a YAML file against a JSON schema
+expressed in a YAML file: everything is based on Python plain objects
+(scalars, dicts, lists) and the information of what line in what file that
+value came from is long lost.
+
+In order to overcome the problem, the idea is to attach these information,
+available at parsing time, to the parsed objects. In a previous approximation
+of the solution I had `only the dictionaries`__ "decorated" with their
+position. In case of error the name of the file and the first line of the
+dictionary would have been printed: better than nothing I guess, but not
+perfect (in the above example any error would have been reported at line 3).
+
+.. __: https://github.com/dvarrazzo/pg_seldump/blob/96c811b272130d7492c62ba89216ab537dbd4d41/seldump/yaml.py
+
+With the introduction of the JSON schema validator I got back on the
+customized yaml parser. First I used more hooks to memorize the position of
+lists and scalar types too. The scalars themselves don't remember the
+attribute they are attached to: that ``10`` above knows it's at line 3, but
+not that it was the tentative ``name`` of an object. So the idea was to
+further instrument the dictionaries returned by YAML and memorize, item by
+item, what line the value was parsed from. When a schema validation error is
+found, ``jsonschema`` errors have an useful ``path`` attribute describing in
+what object the error was found. So, if the last element is a string and the
+penultimate is a dictionary, there is enough information to `associate it back
+to the original file and position`__.
+
+.. __: https://github.com/dvarrazzo/pg_seldump/blob/eae1d8634444b0fd1bfeff4f75f89116a975b736/seldump/config.py#L135-L167
+
+The result I think is very user friendly::
+
+    $ pg_seldump --test badconfig.yaml
+    ERROR at badconfig.yaml:3: name: 10 is not of type 'string'
+    ERROR at badconfig.yaml:5: kind: 'wat' is not one of ['table', 'sequence', 'partitioned table', view']
+    ERROR at badconfig.yaml:4: adjust_score: 'a' is not of type 'integer'
+    ERROR at badconfig.yaml:6: action: 'trip' is not one of ['dump', 'skip', 'error']
+
+Interesting that the errors are not in line order: I'll try and sort them.
+Also, it wasn't possible to express everything in the JSON schema: demanding
+at most one between ``name`` and ``names`` for each object seems quite
+difficult and I don't think there exist a regular expression to state that
+``names`` must be a valid regular expression, so certain things are still
+demanded to a step after validation. However, emitting all the errors in one
+go and the precise location of where they occur was a good usability step.
+This is a program I would like to use.
+
+Looking forward to diving into graph traversal matters to gather the set of
+all the records recursively referred by the selected records, and the
+recursive queries to generate them...
