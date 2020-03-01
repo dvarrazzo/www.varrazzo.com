@@ -146,8 +146,8 @@ It can be easily validated against the schema:
     >>> config = yaml.load(open("badconfig.yaml"))
     >>> print('\n'.join(e.message for e in validator.iter_errors(config)))
     10 is not of type 'string'
-    'wat' is not one of ['table', 'sequence', 'partitioned table', 'materialized view']
     'a' is not of type 'integer'
+    'wat' is not one of ['table', 'sequence', 'partitioned table', 'materialized view']
     'trip' is not one of ['dump', 'skip', 'error']
 
 However these error messages, as informative as they can be, have lost the
@@ -189,11 +189,9 @@ The result I think is very user friendly::
 
     $ pg_seldump --test badconfig.yaml
     ERROR at badconfig.yaml:3: name: 10 is not of type 'string'
-    ERROR at badconfig.yaml:5: kind: 'wat' is not one of ['table', 'sequence', 'partitioned table', view']
     ERROR at badconfig.yaml:4: adjust_score: 'a' is not of type 'integer'
+    ERROR at badconfig.yaml:5: kind: 'wat' is not one of ['table', 'sequence', 'partitioned table', view']
     ERROR at badconfig.yaml:6: action: 'trip' is not one of ['dump', 'skip', 'error']
-
-Interesting that the errors are not in line order: I'll have to sort them.
 
 It wasn't possible to express everything in the JSON schema: demanding at most
 one between ``name`` and ``names`` for in rule objects seems quite difficult
