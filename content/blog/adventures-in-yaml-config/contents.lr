@@ -91,8 +91,8 @@ sample of the data. I started yesterday working at that feature, but
 there is something else I wanted to do before...
 
 
-What's into a configuration file?
-=================================
+What's in a configuration file?
+===============================
 
 So far, the program had a `parser for the configuration file`__ to create
 "rule" objects out of what found in the YAML. While it works, it's quite
