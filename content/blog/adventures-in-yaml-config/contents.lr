@@ -129,9 +129,9 @@ satisfactory. For instance, this is a configuration file containing 4 errors:
     # badconfig.yaml
     db_objects:
       - name: 10
-        adjust_score: a
-        kind: wat
-        action: trip
+        action: download
+        kid: table
+        adjust_score: twelve
 
 It can be easily validated against the schema:
 
@@ -145,10 +145,11 @@ It can be easily validated against the schema:
 
     >>> config = yaml.load(open("badconfig.yaml"))
     >>> print('\n'.join(e.message for e in validator.iter_errors(config)))
+
+    Additional properties are not allowed ('kid' was unexpected)
     10 is not of type 'string'
-    'a' is not of type 'integer'
-    'wat' is not one of ['table', 'sequence', 'partitioned table', 'materialized view']
-    'trip' is not one of ['dump', 'skip', 'error']
+    'twelve' is not of type 'integer'
+    'download' is not one of ['dump', 'skip', 'error', 'ref']
 
 However these error messages, as informative as they can be, have lost the
 context of where they originated. Sure 10 is not a string, but good luck
@@ -178,7 +179,7 @@ containers returned by the YAML parser, and memorize item by item what line
 the values are parsed from. When a schema validation error is found,
 ``jsonschema`` errors have an useful ``path`` attribute describing in what
 object the error was found (for instance ``['db_objects', 0, 'name']`` for the
-first error). So, if the last element is a string and the penultimate is a
+"10" error). So, if the last element is a string and the penultimate is a
 dictionary, there is enough information to `associate it back to the original
 file and position`__.
 
@@ -189,9 +190,9 @@ The result I think is very user friendly::
 
     $ pg_seldump --test badconfig.yaml
     ERROR at badconfig.yaml:3: name: 10 is not of type 'string'
-    ERROR at badconfig.yaml:4: adjust_score: 'a' is not of type 'integer'
-    ERROR at badconfig.yaml:5: kind: 'wat' is not one of ['table', 'sequence', 'partitioned table', view']
-    ERROR at badconfig.yaml:6: action: 'trip' is not one of ['dump', 'skip', 'error']
+    ERROR at badconfig.yaml:4: action: 'download' is not one of ['dump', 'skip', 'error']
+    ERROR at badconfig.yaml:5: Additional properties are not allowed ('kid' was unexpected)
+    ERROR at badconfig.yaml:6: adjust_score: 'twelve' is not of type 'integer'
 
 It wasn't possible to express everything in the JSON schema: demanding at most
 one between ``name`` and ``names`` for in rule objects seems quite difficult
