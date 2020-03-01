@@ -39,10 +39,13 @@ it should be restored (and now that you dropped the ``password`` column the
 data won't align anymore and you won't be able to just run a ``COPY FROM``...)
 
 A few months ago I decided to scratch this itch properly, and I started
-writing a tool that, after some improvement, was deemed to be good enough out
-to be declared a version 0.1 of pg_seldump_. The idea of the tool is to define
-a YAML_ file containing a description of the rule to apply to different
-database objects to dump. For instance:
+writing a tool that, after some improvements, was deemed to be good enough to
+be stamped as 0.1. After some discussion about the meaning of *dump* and what
+a good synonym could have been (with references ranging from relation breakups
+to more scatological ones) it was called pg_seldump_.
+
+The idea of the tool is to define a YAML_ file containing a description of the
+rule to apply to different database objects to dump. For instance:
 
 .. _pg_seldump: https://github.com/dvarrazzo/pg_seldump
 .. _YAML: https://en.wikipedia.org/wiki/YAML
