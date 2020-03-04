@@ -62,3 +62,10 @@ p {
 tt.docutils.literal {
     font-weight: bold;
 }
+
+a.landing.entrance {
+    text-decoration: underline;
+}
+a.landing.entrance:hover {
+    text-decoration: none;
+}
