@@ -1,0 +1,20 @@
+graph TD
+    subgraph client code
+    A(sync Python program)
+    A1(async Python program)
+    end
+
+    subgraph psycopg3
+    A -->|call| B
+    A1 --> |await| C
+    B(DBAPI sync interface) --> |await| C
+    C(libpq wrapper interface) -.- |implemented by| D1
+    C -.- |implemented by| D2
+    D1(C libpq wrapper) --> |C calls| E(libpq)
+    D2(Python libpq wrapper) --> |CFFI calls| E
+    end
+
+    subgraph server
+    E -->|connects| F
+    F[(PostgreSQL)]
+    end

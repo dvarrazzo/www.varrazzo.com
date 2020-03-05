@@ -69,3 +69,10 @@ a.landing.entrance {
 a.landing.entrance:hover {
     text-decoration: none;
 }
+
+/* centered image from reST */
+img.centered-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
