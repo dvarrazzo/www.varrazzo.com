@@ -43,3 +43,6 @@ pgmp:
 pgmp/docs/_templates/layout.html: templates/sphinx-layout.html databags/analytics.json
 	mkdir -p $(dir $@)
 	TRACKING_ID=${TRACKING_ID} envsubst < $< > $@
+
+%.jpg: %.mermaid
+	./tools/mermaider.py -i $< -o $@

@@ -1,0 +1,6 @@
+sequenceDiagram
+  Python program->>psycopg2: execute(query, params)
+  psycopg2->>psycopg2: adapt params
+  psycopg2->>psycopg2: merge params to query
+  psycopg2->>libpq: PQexec
+  libpq->>PostgreSQL: query

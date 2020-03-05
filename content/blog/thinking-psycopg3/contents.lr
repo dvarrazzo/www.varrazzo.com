@@ -30,7 +30,7 @@ psycopg2 composes queries (replacing the placeholders in the SQL strings with
 the values supplied by the user) on the client, and sends a complete query to
 the server.
 
-.. image:: seq-psycopg2.png
+.. image:: seq-psycopg2.jpg
     :alt: Sequence diagram for psycopg2
     :class: mb10
 
@@ -39,7 +39,7 @@ However the correct way of doing it, as far as PostgreSQL is concerned, should
 be to send the query and its parameters separately (i.e. using the
 |PQexecParams|_ libpq function rather than |PQexec|_).
 
-.. image:: seq-psycopg3.png
+.. image:: seq-psycopg3.jpg
     :alt: Sequence diagram for psycopg3
     :class: mb10
 
