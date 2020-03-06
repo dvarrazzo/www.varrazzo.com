@@ -312,8 +312,8 @@ List`_ (you can `subscribe here`__).
 .. __: https://lists.postgresql.org/
 .. _mailing list: https://www.postgresql.org/list/psycopg/
 
-...and if psycopg2 has been useful so far for you and for your business and
-would love to see a psycopg3 even more performing and easier to use, please
-consider `sponsoring the development`__, thank you! 💜
+...and if psycopg2 has been useful so far for you and for your business and if
+you would love to see a psycopg3 even more performing and easier to use,
+please consider `sponsoring the development`__, thank you! 💜
 
 .. __: https://github.com/sponsors/dvarrazzo/
