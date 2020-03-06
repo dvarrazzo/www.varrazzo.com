@@ -21,6 +21,3 @@ deploy:
   repo: dvarrazzo/dvarrazzo.github.io
   on:
     branch: master
-
-notifications:
-  email: false
