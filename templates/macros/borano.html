@@ -24,7 +24,10 @@
 <li>
   <a href="{{entry.url|maybeurl}}"
      {%- if entry.target %} target="_blank"{% endif -%}
-  >{{entry.label}}</a>
+  >{{entry.label}}
+  {%- if entry.target %} <i class="fa fa-external-link" aria-hidden="true"></i>
+  {%- endif -%}
+  </a>
   {%- if entry.menu %}
   <ul>
   {{- render_menu(entry.menu) }}
