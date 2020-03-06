@@ -70,9 +70,21 @@ a.landing.entrance:hover {
     text-decoration: none;
 }
 
-/* centered image from reST */
-img.centered-img {
+/* images in the articles */
+img.align-center {
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+img.align-left {
+    display: block;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+img.align-right {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
 }

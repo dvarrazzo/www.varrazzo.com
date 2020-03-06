@@ -1,16 +1,18 @@
 title: Thinking psycopg3
 ---
-pub_date: 2020-02-25
+pub_date: 2020-03-06
 ---
 author: Daniele Varrazzo
 ---
 image: /img/blog/disks.jpg
 ---
-_discoverable: no
+_discoverable: yes
 ---
 tags:
 
 software
+design
+psycopg
 ---
 body:
 
@@ -36,7 +38,7 @@ the server.
 
 .. image:: seq-psycopg2.jpg
     :alt: Sequence diagram for psycopg2
-    :class: mb10
+    :class: mb10 align-center
 
 It does its job right, so it doesn't result in SQL injection vulnerabilities.
 However the correct way of doing it, as far as PostgreSQL is concerned, should
@@ -45,7 +47,7 @@ be to send the query and its parameters separately (i.e. using the
 
 .. image:: seq-psycopg3.jpg
     :alt: Sequence diagram for psycopg3
-    :class: mb10
+    :class: mb10 align-center
 
 Separating the statement from the parameters improves performance and memory
 usage at parsing time. However the behaviour of the library would change
@@ -93,7 +95,8 @@ would be some interesting improvements:
 I mean: this would be great! |COPY|_ is by far the most efficient way to
 insert data into the database: using it via psycopg2 requires exposing the
 data via a `file-like object`__, which not only is a weird interface, but it
-requires people to roll their own adaptation format. Looking forward for:
+requires people to roll their own adaptation format. The target for copying
+data into the database using psycopg3 should be as easy as:
 
 .. code:: python
 
@@ -112,10 +115,10 @@ requires people to roll their own adaptation format. Looking forward for:
 Context managers and transactions
 =================================
 
-psycopg2 follows a de-facto standard (which was `widely discussed`__ but never
-landed in the `DBAPI specs`__), whereby connections used as context managers
-wrap a transaction, committing it if leaving on success or rolling it back in
-case of error. So the way to use it would be:
+psycopg2 follows a de-facto standard (which was `widely discussed`__ but which
+never landed in the `DBAPI specs`__), whereby connections used as context
+managers wrap a transaction, committing it if exiting on success or rolling it
+back in case of error. So the way to use it is something like:
 
 .. code:: python
 
@@ -130,11 +133,11 @@ case of error. So the way to use it would be:
 .. __: https://mail.python.org/pipermail/db-sig/2012-November/thread.html
 .. __: https://www.python.org/dev/peps/pep-0249/
 
-This idea has its usefulness,  but it is a surprising behaviour: developers
-usually expect an object implementing ``close()`` to be closed on context exit
-(as files, and even cursors do). It also get in the way of managing different
-life cycles on the connection, for instance if there is a pool a connection is
-taken from:
+This idea has its usefulness,  but it is a *very* surprising behaviour:
+developers usually expect the same resources released by ``close()`` to be
+released on context exit (as files, sockets, and even DBAPI cursors do). It
+also gets in the way of managing different life cycles on the connection, for
+instance if there is the connection is taken from a pool:
 
 .. code:: python
 
@@ -142,21 +145,21 @@ taken from:
         with conn.cursor() as curs:
             do_someting(curs)
 
-it is expected (and `vocally requested`__) that the connection is returned to
-the pool at the end of the block.
-
-.. __: https://github.com/psycopg/psycopg2/pull/17
+then it is expected (and `reasonably requested`__) that the connection is
+returned to the pool at the end of the block.
 
 Talking about transactions, PostgreSQL support for ``SAVEPOINT`` makes
 possible to implement nested transactions (already implemented on top of
-psycopg2 e.g. `by Django`__ and `in a stand-alone module`__).
+psycopg2 e.g. `by Django`__ and `in a stand-alone module`__). This seems to
+ask for a different context than the connection-scope one. So maybe it would
+be useful to leave the latter to the management of the resource, releasing
+them on connection context exit, and to add an explicit method to start an
+atomic block (either a transaction or a savepoint, according to the current
+connection state):
 
+.. __: https://github.com/psycopg/psycopg2/pull/17
 .. __: https://docs.djangoproject.com/en/3.0/topics/db/transactions/#django.db.transaction.atomic
 .. __: https://github.com/asqui/psycopg-nestedtransactions
-
-Maybe it would be useful to add an explicit method to start an atomic block
-(either a transaction or a savepoint, according to the current connection
-state):
 
 .. code:: python
 
@@ -195,7 +198,7 @@ compatibility`__)... There's just too much magic needed to work smoothly.
 
 .. _libpq: https://www.postgresql.org/docs/current/libpq.html
 
-Mostly in order to support PyPy_, in the past years a few "python-only"
+In the past years, mostly in order to support PyPy_, a few "python-only"
 psycopg2 implementations have been developed: first a `ctypes
 implementation`__, to which I contributed but which hasn't been maintained at
 the same feature level of the reference C psycopg2. This package was further
@@ -212,9 +215,8 @@ such as PyYAML, which try to compile an optimized version of the library and
 fall back to a Python implementation if that fails. Using the C module over
 the Python module would be a preference at import time, but if could still be
 possible to enforce the use of one specific implementation, for instance using
-a ``PSYCOPG3_IMPL={C|PYTHON}`` environment variable, in the presence of which
-importing the module would fail if the requested implementation was not
-available.
+a ``PSYCOPG3_IMPL={C|PYTHON}`` environment variable, which would make the lack
+of the requested implementation an import time error.
 
 
 Async from the ground up
@@ -222,39 +224,46 @@ Async from the ground up
 
 The DBAPI interface is synchronous and blocking by design: ``connect()``
 blocks until a connection is open, ``execute()`` blocks until the query is
-completed etc. This didn't stop psycopg to work asynchronously, exposing two
+completed etc. This didn't stop psycopg2 to work asynchronously, exposing two
 different interfaces for it:
 
 - `a purely asynchronous one`__ where the application must explicitly
-  ``poll()`` to bring forward the connection/execution process;
+  ``poll()`` to bring forward the connection/execution process: it breaks the
+  DBAPI interface but allows frameworks who can't make blocking calls anyway
+  (such as the revered Twisted_) to use it;
 - `a coroutine-based one`__ where the DBAPI blocking interface is respected
   but behind the scene psycopg2 collaborates with coroutine libraries such as
   Eventlet_ and gevent_.
 
 .. __: https://www.psycopg.org/docs/advanced.html#asynchronous-support
 .. __: https://www.psycopg.org/docs/advanced.html#support-for-coroutine-libraries
+.. _Twisted: https://twistedmatrix.com/
 .. _Eventlet: https://eventlet.net/
 .. _gevent: http://www.gevent.org/
+.. _aiohttp: https://aiohttp.readthedocs.io/
 
-Needless to say, the world has gone forward, and Python now offers asyncio_ in
-its syntax and standard library: this is the foundation that newer Python
-async frameworks are built upon. A third-part wrapper, aiopg_, currently helps
-to bridge the async mode of psycopg2 with the asyncio machinery.
+Needless to say, the world has gone forward, and Python now offers core
+support in its syntax and library to asyncio_: this is the foundation that
+newer Python async frameworks, such as aiohttp_, are built upon. A third-part
+wrapper, aiopg_, currently helps to bridge the async mode of psycopg2 with the
+asyncio machinery, but of course there is some overhead, mostly caused by the
+fact that the C implementation of psycopg2 is a relatively thick layer, with
+the libpq async calls deeply buried under the C implementation of the Python
+``connection`` and ``cursor`` objects and behind their interfaces.
 
-The C implementation of psycopg2 is a relatively thick layer, implementing the
-whole Python ``connection`` and ``cursor`` objects on top of the libpq
-functions.
-
-There is a chance now to rethink how thick the C libpq library should be. We
+There is a chance now to rethink how thick the C libpq wrapper should be. We
 can reduce the C implementation to a minimal wrapper around the libpq
 (replaceable by a CFFI Python wrapper if compiling C is not available on the
-client), using it as a foundation to build a familiar DBAPI blocking interface,
-but also making it available to code needing more performance and benefiting
-of an asynchronous interface.
+client), using it as a foundation to build a familiar DBAPI blocking
+interface. A blocking behaviour is not bad in itself: it allows to write most
+of the programs, the ones which don't need crazy concurrency, in a simple and
+familiar paradigm; the async layer would be available under the hood to
+squeeze the best performance in programs who have embraced an asynchronous
+pattern and framework. Time for a picture:
 
 .. image:: architecture.jpg
     :alt: Proposed architecture for psycopg3
-    :class: mb10 centered-img
+    :class: mb10 align-center
 
 .. _asyncio: https://docs.python.org/3.8/library/asyncio.html
 .. _aiopg: https://github.com/aio-libs/aiopg
