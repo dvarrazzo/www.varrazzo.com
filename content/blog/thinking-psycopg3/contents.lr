@@ -60,7 +60,7 @@ For instance:
 
 - psycopg2 helps solving some type casting ambiguities by attaching casts to
   the types represented as strings (e.g. the date 1/1/2020 is currently merged
-  to the query as ``'2010-01-01'::date``); using |PQexecParams| the trick
+  to the query as ``'2020-01-01'::date``); using |PQexecParams| the trick
   wouldn't be available anymore. It might be possible maybe to suggest the
   type in other ways, but if that's not the case then queries should be
   modified by applying explicit casts next to their placeholders (e.g.
