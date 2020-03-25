@@ -1,0 +1,82 @@
+title: Vita, New Zealand, Covid
+---
+pub_date: 2020-03-25
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/disks.jpg
+---
+_discoverable: yes
+---
+tags:
+
+life
+travel
+news
+---
+body:
+
+In un tempo che ora sembra un milione di anni fa, io e Gabri avevamo
+organizzato un viaggio di due settimane in Nuova Zelanda, perché un marzo
+antipodico ci sembrava meglio di uno a Londra, ed avevo ancora un accordo col
+mio datore di lavoro di avere il 25% del tempo libero.
+
+Poi sono cambiate un po' di cose. A febbraio, io e la mia compagnia ci siamo,
+diciamo, accordati per avere il 100% del tempo libero. Un po' di giorni dopo
+le notizie del Covid-19 avevano cominciato a sembrare fantascienza scadente.
+La famiglia e gli amici in Italia erano bloccati in casa, il governo inglese
+non sapeva che palle inventarsi. Avevamo la scelta di non partire, "per
+sicurezza", come suggerito da un po' di amici, o di partire per più tempo,
+visto che non avevamo molto altro da fare. Questa è la scelta che abbiamo
+fatto, e il giorno stesso della partenza abbiamo posticipato il ritorno.
+
+Nelle prime settimane è stato un viaggio fantastico. Non ho le parole giuste
+per descrivere la belleza, per cui ho provato a fare qualche immagine.
+
+La nostra casa e mezzo di trasporto sono stati un furgone equipaggiato con un
+letto, fornelli e un piccolo frigo. Un vasino chimico lo permetteva di
+dichiarare "self-contained" (forse nel senso di tenersela?), il che vuol dire
+poter dormire in diverse in parchi e riserve naturali. Comunque, ovunque
+abbiamo dormito c'erano sempre gabinetti publici, e sempre puliti, anche nel
+caso fossero solo latrine senz'acqua. Nel furgone non c'era doccia, per cui
+ogni tanto ci siamo fermati in qualche campeggio per farne una.
+
+La routine quotidiana consisteva in caffè e colazione, poi esplorare l'area
+dove ci svegliavamo. Sono riuscito a fare un po' della fotografia che mi
+piace, quella che prevede scarponi e treppiede. Se ci capitava una pausa per
+pranzo o da bere in qualche paese cercavamo un posto dove ricaricare la
+batteria del portatile.
+
+Dopo cena, tempo di un hack: ho cominciato a lavorare al mio progetto
+:ref:`psycopg3 <blog/thinking-psycopg3>`, e sono riuscito a programmare
+abbastanza regolarmente, usando la luminosità del portatile al minimo per
+risparmiare batterie e solo con la documentazione scaricata, senza internet,
+per cui bello concentrato. Il progetto sta prendendo una bella forma, ma
+preferisco parlarne a parte, a :ref:`blog/psycopg3-first-report`.
+
+Dopo un po' più di una settimana che eravamo in Nuova Zelanda la nazione ha
+imposto due settimane di isolamento a tutti quelli che venivano da fuori, per
+cui è stato un grande tempismo riuscire ad entrare e godersi il paese. Non
+molti giorni più tardi, un impiegato locale ci è venuto a dire che la nazione
+aveva appena passato la soglia dei 100 casi ed era scattato il "livello 3",
+con il "livello 4", lockdown, annunciato in 48 ore. Siamo subito andati in un
+paese vicino per comprare una scheda telefonica, per organizzarci meglio, e
+già a poche ore dall'annuncio del livello 3 la tranquillità precedente era
+scomparsa. Tutto ciò che non era essenziale, caffè, ristoranti, barbiere,
+negozi, era già chiuso. La cosa sarebbe stata seria: se qui dicono un mese in
+casa sarà un mese in casa.
+
+La prima scelta fatta è stata di dove passare il periodo di lockdown: tra
+Auckland ed una città più piccola abbiamo scelto quest'ultima: Whangarei,
+il capoluogo del Northland. La prima notte l'abbiamo passata in furgone, e
+abbiamo avuto modo di vedere che il supermercato locale era ben fornito ed
+organizzato per evitare il saccheggio. Il giorno dopo siamo riusciti a trovare
+dove dormire, nella depandance di una villetta trovata su AirBnB.
+
+In questo momento è passata la mezzanotte da pochi minuti: il lockdown è in
+atto e l'idea qui è che le persone saranno serie a rispettarlo. Abbiamo
+ancora il furgone, quindi potremo fare la spesa quando servirà. Abbiamo da
+leggere e da disegnare, io ho un lavoro remoto da cercare, e un bel po' di
+progetti da implementare. Sarà un mese interessante.
+
+A presto!

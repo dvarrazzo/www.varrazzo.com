@@ -1,0 +1,54 @@
+title: Life, New Zealand, Covid
+---
+pub_date: 2020-03-25
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/disks.jpg
+---
+_discoverable: yes
+---
+tags:
+
+life
+travel
+news
+---
+body:
+elWhen it seems now a million of years ago, Gabri and I organised a 2 weeks
+journey in New Zealand, because an Antipodean March sounded better than one
+in London, and I still had an agreement of 25% time off work with my employer.
+
+Many things changed since. My employer and I, let's say, agreed to move to a
+100% time off arrangement in February. A few days later news of the Covid-19
+started resembling bad science fiction ones. My family and friends in Italy
+were in lockdown, the UK government was going in all the directions at once.
+We had the option to not leave, or the one to leave for longer, and we picked
+the latter, calling the flight company on the same day of leaving to postpone
+our return.
+
+In the first weeks it's been a pleasant journey. The country is beautiful. I
+hardly have words for it so I try to create images.
+
+Our home and transportation consisted in van equipped with a bed, a small
+fridge and hobs. A porta-potty makes it self-contained, meaning we could sleep
+overnight in many natural reserves. Pretty much everywhere we slept there was
+public toilets, always clean, even when they were only latrines. No shower
+onboard, so every few days we stopped into a camping to have one.
+
+Our daily routine consisted in a morning coffee and breakfast, then exploring
+the area we were. I was able to do much of the photography I love, the one
+consisting in hiking boots and tripod. If we had food in some town we looked
+for a place to recharge the laptop.
+
+After dinner, it was hacking time: I have started :ref:`writing psycopg3
+<blog/thinking-psycopg3>` and I have had regular hacking sessions, using the
+dimmest display setting to save as battery as possible, with only offline
+documentation, no network: all in all a lot of focus. The project is taking
+its shape, but I'd rather avoid tech speak for this entry: you can read more
+at :ref:`blog/psycopg3-first-report`.
+
+A bit more than a week we were into New Zealand, the country imposed
+self-isolation to all the people coming from abroad, so our arrival was well
+timed to be able to keep on travelling. Into our third week the country went
+to level 3, with the plan to go to level 4 in 48 hours. 
