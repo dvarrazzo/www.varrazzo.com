@@ -70,6 +70,30 @@ a.landing.entrance:hover {
     text-decoration: none;
 }
 
+div.admonition, div.system-message {
+	background-color: #ffc;
+	padding: 0.5em;
+	border-color: #888;
+	border: 1px solid #888;
+	margin-bottom: 10px;
+}
+
+div.system-message  {
+	background-color: #fcc;
+}
+
+div.admonition p {
+	padding-left: 2em;
+}
+
+div.admonition p.admonition-title {
+	padding-left: 0em;
+}
+
+div.admonition p.last {
+	margin-bottom: 0;
+}
+
 /* images in the articles */
 img.align-center {
     display: block;
@@ -87,4 +111,10 @@ img.align-right {
     display: block;
     margin-left: auto;
     margin-right: 0;
+}
+
+img.flag {
+	width: 30px;
+	height: 30px;
+	vertical-align: bottom;
 }

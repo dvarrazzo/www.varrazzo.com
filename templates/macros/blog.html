@@ -1,9 +1,11 @@
 {%- macro render_blog_index(post) %}
-<div class="container pt140 pb140" data-background="{{post.image}}">
+<div class="container pt140 pb140" data-background="{{post.image|asseturl}}">
   <div class="pt140 pb140">
     <div class="entrance">
       <div class="bumper">
-        <h3 class="title"><a href="{{post|url}}">{{post.title}}</a></h3>
+        <h3 class="title"><a href="{{post|url}}">
+		{%-if post.flag %}<img class="flag" src="{{("/img/flags/" + post.flag + "-round.png")|asseturl}}">&nbsp;{% endif-%}
+		{{post.title}}</a></h3>
         <p class="separator"></p>
         <p class="small capitalize serif">{{post.pub_date}}</p>
         {%-if post.tags %}

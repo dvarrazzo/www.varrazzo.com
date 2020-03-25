@@ -4,7 +4,7 @@ pub_date: 2020-03-25
 ---
 author: Daniele Varrazzo
 ---
-image: /img/blog/disks.jpg
+image: /img/blog/nz-birds.jpg
 ---
 _discoverable: yes
 ---
@@ -14,13 +14,20 @@ life
 travel
 news
 ---
+flag: uk
+---
 body:
-elWhen it seems now a million of years ago, Gabri and I organised a 2 weeks
+
+.. admonition:: Attenzione:
+
+	Questo articolo è anche :ref:`in Italiano <blog/vita-covid-nz>`.
+
+When it seems now a million of years ago, Gabri and I organised a 2 weeks
 journey in New Zealand, because an Antipodean March sounded better than one
 in London, and I still had an agreement of 25% time off work with my employer.
 
 Many things changed since. My employer and I, let's say, agreed to move to a
-100% time off arrangement in February. A few days later news of the Covid-19
+100% time off arrangement in February. A few days later, news of the Covid-19
 started resembling bad science fiction ones. My family and friends in Italy
 were in lockdown, the UK government was going in all the directions at once.
 We had the option to not leave, or the one to leave for longer, and we picked

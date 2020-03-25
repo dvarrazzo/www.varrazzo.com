@@ -1,10 +1,10 @@
-title: Vita, New Zealand, Covid
+title: Vita, Nuova Zelanda, Covid
 ---
 pub_date: 2020-03-25
 ---
 author: Daniele Varrazzo
 ---
-image: /img/blog/disks.jpg
+image: /img/blog/nz-tree.jpg
 ---
 _discoverable: yes
 ---
@@ -14,7 +14,13 @@ life
 travel
 news
 ---
+flag: it
+---
 body:
+
+.. admonition:: Note:
+
+	You can read this :ref:`in English <blog/life-covid-nz>` too.
 
 In un tempo che ora sembra un milione di anni fa, io e Gabri avevamo
 organizzato un viaggio di due settimane in Nuova Zelanda, perché un marzo
