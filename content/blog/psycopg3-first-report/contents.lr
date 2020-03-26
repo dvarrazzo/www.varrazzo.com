@@ -89,7 +89,7 @@ the code. So the guiding forces of the design are:
   methods;
 
 - the `intricate async machinery`__ of the libpq, and the state keeping
-  it needs between calls, should be wrapped only once;
+  it needs between calls, should be implemented only once;
 
 - how to wait should be selectable (no Unix pun intended) and injected around
   the libpq according to the different Python environment.
@@ -182,7 +182,13 @@ With these two functions happily collaborating the blocking call
 
 What about the async connection? I'm relatively new to asyncio, so I'm not
 sure if this is the most idiomatic way to do it, but at the moment it looks
-like:
+like the following block. `add_reader/add_writer()`__ are the mechanism to
+wait collaboratively for a file descriptor to become ready, but they only take
+a callback, they don't block the coroutine. So we block it against an Event_,
+and use the callback to free it.
+
+.. __: https://docs.python.org/3/library/asyncio-eventloop.html#watching-file-descriptors
+.. _Event: https://docs.python.org/3/library/asyncio-sync.html#event
 
 .. code:: python
 
@@ -253,6 +259,24 @@ generator underlying ``cursor.execute()`` and friends:
 
 Minimal code duplication, different high level interface. Symmetry. I like it!
 
+Furthermore, unpacking the query mechanism allowed the library to gain a new
+feature: it is now possible with a single roundtrip to return more than one
+result, implementing the `nextset()`__ method, which isn't available in
+psycopg2:
+
+.. __: https://www.python.org/dev/peps/pep-0249/#nextset
+
+.. code:: pycon
+
+    >>> cur.execute("select 10; select 20")
+    >>> cur._result.get_value(0, 0)
+    b'10'
+    >>> cur.nextset()
+    True
+    >>> cur._result.get_value(0, 0)
+    b'20'
+
+
 What's left? Well, a lot! Now that the basic machinery is in place, and Python
 can send and retrieve bytes to and from Postgres, it's time to attack the
 adaptation layer.
@@ -261,7 +285,7 @@ Feedback is welcome: as `someone suggested`__ it would be useful to be
 friendly with other async frameworks such as trio_; maybe my async code is not
 the best around and AIOPG or `asyncpg hackers`__ have something to suggest.
 Please let me know: the code so far is `online already`__, with `141 tests`__
-testing Python from 3.6 to 3.8 and PostgreSQL from 9.5 to 12.
+in a grid testing Python from 3.6 to 3.8 and PostgreSQL from 9.5 to 12.
 
 .. __: https://github.com/psycopg/psycopg2/issues/1057
 .. _trio: https://trio.readthedocs.io/en/stable/
