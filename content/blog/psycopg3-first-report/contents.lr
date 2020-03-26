@@ -1,0 +1,22 @@
+title: psycopg3: a first report
+---
+pub_date: 2020-03-26
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/nz-laptop.jpg
+---
+_discoverable: yes
+---
+tags:
+
+software
+design
+psycopg
+---
+body:
+
+:ref:`In the most unusual conditions <blog/life-covid-nz>` I started hacking on psycopg3
+roughly following the plan sketched in :ref:`blog/thinking-psycopg3`.
+
+The first step was to create a package, ``psycopg3.pq``, allowing to 

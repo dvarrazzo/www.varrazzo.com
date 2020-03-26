@@ -1,4 +1,5 @@
 import re
+import html
 
 from docutils import nodes
 from docutils.parsers.rst import Directive, directives, roles, states
@@ -81,14 +82,14 @@ class Photo(Directive):
         if image is None:
             raise self.error("no such attachment: %s" % self.arguments[0])
         thumb = image.thumbnail(
-            self.options.get("witdth", 382),
+            self.options.get("width", 382),
             self.options.get("height", 255),
             quality=self.options.get("quality", 60),
         )
 
         desc = image.exif.description
         if desc:
-            desc = desc.splitlines()[0]
+            desc = html.escape(desc.splitlines()[0], quote=True)
             alt = f'alt="{desc}"'
             title = f'title="{desc}"'
         else:

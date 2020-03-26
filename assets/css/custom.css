@@ -122,9 +122,23 @@ img.flag {
 img.float-left {
     float: left;
     margin-right: 10px;
+    margin-bottom: 5px;
 }
 
 img.float-right {
     float: right;
     margin-left: 10px;
+    margin-bottom: 5px;
+}
+
+img.clear-left {
+    clear: left;
+}
+
+img.clear-right {
+    clear: right;
+}
+
+img.clear-both {
+    clear: both;
 }
