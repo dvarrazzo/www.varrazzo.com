@@ -3,12 +3,12 @@ from setuptools import setup
 setup(
     author=u"Daniele Varrazzo",
     author_email="daniele-varrazzo@gmail.com",
-    description="Lektor plugin to add ref Jinja filters.",
-    keywords="Lektor plugin static-site jinja2 jinja filter",
+    description="Lektor plugin to add some reST roles/directive used here.",
+    keywords="Lektor plugin restructuredtext",
     license="BSD-3-Clause",
     long_description_content_type="text/markdown",
-    name="lektor-ref",
-    py_modules=["ref_role"],
+    name="lektor-myrest",
+    py_modules=["myrest"],
     version="0.1",
     classifiers=[
         "Environment :: Plugins",
@@ -16,5 +16,5 @@ setup(
         "Framework :: Lektor",
         "License :: OSI Approved :: BSD License",
     ],
-    entry_points={"lektor.plugins": ["ref = ref_role:RefRolePlugin"]},
+    entry_points={"lektor.plugins": ["myrest = myrest:MyRestPlugin"]},
 )
