@@ -229,7 +229,7 @@ different interfaces for it:
 
 - `a purely asynchronous one`__ where the application must explicitly
   ``poll()`` to bring forward the connection/execution process: it breaks the
-  DBAPI interface but allows frameworks who can't make blocking calls anyway
+  DBAPI interface but allows frameworks which can't make blocking calls anyway
   (such as the revered Twisted_) to use it;
 - `a coroutine-based one`__ where the DBAPI blocking interface is respected
   but behind the scene psycopg2 collaborates with coroutine libraries such as
