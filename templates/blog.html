@@ -1,4 +1,9 @@
 {% extends "page.html" %}
+{% from "macros/feed.html" import render_feeds %}
+
+{%- block head %}
+{{- render_feeds() }}
+{%- endblock %}
 
 {# {% from "macros/pagination.html" import render_pagination %} #}
 {% from "macros/blog.html" import render_blog_index %}

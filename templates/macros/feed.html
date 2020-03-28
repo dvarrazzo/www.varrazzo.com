@@ -1,0 +1,6 @@
+{% macro render_feeds() %}
+<link rel="alternate" type="application/atom+xml" title="Blog posts"
+  href="{{'/blog.xml'|url}}" />
+<link rel="alternate" type="application/atom+xml" title="Articles about software"
+  href="{{'/software.xml'|url}}" />
+{% endmacro %}
