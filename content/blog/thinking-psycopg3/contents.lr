@@ -16,6 +16,11 @@ psycopg
 ---
 body:
 
+.. admonition::  Note:
+
+    Development of psycopg3 started: you can read something in
+    :ref:`blog/psycopg3-first-report`!
+
 I have been psycopg2_ maintainer since 2010; before that, `git says`__ that my
 first contribution was in 2005. At that time, psycopg (one) was the tool to
 use, and psycopg2 was an interesting experiment.
