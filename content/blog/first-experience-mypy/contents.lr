@@ -238,7 +238,7 @@ instead of one, but each one does only one thing, and with fewer parameters.
 
 I hate when a program tells me my design is wrong. But maybe it has a point.
 Complicating the design for syntactic sugar maybe is not a healthy thing to do
-(someone said `syntactic sugar causes cancer of the semicolon`__)
+(it `causes cancer of the semicolon`__ someone said...)
 
 .. __: https://www.goodreads.com/quotes/7205613-syntactic-sugar-causes-cancer-of-the-semicolon
 
