@@ -153,20 +153,20 @@ can be consumed in a blocking way using a procedure such as:
         Return what the generator eventually returned.
         """
         try:
+            fd, s = next(gen)
             while 1:
-                fd, s = next(gen)
-                if s is Wait.R:
+                if s == Wait.R:
                     rf, wf, xf = select([fd], [], [])
-                    gen.send(Ready.R)
-                elif s is Wait.W:
+                    ready = Ready.R
+                elif s == Wait.W:
                     rf, wf, xf = select([], [fd], [])
-                    gen.send(Ready.W)
-                elif s is Wait.RW:
+                    ready = Ready.W
+                elif s == Wait.RW:
                     rf, wf, xf = select([fd], [fd], [])
-                    if rf:
-                        gen.send(Ready.R)
-                    else:
-                        gen.send(Ready.W)
+                    ready = Ready.W if rw else Ready.R
+
+                fd, s = gen.send(ready)
+
         except StopIteration as exc:
             return exc.args[0]
 
@@ -206,26 +206,26 @@ and use the callback to free it.
             ev.set()
 
         try:
+            fd, s = next(gen)
             while 1:
-                fd, s = next(gen)
                 ev.clear()
-                if s is Wait.R:
+                if s == Wait.R:
                     loop.add_reader(fd, wakeup, Ready.R)
                     await ev.wait()
                     loop.remove_reader(fd)
-                    gen.send(ready)
-                elif s is Wait.W:
+                elif s == Wait.W:
                     loop.add_writer(fd, wakeup, Ready.W)
                     await ev.wait()
                     loop.remove_writer(fd)
-                    gen.send(ready)
-                elif s is Wait.RW:
+                elif s == Wait.RW:
                     loop.add_reader(fd, wakeup, Ready.R)
                     loop.add_writer(fd, wakeup, Ready.W)
                     await ev.wait()
                     loop.remove_reader(fd)
                     loop.remove_writer(fd)
-                    gen.send(ready)
+
+                fd, s = gen.send(ready)
+
         except StopIteration as exc:
             return exc.args[0]
 
