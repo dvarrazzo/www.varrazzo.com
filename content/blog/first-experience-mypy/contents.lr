@@ -1,0 +1,414 @@
+title: First Experience with Mypyt
+---
+pub_date: 2020-03-31
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/cubes.jpg
+---
+_discoverable: no
+---
+tags:
+
+psycopg
+software
+development
+---
+body:
+
+I have a trello board with a *to Learn* column, and Mypy_ was featuring
+prominently.
+
+.. _Mypy: https://mypy.readthedocs.io/en/stable/
+
+For those who are not aware, Mypy is a *static checker for Python*. The idea
+is to annotate Python objects and functions with indications about what type
+an object can be (a string, an "integer or None", etc.). You can then run a
+checker on the codebase and it will warn you about wrong type usage. At
+runtime nothing change: Python is still Python, not another language, and the
+type annotations are just ignored.
+
+.. code:: python
+
+    def greeting(name: str) -> str:
+        return 'Hello ' + name
+
+It's like using a language less flexible than Python, but it still runs as slow
+as Python, because it's not compiled. Ehm... the worst of two world? 😬
+
+So, why people do it? Well, people do weird things. But the idea behind it is
+that there is a certain class of bugs that Mypy checker would catch. The lack
+of type checking in Python is at the heart of its philosophy (*duck typing*
+and all that stuff). On the other hand many people, and I amongst them, can be
+nervous in putting in production code with little formal assurance about its
+correctness. My personal way to cope with the uneasiness of a language without
+compiler is to resort to write unit tests. Frameworks like pytest_ make
+writing and running tests a joy, reducing to almost zero the need of fiddling
+interactively into an interactive console while developing. I also find that
+writing tests before writing the code they are supposed to test helps in
+thinking what do you want your code to look like and to design more usable
+interfaces.
+
+.. _pytest: https://docs.pytest.org/
+
+So, big proposer of TDD here, stressing on the second D because writing test
+while you develop can actually happen and is useful; writing "the program now,
+the tests later" can be dismissed with a laugh: I have *never* seen that
+happening.
+
+As I started writing :ref:`psycopg3 <blog/psycopg3-first-report>`, tests were
+committed together with the code and, on a codebase of less than 3000 lines of
+code, there are already some 150 of them. They get written to help with
+development but they are also run at every commit `on Travis CI`__, making
+sure that changes in the code don't introduce breakage in any of the supported
+versions of Python (from 3.6 to 3.8) and PostgreSQL (from 9.5 to 12).
+
+.. __: https://travis-ci.org/psycopg/psycopg3
+
+While this is a strong position from which to say "who needs a compiler?" and
+to laugh smugly at developers over-relying on a compiler and tripping in
+``java.lang.NullPointerException``\ s I don't think being complacent is any
+useful for the quality of a codebase, or of a person for what matters. And if
+so much research is being done on the Python objects model it surely deserves
+a look.
+
+Just running ``mypy`` on the whole codebase produces little of interest.
+Running ``mypy --strict`` is a different story, because it is expected every
+function to be annotated. I started at a 250 errors mark::
+
+    (env) piro@makkuro:~/dev/psycopg3$ mypy --strict psycopg3
+    psycopg3/exceptions.py:35: error: Function is missing a type annotation
+    psycopg3/exceptions.py:103: error: Function is missing a type annotation
+    [... skipping pain here]
+    psycopg3/types/numeric.py:21: error: Call to untyped function "register" of "Typecaster" in typed context
+    psycopg3/types/numeric.py:22: error: Function is missing a type annotation
+    Found 253 errors in 13 files (checked 20 source files)
+
+Fast forward 6 hours of hacking, not solid but surely intense and::
+
+    (env) piro@makkuro:~/dev/psycopg3$ mypy --strict psycopg3
+    Success: no issues found in 21 source files
+
+What did I learn from the experience?
+
+
+The changes
+-----------
+
+In all its glory, this is `the whole changeset`__ to go from no type to a clean
+``--strict`` pass.
+
+.. __: https://github.com/psycopg/psycopg3/compare/f9884ab...474483e?expand=1
+
+It's a whopping 794 additions and 365 deletions, which is a relevant amount of
+changes for a codebase of less than 3000 lines. What was that for? Here are
+some of the changes I ended up making, and some observations about them.
+
+
+Local and class variables
+-------------------------
+
+You don't have to annotate every single variable: the types are inferred
+automatically. But when things cannot be inferred from the first value assumed
+by a variable it is necessary to add a type. That's fair.
+
+.. code:: diff
+
+      def _reset(self) -> None:
+    -     self._results = []
+    -     self._result = None
+    +     self._results: List[PGresult] = []
+    +     self._result: Optional[PGresult] = None
+
+
+Out-of-domain values
+--------------------
+
+A type of change I wasn't especially keen on initially was in situations like:
+
+.. code:: python
+
+    ready = None
+
+    while 1:
+        if something_happens():
+            ready = Ready.R
+        else:
+            ready = Ready.W
+
+        if we_have_done(ready):
+            break
+
+Mypy would complain along the lines of:
+
+.. parsed-literal::
+
+    Argument 1 to "**we_have_done**" has incompatible type "**Optional[Ready]**"; expected "**Ready**"
+
+Uhm. In my book a ``None`` will never reach ``we_have_done()``. However go
+tell the analyzer. In order to make the checker happy I changed the above
+to:
+
+.. code:: diff
+
+    - ready = None
+    + ready = Ready.R
+
+which is not something that made me happy. It gives the wrong idea that the
+initial ``Ready.R`` state is actually meaningful, when all it means instead is
+"shut up, Mypy". Only later it occurred to me that a better fix is probably:
+
+.. code:: diff
+
+    - ready = None
+    + ready: Ready
+
+meaning that the type is declared although it doesn't have a value yet. In
+case a later refactoring was botched, the code would explode here, with a
+``NameError`` in this function, where the bug actually is, rather than
+somewhere in the depths of the innocent ``we_have_done()``. So I think this is
+a positive change, bringing a possible manifestation of an error closer to its
+cause.
+
+
+Too creative decorators?
+------------------------
+
+Adaptation of Python objects to PostgreSQL types happens via adapters, for
+which I'm toying with various choices to make them easy to define, easier than
+what it is in psycopg2 and covering tricky corner cases more naturally. In
+one way or another, the need is to store in a registry the association from a
+Python ``type`` to an adapter object, let's say a function for simplicity.
+
+In the form I had when I started introducing types, a static method
+``Adapter.register()`` could be used in both ways: as a function, e.g.:
+
+.. code:: python
+
+    def adapt_number(s):
+        ...
+
+    Adapter.register(str, adapt_number)
+
+or as a decorator:
+
+.. code:: python
+
+    @Adapter.register(str)
+    def adapt_number(s):
+        ...
+
+both are useful in different situations: the former is useful when defining or
+registering the adapter at import time is not convenient, the latter is a
+matter of convenience, as all decorators are.
+
+But what's the price of this convenience? In this implementation the function
+has a signature of the likes of ``Adapt.register(``\ *type*\ ``,``\ *obj*\
+``=None)``, behaving in radically different ways according to whether *obj* is
+``None`` or not. If it's not ``None`` (the function call case) then it
+registers the function and it doesn't have to return anything; if it's
+``None``  then it returns a decorator function that will take the object
+*obj*, do its registration thing, and return it unchanged.
+
+Now, that's a pretty complicated signature. It can still be done - at least
+defining the return value, not attaching it to the nullness of the second
+argument. But... is it worth? If this function is so complicated to describe,
+maybe the request of asking what type it is just makes this complexity to
+stand in its ugliness. Instead of insisting on the original idea and fighting
+Mypy to craft an overly complicated return value, splitting it into two
+simpler functions seemed to me the right choice. Now ``register()``\'s second
+argument is no more optional and its return value is always ``None``; the
+decorator is just a separate method.
+
+.. code:: python
+
+    # The function is called one way
+    Adapter.register(str, adapt_number)
+
+    # The decorator another way
+    @Adapter.text(str)  # can be 'text()' or 'binary()'
+    def adapt_number(s):
+        ...
+
+It also makes sense from the naming point of view: ``register()`` is an active
+verb, ``text`` is a sort of declaration. The function can expose other
+optional arguments, for instance a scope where to register the adapter,
+whereas the decorator couldn't make use of them. They are two functions
+instead of one, but each one does only one thing, and with fewer parameters.
+
+I hate when a program tells me my design is wrong. But maybe it has a point.
+Complicating the design for syntactic sugar maybe is not a healthy thing to do
+(someone said `syntactic sugar causes cancer of the semicolon`__)
+
+.. __: https://www.goodreads.com/quotes/7205613-syntactic-sugar-causes-cancer-of-the-semicolon
+
+
+ctypes integration
+------------------
+
+ctypes allows to bind to C functions defined in external libraries and it has
+its  types annotation and automatic conversion to Python (or to segfault if
+you get it wrong).
+
+Mypy doesn't know much about it, so even in a simple case such as:
+
+.. code:: python
+
+    # ctypes wrapper
+    PQhost = pq.PQhost
+    PQhost.argtypes = [PGconn_ptr]
+    PQhost.restype = c_char_p
+
+    # later on, a wrapper object
+    @property
+    def host(self) -> bytes:
+        return PQhost(self.pgconn_ptr)
+
+it will complain of
+
+.. parsed-literal::
+
+    Returning **Any** from function declared to return "**bytes**"
+
+Unfortunately ``PQhost`` is a callable object, not a function, and it's of the
+same type of all the other functions with different signatures, so it cannot
+be annotated.
+
+What helped in this situation was to define a stub_, which is a ``.pyi`` file
+containing only the types and no definition, and it is the mechanism to add
+annotations to stuff that is not pure Python code; in this case:
+
+.. _stub: https://mypy.readthedocs.io/en/stable/stubs.html
+
+.. code:: python
+
+    def PQhost(arg1: Optional[PGconn_struct]) -> bytes: ...
+
+Writing a stub to pretend that those callables are function is simple enough.
+What is painful is having to define all the signatures pretty much twice:
+error prone and numbingly boring. This calls for the mythical lazy programmer
+which, given a boring task, writes a program to do it for them. It's simple
+enough to write a script inspecting the module containing the ctypes
+definition and generating the repetitive part of the stub, leaving to write
+manually only the delicate cases (e.g. to disambiguate between a pointer and
+an array): if you find them useful you can find the script as `part of the
+ctype module itself`__ here and `here is the stub generated`__.
+
+.. __: https://github.com/psycopg/psycopg3/blob/474483ed223a28f867e9d2f220ce6d6c6a4fd11c/psycopg3/pq/_pq_ctypes.py#L419
+.. __: https://github.com/psycopg/psycopg3/blob/474483ed223a28f867e9d2f220ce6d6c6a4fd11c/psycopg3/pq/_pq_ctypes.pyi#L43
+
+
+It found two bugs!
+------------------
+
+Most of my time was spent adding types to every function. A bit of refactoring
+here and there to remove variables reuse etc. A lot was spent learning how to
+use the whole thing. But actually two errors reported by Mypy were actual
+bugs.
+
+One was with the choice of the codec to use. There is a `map of encodings`__
+from Postgres names to Python names which we use to convert the connection
+encoding to a Python codec. Some of the Postgres encodings are unknown to
+Python, and SQL_ASCII is a bit special (`it actually means "no encoding"`__)
+and `it needs to be special-cased`__ when reading from the db, so I left it as
+``None`` in the encodings map.
+
+But because of that ``None`` my code was wrong:
+
+.. code:: python
+
+    # for unknown encodings and SQL_ASCII be strict and use ascii
+    pyenc = pq.py_codecs.get(pgenc, "ascii")
+    self._codec = codecs.lookup(pyenc)
+
+This bit of code wanted to deal both with a missing encoding and with
+SQL_ASCII, but it does it wrong. If ``pgenc`` is ``None`` then ``pyenc`` is
+``None``, not ``"ascii"``, and ``codecs.lookup()`` will go boom. What the
+above really needs to be is more:
+
+.. code:: diff
+
+     # for unknown encodings and SQL_ASCII be strict and use ascii
+    - pyenc = pq.py_codecs.get(pgenc, "ascii")
+    + pyenc = pq.py_codecs.get(pgenc) or "ascii"
+     self._codec = codecs.lookup(pyenc)
+
+.. __: https://github.com/psycopg/psycopg3/blob/474483ed223a28f867e9d2f220ce6d6c6a4fd11c/psycopg3/pq/encodings.py
+.. __: https://www.postgresql.org/docs/current/multibyte.html
+.. __: https://github.com/psycopg/psycopg2/issues/519
+
+Another bug was a pasto: every connection and every cursor have two mappings:
+``adapters`` and ``casters`` to customize the conversions respectively to and
+from the database, and there are global mappings as a fallback. Sure enough I
+copypasted some of it, and sure enough I forgot to change a bit:
+
+.. code:: diff
+
+    - where = context.adapters if context is not None else Typecaster.globals
+    + where = context.casters if context is not None else Typecaster.globals
+      where[oid, format] = caster
+      return caster
+
+But because I had added something similar to the following definitions:
+
+.. code:: python
+
+    class Typecaster:
+        globals: Dict[Tuple[Oid, Format], TypecasterFunc] = {}
+
+    class Connection:   # a context
+        def __init__(self):
+            adapters: Dict[Tuple[type, Format], AdapterFunc] = {}
+            casters: Dict[Tuple[Oid, Format], TypecasterFunc] = {}
+
+the type system couldn't find a type for where to reconcile the two sides of
+the if: even if both values are dicts they won't contain the same types.
+
+Now, I can find plenty of excuses to justify these two errors: they were in a
+part of the codebase still stubbed out because it's a design phase and tests
+for them are not written yet (at the moment there are only two adapters, for
+string and numbers, just to play with the whole adaptation stack). I'm sure
+tests finding the issues would have been added later during development. But
+my excuses don't change an important matter: those bugs were there. In TDD, if
+you don't have a test, you don't have anything: your program is wrong pretty
+much by definition.
+
+
+Conclusions
+-----------
+
+What I have experienced is that most people say "tests are useful", usually
+followed by "but we don't have time to write them". Or something funny like
+"let's write this quickly and release, then we'll write the tests".
+
+If this is the case Mypy can actually be quite useful: adding types is a quick
+matter once you have familiarity with the type system and if you annotate as
+the code as you write it instead of, as I did, as a second pass. It's easy to
+run Mypy in CI and make sure the program still "compiles ok". You can make
+sure that a whole program is completely type-checked much more easily than to
+make sure there are enough tests (no, code-coverage is no such a measure).
+
+Is Mypy enough to be confident about a program's behaviour? Not at all, not in
+my book, as much as bugs do exist in compiled programs - boy if exist.
+Mypy+pytest is a great team though: they pretty much complement each other,
+one giving a shred of a sort of formal proof that what you wrote is
+consistent, the other helping to deal with testing things for real.
+
+Is the extra time spent writing annotation and wrestling the type system a
+good investment? I think in itself you can dismiss the use of Mypy only if
+your test-writing practice is between "high" and "obsessive". But if you also
+factor in other side effects such as having to think harder about types and
+functions interfaces, having the signatures as part of the documentation
+(`show me your tables...`__), then the benefits start stacking up and I think
+it makes the use of Mypy quite compelling.
+
+After my annotation marathon I have been thinking for a while if it was worth:
+I did it as an experiment, giving myself the option to abandon that branch,
+because I've only started with this project and I don't want annotating to
+become a time sink as the codebase grow. But I think writing down this
+write-up helped me clarifying my ideas about Mypy, and I think it will stay
+here and be a ``--strict`` part of psycopg3.
+
+.. __: https://en.wikiquote.org/wiki/Fred_Brooks
+
+Just now, please, go write those tests.
