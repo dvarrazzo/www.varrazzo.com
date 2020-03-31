@@ -361,8 +361,9 @@ But because I had added something similar to the following definitions:
             adapters: Dict[Tuple[type, Format], AdapterFunc] = {}
             casters: Dict[Tuple[Oid, Format], TypecasterFunc] = {}
 
-the type system couldn't find a type for where to reconcile the two sides of
-the if: even if both values are dicts they won't contain the same types.
+the type system couldn't find a type for ``where`` to reconcile the two sides
+of the ``if``: even if both values are dicts they won't contain the same
+types.
 
 Now, I can find plenty of excuses to justify these two errors: they were in a
 part of the codebase still stubbed out because it's a design phase and tests
@@ -411,4 +412,4 @@ here and be a ``--strict`` part of psycopg3.
 
 .. __: https://en.wikiquote.org/wiki/Fred_Brooks
 
-Just now, please, go write those tests.
+Bud now, please, just go and write those tests.
