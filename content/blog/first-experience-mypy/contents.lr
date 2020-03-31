@@ -400,8 +400,8 @@ good investment? I think in itself you can dismiss the use of Mypy only if
 your test-writing practice is between "high" and "obsessive". But if you also
 factor in other side effects such as having to think harder about types and
 functions interfaces, having the signatures as part of the documentation
-(`show me your tables...`__), then the benefits start stacking up and I think
-it makes the use of Mypy quite compelling.
+(`"show me your tables..."`__), then the benefits start stacking up and I
+think it makes the use of Mypy quite compelling.
 
 After my annotation marathon I have been thinking for a while if it was worth:
 I did it as an experiment, giving myself the option to abandon that branch,
