@@ -284,7 +284,7 @@ annotations to stuff that is not pure Python code; in this case:
 
     def PQhost(arg1: Optional[PGconn_struct]) -> bytes: ...
 
-Writing a stub to pretend that those callables are function is simple enough.
+Writing a stub to pretend that those callables are functions is simple enough.
 What is painful is having to define all the signatures pretty much twice:
 error prone and numbingly boring. This calls for the mythical lazy programmer
 which, given a boring task, writes a program to do it for them. It's simple
