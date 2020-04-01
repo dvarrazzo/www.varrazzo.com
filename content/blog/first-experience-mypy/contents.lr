@@ -56,12 +56,13 @@ while you develop can actually happen and is useful; writing "the program now,
 the tests later" can be dismissed with a laugh: I have *never* seen that
 happening.
 
-As I started writing :ref:`psycopg3 <blog/psycopg3-first-report>`, tests were
-committed together with the code and, on a codebase of less than 3000 lines of
-code, there are already some 150 of them. They get written to help with
-development but they are also run at every commit `on Travis CI`__, making
-sure that changes in the code don't introduce breakage in any of the supported
-versions of Python (from 3.6 to 3.8) and PostgreSQL (from 9.5 to 12).
+As I started writing :ref:`psycopg3 <blog/psycopg3-first-report>`, tests have
+been committed together with the code and, on a codebase of less than 3000
+lines of code, there are already some 150 of them. They get written to help
+with development but they are also run at every commit `on Travis CI`__,
+making sure that changes in the code don't introduce breakage in any of the
+supported versions of Python (from 3.6 to 3.8) and PostgreSQL (from 9.5 to
+12).
 
 .. __: https://travis-ci.org/psycopg/psycopg3
 
