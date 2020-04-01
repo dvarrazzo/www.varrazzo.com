@@ -6,7 +6,7 @@ author: Daniele Varrazzo
 ---
 image: /img/blog/cubes.jpg
 ---
-_discoverable: no
+_discoverable: yes
 ---
 tags:
 
@@ -291,8 +291,8 @@ which, given a boring task, writes a program to do it for them. It's simple
 enough to write a script inspecting the module containing the ctypes
 definition and generating the repetitive part of the stub, leaving to write
 manually only the delicate cases (e.g. to disambiguate between a pointer and
-an array): if you find them useful you can find the script as `part of the
-ctype module itself`__ here and `here is the stub generated`__.
+an array): if you find it useful you can find the `interface generator`__ in
+this function, and here is `the stub generated`__.
 
 .. __: https://github.com/psycopg/psycopg3/blob/474483ed223a28f867e9d2f220ce6d6c6a4fd11c/psycopg3/pq/_pq_ctypes.py#L419
 .. __: https://github.com/psycopg/psycopg3/blob/474483ed223a28f867e9d2f220ce6d6c6a4fd11c/psycopg3/pq/_pq_ctypes.pyi#L43
@@ -303,8 +303,8 @@ It found two bugs!
 
 Most of my time was spent adding types to every function. A bit of refactoring
 here and there to remove variables reuse etc. A lot was spent learning how to
-use the whole thing. But actually two errors reported by Mypy were actual
-bugs.
+use the whole thing. But apart from complaining about the lack of signatures,
+two errors reported by Mypy were actual bugs.
 
 One was with the choice of the codec to use. There is a `map of encodings`__
 from Postgres names to Python names which we use to convert the connection
