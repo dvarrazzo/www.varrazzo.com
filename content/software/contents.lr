@@ -85,19 +85,19 @@ background: light
 ----
 body:
 
-psycopg3_ is not here yet, but I have been thinking about a psycopg2 successor
-for a long time.
+I have been thinking about a psycopg2 successor for a long time and the
+development of psycopg3_ has recently started.
 
-.. _psycopg3: https://pypi.org/project/psycopg3/
+.. _psycopg3: https://github.com/psycopg/psycopg3/
 
 I would like to design the interface based on years of understanding where
 psycopg2 users have found the most problems, using more up-to-date
-communication protocols to the database server, maybe taking the change to
+communication protocols to the database server, maybe taking the chance to
 review the whole DB-API standard and bring it to a modern time.
 
-..
-    Please check the `thinking psycopg3 </blog/2020/02/15/thinking-psycopg3/>`__
-    article for an introduction to the project.
+In my blog you can find a `series of articles </blog/tag/psycopg/>`__ about
+psycopg3 development.
+
 
 #### row2 ####
 title: mature software
