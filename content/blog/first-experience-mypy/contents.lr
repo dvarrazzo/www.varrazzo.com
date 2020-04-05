@@ -189,13 +189,13 @@ In the form I had when I started introducing types, a static method
     def adapt_number(s):
         ...
 
-    Adapter.register(str, adapt_number)
+    Adapter.register(int, adapt_number)
 
 or as a decorator:
 
 .. code:: python
 
-    @Adapter.register(str)
+    @Adapter.register(int)
     def adapt_number(s):
         ...
 
@@ -224,10 +224,10 @@ decorator is just a separate method.
 .. code:: python
 
     # The function is called one way
-    Adapter.register(str, adapt_number)
+    Adapter.register(int, adapt_number)
 
     # The decorator another way
-    @Adapter.text(str)  # can be 'text()' or 'binary()'
+    @Adapter.text(int)  # can be 'text()' or 'binary()'
     def adapt_number(s):
         ...
 
