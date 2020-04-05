@@ -4,8 +4,11 @@
     <div class="entrance">
       <div class="bumper">
         <h3 class="title"><a href="{{post|url}}">
-		{%-if post.flag %}<img class="flag" src="{{("/img/flags/" + post.flag + "-round.png")|asseturl}}">&nbsp;{% endif-%}
-		{{post.title}}</a></h3>
+          {%-if post.flag -%}
+            <img class="flag" src="
+              {{-("/img/flags/" + post.flag + "-round.png")|asseturl-}}
+            ">&nbsp;{% endif-%}
+          {{post.title}}</a></h3>
         <p class="separator"></p>
         <p class="small capitalize serif">{{post.pub_date}}</p>
         {%-if post.tags %}

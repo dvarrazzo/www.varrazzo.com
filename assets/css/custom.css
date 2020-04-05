@@ -6,10 +6,10 @@ p {
 
 /* indented bullet list but only in the main content, not in the menu */
 
-.main-wrapper > div ul {
+#content div ul {
     padding-left: 2em;
 }
-.main-wrapper > div ul > li {
+#content div ul > li {
     padding-left: 0.25em;
 }
 
@@ -117,6 +117,13 @@ img.flag {
 	width: 30px;
 	height: 30px;
 	vertical-align: bottom;
+}
+
+.widget-area img.flag {
+    height: 1em;
+    width: auto;
+    vertical-align: baseline;
+    margin-bottom: -2px;
 }
 
 img.float-left {

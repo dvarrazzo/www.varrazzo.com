@@ -1,0 +1,18 @@
+{% macro render_widget_recent() %}
+<aside class="widget">
+  <h3 class=widget-title>Recent posts</h3>
+  <ul>
+{%- for post in site.get('/blog').children.limit(5) %}
+    <li><a href="{{post|url}}">
+		{%-if post.flag -%}
+      <img class="flag" src="
+        {{-("/img/flags/" + post.flag + "-round.png")|asseturl-}}
+        ">&nbsp;{% endif-%}
+      {{post.title}}</a></li>
+{%- endfor %}
+  </ul>
+</aside>
+{%- endmacro %}
+
+
+{#- vim: set filetype=htmldjango: #}

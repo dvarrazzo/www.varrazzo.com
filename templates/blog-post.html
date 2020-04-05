@@ -1,4 +1,5 @@
 {% extends "page.html" %}
+{% from "macros/sidebar.html" import render_widget_recent %}
 
 {% block main %}
 <div class="container fullwidth pt140 pb140" data-background="{{this.image}}">
@@ -23,7 +24,7 @@
 
 <div class="container mt70 mb70">
   <div class="row">
-    <div class="col-md-8 col-md-offset-2">
+    <div id="content" class="col-md-9">
       {{- this.body }}
       <script src="https://utteranc.es/client.js"
         repo="dvarrazzo/www.varrazzo.com"
@@ -33,6 +34,13 @@
         crossorigin="anonymous"
         async>
       </script>
+    </div>
+    <div id="sidebar" class="col-md-3">
+      <div class="sidebar-inner">
+        <div class="widget-area">
+          {{ render_widget_recent() }}
+        </div>
+      </div>
     </div>
 </div>
 {% endblock %}
