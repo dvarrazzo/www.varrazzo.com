@@ -67,7 +67,7 @@ supported versions of Python (from 3.6 to 3.8) and PostgreSQL (from 9.5 to
 .. __: https://travis-ci.org/psycopg/psycopg3
 
 While this is a strong position from which to say "who needs a compiler?" and
-to laugh smugly at developers over-relying on a compiler and tripping in
+to laugh smugly at developers over-relying on a compiler and tripping on
 ``java.lang.NullPointerException``\ s I don't think being complacent is any
 useful for the quality of a codebase, or of a person for what matters. And if
 so much research is being done on the Python objects model it surely deserves
