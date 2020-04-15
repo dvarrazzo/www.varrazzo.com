@@ -1,0 +1,28 @@
+_model: gallery-grid
+---
+columns: 3
+---
+description: Pinhole snapshots in the days of isolation. Whangarei, New Zealand, March-April 2020
+---
+gutter: 5
+---
+title: Isolation diaries
+---
+type: gallery
+---
+entries: 
+---
+body:
+
+Pinhole snapshots in the days of isolation.
+
+Whangarei, New Zealand, March-April 2020.
+
+---
+thumbnail_quality: 50
+---
+thumbnail_width: 382
+---
+footer_class: has-border
+---
+header_class: has-border
