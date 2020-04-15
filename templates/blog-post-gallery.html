@@ -1,6 +1,7 @@
 {% extends "page.html" %}
 {% from "macros/sidebar.html" import render_widget_recent %}
 {% from "macros/blog.html" import render_blog_header, render_comments %}
+{% from "macros/gallery.html" import render_gallery %}
 
 {% block main %}
 
@@ -8,9 +9,22 @@
 
 <div class="container mt70 mb70">
   <div class="row">
-    <div id="content" class="col-md-9">
+    <div id="content" class="col-md-8 col=md-offset-2">
       {{- this.body }}
-      {{- render_comments() }}
+    </div>
+  </div>
+</div>
+
+<div class="text-center mt100 mb100 container">
+  <h3 class="title">Gallery</h3>
+  <p class="separator mb70"></p>
+  {{ render_gallery(site.get(this.gallery)) }}
+</div>
+
+<div class="container mt70 mb70">
+  <div class="row">
+    <div id="content" class="col-md-9">
+      {{ render_comments() }}
     </div>
     <div id="sidebar" class="col-md-3">
       <div class="sidebar-inner">
@@ -19,6 +33,8 @@
         </div>
       </div>
     </div>
+  </div>
 </div>
+
 {% endblock %}
 {# vim: set filetype=htmldjango: #}

@@ -1,3 +1,24 @@
+{%- macro render_blog_header(post) %}
+<div class="container fullwidth pt140 pb140" data-background="{{post.image|asseturl}}">
+  <div class="pt140 pb140">
+    <div class="entrance">
+      <h2 class="title">{{post.title}}</h2>
+      <p class="separator"></p>
+      <p class="small capitalize serif">{{post.pub_date}}</p>
+      {% if post.tags %}
+        <div class="bumper">
+          <p class="small">
+          {% for tag in post.tags %}
+            <a href="{{ ('/blog@tag/' ~ tag.lower())|url }}">#{{tag}}</a>
+          {% endfor %}
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
 {%- macro render_blog_index(post) %}
 <div class="container pt140 pb140" data-background="{{post.image|asseturl}}">
   <div class="pt140 pb140">
@@ -22,6 +43,17 @@
     </div>
   </div>
 </div>
+{%- endmacro %}
+
+{%- macro render_comments() %}
+<script src="https://utteranc.es/client.js"
+  repo="dvarrazzo/www.varrazzo.com"
+  issue-term="pathname"
+  label="comments"
+  theme="github-light"
+  crossorigin="anonymous"
+  async>
+</script>
 {%- endmacro %}
 
 {# vim: set filetype=htmldjango: #}

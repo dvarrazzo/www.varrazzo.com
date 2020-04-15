@@ -1,4 +1,5 @@
 {% extends "page.html" %}
+{% from "macros/gallery.html" import render_gallery %}
 
 {% block main %}
 <div class="text-center p100 mb50">
@@ -10,21 +11,7 @@
 </div>
 
 <div class="mb100 container {%-if this.fullwidth %} fullwidth{% endif -%}">
-  <div class="grid gallery"
-      data-gutter="{{this.gutter}}" data-columns="{{this.columns}}">
-    {%-for img in this.attachments.images|sort(attribute="path") %}
-    <div class="grid-item">
-      <a href="{{img|url}}" data-background="{{
-          img.thumbnail(
-            this.thumbnail_width, 
-            quality=this.thumbnail_quality)
-          |url}}" data-rel="lightcase:gal"
-          {%- if img.exif.description %} title="{{img.exif.description}}"
-          {%- endif -%}
-          ></a>
-    </div>
-    {%-endfor %}
-  </div>
+{{- render_gallery(this) }}
 </div>
 {% endblock %}
 

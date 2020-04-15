@@ -1,0 +1,25 @@
+_model: blog-post-gallery
+---
+title: Isolation Diaries
+---
+pub_date: 2020-04-15
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/chair.jpg
+---
+_discoverable: yes
+---
+tags:
+
+life
+photo
+pinhole
+---
+body:
+
+Pinhole snapshots in the days of isolation.
+
+Whangarei, New Zealand, March-April 2020.
+---
+gallery: /photo/whangarei/
