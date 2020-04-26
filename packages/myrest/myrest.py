@@ -2,8 +2,7 @@ import re
 import html
 
 from docutils import nodes
-from docutils.parsers.rst import Directive, directives, roles, states
-from docutils.parsers.rst.roles import set_classes
+from docutils.parsers.rst import Directive, directives, roles
 
 from lektor.pluginsystem import Plugin
 from lektor.context import get_ctx, url_to
@@ -95,15 +94,19 @@ class Photo(Directive):
         else:
             alt = title = ""
 
-        cls = f"class='{' '.join(self.options['class'])}'" if self.options["class"] else ""
+        cls = (
+            f"class='{' '.join(self.options['class'])}'"
+            if self.options["class"]
+            else ""
+        )
 
         messages = []
         raw_node = nodes.raw(
             "",
             f"""
- <a href="{url_to(image)}" data-rel="lightcase:gal" {title}>
+<a href="{url_to(image)}" data-rel="lightcase:gal" {title}>
     <img {alt} {cls} src="{url_to(thumb)}" />
- </a>
+</a>
  """,
             format="html",
         )
