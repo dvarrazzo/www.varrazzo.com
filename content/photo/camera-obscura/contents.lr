@@ -1,0 +1,26 @@
+_model: gallery-grid
+---
+columns: 3
+---
+description: Pinhole day and making a camera obscura out of our place.
+---
+gutter: 5
+---
+title: Camera Obscura
+---
+type: gallery
+---
+entries: 
+---
+body:
+
+Pinhole day and making a camera obscura out of our place.
+
+---
+thumbnail_quality: 50
+---
+thumbnail_width: 382
+---
+footer_class: has-border
+---
+header_class: has-border

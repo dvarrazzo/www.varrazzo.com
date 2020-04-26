@@ -1,0 +1,93 @@
+_model: blog-post-gallery
+---
+title: Pinhole Day
+---
+pub_date: 2020-04-26
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/pinhole.jpg
+---
+_discoverable: yes
+---
+gallery: /photo/camera-obscura/
+---
+tags:
+
+life
+photo
+pinhole
+---
+body:
+
+.. image:: Dittmer-2015.png
+    :alt: Pinhole Day
+    :class: float-right clear-right
+    :width: 125 px
+    :height: 125 px
+    :target: http://pinholeday.org/
+
+Serendipitously, yesterday we discovered that today is the `Pinhole Day`_. It
+also happens that this is one of the last days of our staying in Whangarei so
+we were thinking about how to celebrate both the events.
+
+.. _Pinhole Day: http://pinholeday.org/
+
+Our room is in front of a garden, so we thought about doing something simple:
+let's obscure the entire house (because the house is open, the room is not
+isolated) and...
+
+Wait, one step back. Competition (which is not a competition, more a
+celebration) rules (it's a celebration with rules) says that the images must
+be made on photographic material and without a lens. I'm not a lawyer but I
+don't think what we wanted to do was really legit: we wanted to make an image
+*without* photographic material and to make a photo of it *with* a lens.
+That's material for class actions, let's not get sued.
+
+.. photo:: making-of.jpg
+    :class: float-left clear-left
+
+So, we made a thing, but it wasn't submitted.
+
+What we submitted was instead `our morning coffee`__, because the jury will sure
+love the smell, and `my favourite palms`__ with unknown red berries sprouting out
+of them. These are mementos of a month of life too.
+
+.. __: http://pinholeday.org/gallery/2020/?id=24
+.. __: http://pinholeday.org/gallery/2020/?id=23
+
+But yeah, the idea. The idea is simple: you take a room (camera) and make it
+dark (obscura). You also poke a hole somewhere because otherwise it's just a
+dark room and it's more boring. `Someone says`__ that you will be able to see
+the outside, inside, upside down.
+
+.. __: https://en.wikipedia.org/wiki/Camera_obscura
+
+This is obviously not true: I paid my camera a lot of money because they
+promised me there's a tiny Japanese good at drawing inside, so we needed to
+disprove this camera obscura nonsense.
+
+.. photo:: pinholing.jpg
+    :class: float-right clear-right
+
+In order to make our room dark, first thing in the morning I rushed out to buy
+black bin bag liners, to cover four skylight, three windows, and the large
+glass door in front of the room. Never been so excited to buy rubbish bags. On
+my way out there was our hosts' father/in-law, who wasn't too alarmed to hear
+our plan (he might have been more alarmed seeing us obscuring all the windows)
+and kindly lent us a few large black dust sheets, whose thickness probably
+saved our day, because the room glass door faces north so it's flooded with
+light (yeah, this place is all upside down).
+
+Nothing else really remarkable happened: your average afternoon taping black
+bags on the ceiling and one pigeon slamming at full speed into the room
+window, for no apparently related reason.
+
+Unfortunately, it appears that there's no manga artist in my camera. On the
+other hand we loved to see the sky and the clouds projected on our bed and the
+garden filling up our walls.
+
+.. photo:: pinhole.jpg
+    :class: meh
+    :width: 800
+    :height: 534
