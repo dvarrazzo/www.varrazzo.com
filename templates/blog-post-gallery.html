@@ -12,6 +12,13 @@
     <div id="content" class="col-md-8 col=md-offset-2">
       {{- this.body }}
     </div>
+    <div id="sidebar" class="col-md-3">
+      <div class="sidebar-inner">
+        <div class="widget-area">
+          {{ render_widget_recent() }}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -25,13 +32,6 @@
   <div class="row">
     <div id="content" class="col-md-9">
       {{ render_comments() }}
-    </div>
-    <div id="sidebar" class="col-md-3">
-      <div class="sidebar-inner">
-        <div class="widget-area">
-          {{ render_widget_recent() }}
-        </div>
-      </div>
     </div>
   </div>
 </div>
