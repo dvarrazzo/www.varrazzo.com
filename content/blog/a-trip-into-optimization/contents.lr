@@ -422,6 +422,6 @@ performances can be passed, but I don't want performance to be the sole goal:
 I am fine with psycopg3 being somewhat slower than asyncpg if it has the
 advantage to be easier to use and to behave pretty much as a drop-in
 replacement for psycopg2. In my view a driver with a lower adoption barrier
-would be more directly beneficial for everyone using it, either in existing
-frameworks or on its own. By the time the project will be released I'm
-confident that its performance will consistently pass the psycopg2 level.
+would be more directly beneficial for everyone wanting to use it, either in
+existing frameworks or on its own. By the time the project will be released
+I'm confident that its performance will consistently pass the psycopg2 level.
