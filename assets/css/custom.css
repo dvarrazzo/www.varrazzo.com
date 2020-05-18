@@ -6,10 +6,10 @@ p {
 
 /* indented bullet list but only in the main content, not in the menu */
 
-#content div ul {
+#content ul {
     padding-left: 2em;
 }
-#content div ul > li {
+#content ul > li {
     padding-left: 0.25em;
 }
 
@@ -95,7 +95,8 @@ div.admonition p.last {
 }
 
 /* images in the articles */
-img.align-center {
+img.align-center,
+div.figure.align-center img {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -111,6 +112,14 @@ img.align-right {
     display: block;
     margin-left: auto;
     margin-right: 0;
+}
+
+p.caption {
+    font-style: italic;
+}
+
+div.figure.align-center p.caption {
+    text-align: center;
 }
 
 img.flag {
@@ -148,4 +157,12 @@ img.clear-right {
 
 img.clear-both {
     clear: both;
+}
+
+table.docutils {
+    margin-bottom: 10px;
+}
+
+table.docutils td, table.docutils th {
+    padding: 0.1em 0.5em;
 }
