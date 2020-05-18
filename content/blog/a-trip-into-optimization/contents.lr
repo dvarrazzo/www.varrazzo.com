@@ -383,12 +383,12 @@ Current state, future improvements
 ==================================
 
 The diagrams above show that there is still space for improvements:
-``fetchall()`` seems to have some overhead which can be solved moving a
-"fetchsome" function in C. There is a lot of overhead around waiting,
-especially in the process of registering/unregistering listeners: the best
-gains can be probably obtained by creating a wait loop tightly integrated with
-the current reactor bypassing some of the higher ``asyncio`` abstractions. Any
-takers?
+``fetchall()`` seems to have some overhead which might be reduced by
+introducing a "fetchsome" function in C. There is a lot of overhead around
+waiting, especially in the process of registering/unregistering listeners: the
+best gains can be probably obtained by creating a wait loop tightly integrated
+with the current reactor bypassing some of the higher ``asyncio``
+abstractions. Any takers?
 
 These are the numbers, as of the current ``master`` (``b662c9d``). The Python
 implementation has also improved somewhat thanks to some tweaking happened
