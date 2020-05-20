@@ -1,5 +1,5 @@
 {% extends "page.html" %}
-{% from "macros/sidebar.html" import render_widget_recent %}
+{% from "macros/sidebar.html" import render_sidebar %}
 {% from "macros/blog.html" import render_blog_header, render_comments %}
 
 {% block main %}
@@ -13,11 +13,7 @@
       {{- render_comments() }}
     </div>
     <div id="sidebar" class="col-md-3">
-      <div class="sidebar-inner">
-        <div class="widget-area">
-          {{ render_widget_recent() }}
-        </div>
-      </div>
+      {{- render_sidebar() }}
     </div>
 </div>
 {% endblock %}

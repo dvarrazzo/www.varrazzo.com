@@ -1,3 +1,13 @@
+{% macro render_sidebar() %}
+<div class="sidebar-inner">
+  <div class="widget-area">
+    {{- render_widget_recent() }}
+    {{- render_widget_tags() }}
+  </div>
+</div>
+{%- endmacro %}
+
+
 {% macro render_widget_recent() %}
 <aside class="widget">
   <h3 class=widget-title>Recent posts</h3>
@@ -9,6 +19,19 @@
         {{-("/img/flags/" + post.flag + "-round.png")|asseturl-}}
         ">&nbsp;{% endif-%}
       {{post.title}}</a></li>
+{%- endfor %}
+  </ul>
+</aside>
+{%- endmacro %}
+
+
+{% macro render_widget_tags() %}
+<aside class="widget">
+  <h3 class=widget-title>Tags</h3>
+  <ul>
+{%- for tag in site.get('/blog').children.distinct("tags")|sort %}
+<li><a href="{{('/blog@tag/' ~ tag.lower())|url}}">#{{tag}}</a></li>
+{#- {{site.get('/blog').children.filter(F.tags.contains(tag)).count() }} #}
 {%- endfor %}
   </ul>
 </aside>
