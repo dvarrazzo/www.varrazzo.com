@@ -198,7 +198,7 @@ Cython pq      6c6cbe3 1618
 Speeding up adaptation
 ======================
 
-Profiling__ now showed that the time spent in ``get_value()`` was now reduced
+`New profiling`__ showed that the time spent in ``get_value()`` was now reduced
 to a paltry 6% of the whole runtime: this means that that the hot path of the
 program had moved to a different place.
 
