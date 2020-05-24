@@ -130,7 +130,7 @@ record, or 1.6M times in this graph. At this point, it looked like this:
 
 This function returns the content in bytes of a field. If it's 0-length, it
 checks if it's NULL. The ``impl`` functions are ctypes calls to the libpq.
-This made me think that the overhead of ctypes calls are not so tiny after
+This made me think that the overhead of ctypes calls is not so tiny after
 all.
 
 
