@@ -5,22 +5,26 @@ body:
 I am an Italian software developer, with mathematical background, currently
 based in London.
 
+.. raw:: html
+
+    <a class="button mb10 mt20" href="/software/">
+        <i class="fa fa-code fa-lg"></i>
+        Software
+    </a>
+
 Software development has long been my passion, before becoming my profession.
 Outside of my paid-for job, I have been involved in several `Free Software
-projects </software>`__.
+projects </software/>`__.
 
 In my blog you can find a  `series of articles about software development
 </blog/tag/software/>`__.
 
 .. raw:: html
 
-    <p>
-        <a class="button mb10" href="/software/">
-            <i class="fa fa-code fa-lg"></i>
-            Software
-        </a>
-    </p>
-
+    <a class="button mb10 mt20" href="https://github.com/sponsors/dvarrazzo/">
+        <i class="fa fa-heart fa-lg" style="color: #ea4aaa;"></i>
+        Funding
+    </a>
 
 I would love to pay more attention to some of my free-software projects: if you
 would like to encourage their development, or to steer it towards features you
@@ -29,26 +33,14 @@ are interested into, please `consider a sponsorship
 
 .. raw:: html
 
-    <p>
-        <a class="button mb10" href="https://github.com/sponsors/dvarrazzo/">
-            <i class="fa fa-heart fa-lg" style="color: #ea4aaa;"></i>
-            Funding
-        </a>
-    </p>
-
+    <a class="button mb10 mt20" href="/photo/">
+        <i class="fa fa-camera-retro fa-lg"></i>
+        Photography
+    </a>
 
 Outside of software development I appreciate art, especially visual art, and I
-practice `photography </photo>`__ as the right intersection between the
+practice `photography </photo/>`__ as the right intersection between the
 artistic and the scientific mind.
-
-.. raw:: html
-
-    <p>
-        <a class="button mb10" href="/photo/">
-            <i class="fa fa-camera-retro fa-lg"></i>
-            Photography
-        </a>
-    </p>
 
 ---
 tooltip:
