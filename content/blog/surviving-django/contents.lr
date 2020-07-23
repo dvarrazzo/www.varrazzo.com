@@ -1,0 +1,191 @@
+title: Surviving Django if you like Databases
+---
+pub_date: 2020-07-22
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/nz-tree.jpg
+---
+_discoverable: no
+---
+tags:
+
+software
+development
+database
+---
+body:
+
+Since Django has been around, the attitude towards the database has always
+been to treat them as interchangeable containers of the application models.
+As Django has become more and more mature during the years, so its ORM has
+become more capable, and now I find it a really good piece of software to use.
+Writing nested subqueries, for instance, would be pretty hard to do it
+manually, whereas the ``filter()`` allows to express it very simply:
+
+.. code:: python
+
+    Model1.objects.filter(related_object==Model2.objects.filter(**other_conditions))
+
+Eager/lazy load also allow to control the performance of the queries (if you
+know where to look at... more about it ahead).
+
+However,  the Django DB layer is marred by a couple of simplistic hypotesis
+and unrealistic assumptions. The idea of defining a DB schema only using the
+models in a way limits what you can define into your schema (where do you
+define a trigger, or a stored procedure?); in another way, as newer versions
+of Django are released and more database features are supported, the Python
+model gets more bloated.
+
+
+: if you know a specific database inside
+out probably the missing part
+
+, resulting in realm of code written by its . As people insist over and over that
+using 
+
+
+----
+
+Django is currently the most used full-stack web framework for Python. It has
+been around for a good 15 years, emerging from a period in which Python was
+already mature but its development tools were relatively immature and
+fragmented.
+
+Django allows to define the objects in your program as "models", using the
+``Model`` base class: models will receive from Django support for their
+peristence and retrieval into the relational database backing your
+application. If you don't need it, well, you didn't need a full-stack web
+framework.
+
+Django tries to be independent from the database you choose. It sounds a good
+idea, until it stays on paper, but working may years ad Django systems, both
+written from scratch or "found" and to maintain, I am feeling more and more
+that the "blessed" way of working with databases and Django leads to use
+database in a sub-optimal way and to complicate unnecessarily the lifetime of
+your projects.
+
+I think the divergence from the reality starts from a fundamental
+misunderstanding between you and Django, which is not written in the contract
+you have never signed anyway:
+
+.. important::
+    "independence from the relational database" is a feature of Django as a
+    framework, not of the program you are writing.
+
+Django needs it, because a web framework not tied to a single database vendor
+is more valuable than one tied to a specific one, fair enough. But **you
+don't**: your web program, most likely than not, will not have to switch from
+one DB to the other. So, *You Ain't Gonna Need It™*. Portability at all costs
+leads to at least two problems:
+
+1) you will not able to use all the features offered by your relational
+database, and
+
+2) every change to your models, or to your database schema, is will be more
+complicated that it should be.
+
+
+You ain't gonna need it
+-----------------------
+
+How many times you have worked to a project and, after 1-2 years of
+development, you have changed database to a different one?
+
+I can tell you how many times it happened to me, I counted them: exaclty
+never.
+
+Replacing the database is a major occurrence almost as much as rewriting your
+program in a different language. If you replace your database, more likely
+than not, is because you are interested to the features of the new database,
+you need to use them, so using the common functionalities between the old and
+the new one will not solve your problems.
+
+Did you maybe start your project with SQLite, and now your project grew enough
+that you need a bigger database? If so then you are still at the phase in
+which your project is a toy, you haven't done anything yet that requires
+thinking in terms of concurrency. Even if you have to rewrite a few things
+it's not going to be a lot.
+
+Do you have a large MySQL project and you have to migrate to PostgreSQL?
+That's not gonna happen: you have probably tweaked MySQL, have expertise in
+MySQL; maybe PostgreSQL is a better database in some aspects, but not so much
+that you want to migrate all your data and start from scratch with the
+`frobbing, twiddling, tweaking`__ the database configuration. Did you say
+you have High Availability and Disaster Recovery configured? Are you going to
+migrate it too?
+
+.. __: http://www.catb.org/jargon/html/F/frobnicate.html
+
+In the above paragraph, replace the database vendor with all the permutations
+of MySQL, PostgreSQL, MS SQL, Oracle. *That's not gonna happen*. Except maybe
+if an Oracle salesman gets hold of someone in your project with a modicum of
+decision making and talks them into buying some sort of super-expensive
+license, but that's not a technical problem, it's a political one. If you care
+about technical matters you will start looking for a new job the afternoon of
+the day the "Migrate DB to Oracle" ticket hits your issues tracker.
+
+Have you got PostgreSQL in production but you want to test with SQLite because
+it's an easier to set up? If so your tests are just a tick-box exercise, you
+are not testing anything remotely plausible.
+
+Choosing a database happens in the first days of your projects, it will not
+happen when the project is mature. You may as well use all the features
+available with your database, not only the ones common enough that Django
+created a Python wrapper for it.
+
+
+Use all teh features
+--------------------
+
+Scanning the schema of a Django program I've written and maintained for a few
+years I see:
+
+- schema
+- custom domains
+- collations
+- trigger
+- permissions
+- partial indexes
+- constraint exclusions
+- views
+- stored procedures
+
+These features were used because they allowed me to implement in a simpler way
+certain features I needed for the program. Audit for instance: Django doesn't
+have an audit feature except for the changes made in the admin. Even if you
+added some form of manual auditing to each ``save()`` method, it will not
+capture changes made outside Django. It wouldn't be very secure either: Django
+uses a single user to access the database, so if someone manages to hijack
+that user they would be able to change data in the database and alter the
+audit tables.
+
+A more robust audit solution could be trigger-based (audit all the changes
+happening to certian database tables, whatever the source of change), using
+security-defined stored procedures to append record in audit logs to which the
+Django user has only read access.
+
+What can you do in SQL?
+
+- Create an "audit" user.
+- Create an "audit" schema, revoking write permission to all the objects it
+  will contain from the django user.
+- Create a function to append a record to an audit table, owned by the "audit"
+  user but callable by the django user.
+- Add a trigger to the tables to audit.
+
+This setup requires Postgres-specific knowledge, which is fair for a feature
+that has to protect the database.
+
+-----
+
+and , and all the struggles you are
+living to make your program DB-portable, unless you need them, I'm afraid it's
+work you are doing for nothing.
+
+
+tends to get in
+the way between you and 1) work to be done and 2) using 
+
+often gets in the
+way of real-time problems and 
