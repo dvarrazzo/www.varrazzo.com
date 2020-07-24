@@ -664,7 +664,7 @@ You will get used to the rhythm of blobs of SQL popping into the dev server
 log at each request. If you introduce by mistake a ripple load it will be
 very easy to spot: a fast train of short statement will blaze in the log
 console. Either it happens in Python code, or in a template, or as a result of
-an asynchronous ajax calls (so not included in request-oriented tools such as
+asynchronous ajax calls (so not included in request-oriented tools such as
 the Django Debug Toolbar) it will be unmissable; looking at these statements
 it will be easy to understand what model caused it and the right
 `select_related()`__ to add.
