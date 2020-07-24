@@ -176,7 +176,7 @@ better than bad data in the database. And it won't see your procedures
 proceeding, your domains dominating... you get the idea.
 
 Using psql to import the schema into an empty database you can modularize the
-code and use `\i` to import "submodules". A typical pattern for me is to have:
+code and use ``\i`` to import "submodules". A typical pattern for me is to have:
 a ``database.sql`` to create global objects (users, extensions, schemas),
 sets the basic permissions, and import the details into target schemas.
 
