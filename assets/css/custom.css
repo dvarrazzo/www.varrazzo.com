@@ -166,3 +166,9 @@ table.docutils {
 table.docutils td, table.docutils th {
     padding: 0.1em 0.5em;
 }
+
+
+/* reported as error py postgres pygment lexer but psql lexer is worse */
+pre.code.postgres span.err {
+  border: none;
+}

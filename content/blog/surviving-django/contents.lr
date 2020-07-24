@@ -18,21 +18,21 @@ body:
 
 Django is currently the most used full-stack web framework for Python. It has
 been around for a good 15 years, emerging as a winner from a period in which
-Python was already mature but its web development tools were relatively
-immature and fragmented.
+Python was already mature but its web development tools were comparatively
+much more immature and fragmented.
 
 Django allows to define the objects in your program as "models", using the
-``Model`` base class: they behave largely like normal Python classes but with
-added support for saving and retrieval into the relational database backing
-your application. If you don't need this database support, well, you didn't
+``Model`` base class: they behave largely like normal Python classes, with
+added support to save into, and retrieve from, the relational database backing
+your application. If you don't need such database support, well, you didn't
 need a full-stack web framework in first place.
 
 Django tries to be independent from the database you choose. It sounds like
-good idea, until it stays on paper, but after working several years with
-Django systems, both written from scratch or inherited and to maintain, I am
-feeling more and more that the "blessed" way of working with databases and
+good idea, but only as long as it stays on paper. After working several years
+with Django systems, both written from scratch or inherited and to maintain, I
+am feeling more and more that the "blessed" way of working with databases and
 Django leads to using your database in a sub-optimal way, and to complicate
-unnecessarily the maintenance of your projects.
+unnecessarily the development and maintenance cycle of your project.
 
 I think the divergence between wishful thinking and reality starts from a
 fundamental misunderstanding between you and Django, which is not written in
@@ -40,19 +40,21 @@ the contract you have never signed anyway:
 
 .. pull-quote::
 
-    "independence from the relational database" is a feature of Django as a
-    framework, *not of the program you are writing*.
+    "independence from the relational database" is a feature needed by Django
+    as a framework, *not by the program you are writing*.
 
 Django needs it, because a web framework not tied to a single database vendor
-is more valuable than one tied to a specific one, fair enough. But *you
+is more valuable than one tied to a specific one, that's fair enough. *But you
 don't:* your web program, most likely than not, will not have to switch from
-one DB to the other. So, *You Ain't Gonna Need It™*. Portability at all costs
+one DB to the other. So, `You Ain't Gonna Need It™`__. Portability at all costs
 leads to at least two problems:
+
+.. __ : https://www.martinfowler.com/bliki/Yagni.html
 
 1) you will not able to use all the features offered by your relational
 database, and
 
-2) every change to your models, or to your database schema, is will be more
+2) every change to your models, or to your database schema, will be more
 complicated that it should be.
 
 
@@ -62,7 +64,7 @@ You ain't gonna need it
 How many times you have worked to a project and, after 1-2 years of
 development, you have changed database to a different one?
 
-I can tell you how many times it happened to me, I counted them: exaclty
+I can tell you how many times it happened to me, I counted them: exactly
 never.
 
 Replacing your database vendor is a major, traumatic occurrence, almost as
@@ -83,8 +85,8 @@ That's not gonna happen: you have probably tweaked MySQL, have expertise in
 MySQL; maybe PostgreSQL is a better database in some aspects, but not so much
 that you want to migrate all your data and start from scratch with the
 `frobbing, twiddling, tweaking`__ the database configuration. Did you say
-you have High Availability and Disaster Recovery configured? Are you going to
-migrate it too?
+you have High Availability and Disaster Recovery configured? That's to be
+converted too of course.
 
 .. __: http://www.catb.org/jargon/html/F/frobnicate.html
 
@@ -92,9 +94,8 @@ In the above paragraph, replace the database vendor with all the permutations
 of MySQL, PostgreSQL, MS SQL, Oracle. *That's not gonna happen*. Except maybe
 if an Oracle salesman gets hold of someone in your project with a modicum of
 decision making and talks them into buying some sort of expensive license, but
-that's not a technical problem, it's a political one. If you care about
-technical matters you will start looking for a new job the afternoon of the
-day the "Migrate DB to Oracle" ticket hits your issues tracker.
+that's not a technical problem, it's a political one, and it's up to you to
+decide if you are comfortable with it.
 
 Have you got PostgreSQL in production but you want to test with SQLite because
 it's an easier to set up? If so your tests are just a tick-box exercise, you
@@ -157,50 +158,113 @@ Like, with its tiny ``.sql`` extension!
 
 And with comments! Explaining you why a certain index or constraint exist!
 
-With constraints named meaningfully, not
+With constraints named meaningfully, available for manipulation, not
 ``auth_group_permissions_group_id_b120cbf9_fk_auth_group_id``.
 
 Sounds civilised to me.
 
-The nice thing of it is that, if you do things carefully enough, Django will
-not notice anything at all.
+The nice thing of doing so is that, if you do things carefully enough, Django
+will not notice anything at all.
 
 Take the above audit examples: Django is not meant to interact with it:
 everything will just happen under its nose. You can use views instead of
 tables for read-only models, you can use domains instead of more basic data
 types for your fields. Django won't see your triggers triggering, your
 constraints constraining, your permissions permitting... Except when things go
-wrong, which will result in a Python traceback, ugly, but better than bad data
-in the database. And it won't see your procedures proceeding, your domains
-dominating... you get the idea.
+wrong, which will result in an error 500 and a Python traceback, ugly, but
+better than bad data in the database. And it won't see your procedures
+proceeding, your domains dominating... you get the idea.
+
+Using psql to import the schema into an empty database you can modularize the
+code and use `\i` to import "submodules". A typical pattern for me is to have:
+a ``database.sql`` to create global objects (users, extensions, schemas),
+sets the basic permissions, and import the details into target schemas.
+
+.. code:: postgres
+
+    \i users.sql
+    revoke create on schema public from public;     -- safety
+
+    -- create a schema for the django app tables
+    create schema myapp;
+    grant usage on schema myapp to myapp, backup;
+
+    -- set the default permissions for all the object that will be created there
+    alter default privileges in schema myapp
+        grant select, insert, update, delete on tables to myapp;
+    alter default privileges in schema myapp
+        grant select on tables to view, backup;
+    alter default privileges in schema myapp grant all on sequences to myapp;
+    alter default privileges in schema myapp grant select on sequences to backup;
+
+    -- import the tables into the schema
+    set search_path to myapp, public;
+    \i django.sql   -- django objects - users, groups, permissions tables
+    \i myapp.sql    -- your app models
+    reset search_path;
+
+The ``database.sql`` doesn't create the database itself, so you can create an
+empty one anywhere it's needed, then you can use ``psql -f database.sql
+"postgres://connection/url"`` to select the right one. The ``myapp.sql``
+shouldn't contain any reference to the schema ``myapp`` where the objects are
+created, so it can be easily changed. Postgres doesn't have a statement like
+``CREATE USER ... IF NOT EXIST``: in ``users.sql`` you can simulate it with
+something like:
+
+.. code:: postgres
+
+    do $$
+    begin
+        perform 1 from pg_user where usename = 'myapp';
+        if not found then
+            create user myapp;
+        end if;
+    end
+    $$ language plpgsql;
 
 
 Migrations
 ----------
 
 Django has an amazingly complex system to `perform model migrations`__. It is
-complex because:
+complex among the other reasons because:
 
 .. __: https://docs.djangoproject.com/en/3.0/topics/migrations/
 
-- it actually migrates *models* not *schemas*. If you change a field's help
-  text it need a migration. That's not useful at all for the database but
-  Django will create it for you, and if you remove it, it will add it back.
-  Changing a `choices list`__ results in a migration with no database
-  operation, only Python operation, and practically no purpose.
+- it actually migrates *models* not *schemas*. Even if you change a field's help
+  text it generates a migration.
+
+  .. code:: python
+
+    class Migration(migrations.Migration):
+
+        operations = [
+            migrations.AlterField(
+                model_name='foo',
+                name='bar',
+                field=models.BooleanField(help_text='I only changed this'),
+            ),
+
+  That's not useful at all for the database but Django will create it for you,
+  and if you remove it, it will add it back. Similarly, changing a `choices
+  list`__, a display label, results in migrations with no database operation,
+  only Python operation, and practically no SQL purpose.
 
   .. __: https://docs.djangoproject.com/en/3.0/ref/models/fields/#choices
 
 - It allows to access the state of the model at times intermediate between
-  migrations, using ``get_model(appname, modelname)`` and write some Python
-  code with the returned model. But if that code also happens to use any code
-  inside your application, likely importing models with a normal Python
-  ``import`` things will crash. But not immediately: only later, when you will
-  apply some unrelated migration. And not when that migration is needed: only
-  after it has already been applied and it doesn't have anything more to do in
-  its lifetime: it is implemented as a model that Django will keep on
-  importing over and over. In a project I'm currently working I had to add
-  this function to a module:
+  migrations, using `get_model`_\ ``(appname, modelname)`` and write some
+  Python code with the returned model. But if that code also happens to use
+  any code inside your application, importing models with a normal Python
+  ``import``, things will crash because of a mismatch between model
+  definitions and schema in the DB. But they won't crash immediately: only
+  later, when you will apply some unrelated migration. And not when that
+  migration is needed: only after it has already been applied and it doesn't
+  have anything more to do in its lifetime: it is implemented as a model that
+  Django will keep on importing over and over. In a project I'm currently
+  working I had to add this function into our codebase:
+
+  .. _get_model: https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.get_models
 
   .. code:: python
 
@@ -215,7 +279,7 @@ complex because:
             return True
 
   And use it whack-a-mole to avoid already applied migrations to explode,
-  adding early bailouts like:
+  adding them early bailouts like:
 
   .. code:: python
 
@@ -230,32 +294,56 @@ complex because:
             migrations.RunPython(data_migration),
         ]
 
-- It detects changes to your models and infer how to change the schema. Except
-  that not everything always go as expected. In an example my model ``Foo``
-  needed some extra pepper to its attribute ``bar``. So we thought to fetch
-  the data from the database into a hidden ``_bar`` attribute, and then have a
-  Python property to expose it. No change needed to the database, but Django
-  insisted to create migration consisting pretty much in::
+- It detects changes to your models and infers how to change the schema.
+  This is pretty much impossible to do in automated way, except in the
+  simplest cases, so the feature is incomplete, and when it thinks that it
+  knows what it's doing, often it doesn't, and it's hard to tell it to stop.
+
+  In a case I had, my model ``Foo`` needed some extra pepper to its attribute
+  ``bar``. So we thought to fetch the data from the database into a hidden
+  ``_bar`` attribute, and then have a Python property to expose it:
+
+  .. code:: diff
+
+     class Foo(models.Model):
+
+    -    bar = models.CharField(
+    +    _bar = models.CharField(
+             max_length=255,
+    +        db_column='bar',
+         )
+    +
+    +    @property
+    +    def bar(self):
+    +        return something_more()
+
+  No change needed to the database, but Django insisted to create migration
+  consisting pretty much in::
 
     ALTER TABLE foo DROP COLUMN bar;
     ALTER TABLE foo ADD COLUMN bar;
 
-  and goodbye to your data. But who needs a ``bar``. Well, I could have used a
-  bar, and a few drinks, if that migration had hit production.
+  and goodbye to your data. But who needs a ``bar``. I think I could have
+  used a bar, and a few drinks, if that migration had hit production.
 
 Much of the complexity of this system is designed to give you a specific
-feature: migrations abstracted from your database. But in my view, if there is
+feature: migrations abstracted from your database. In my view, if there is
 something less likely to happen than a to write a complex app to run on
 interchangeable databases, is the need to repeat the same history of
 migrations. The cost you pay for this YAGNI feature is a cumbersome and
-fragile system trying to have a life of its own.
+fragile system trying to have a life of its own, and fighting yours. It is a
+direct application of `Jeremy Miller's observation`__ that *any extensibility
+point that’s never used isn’t just wasted effort, it’s likely to also get in
+your way as well*.
+
+.. __: https://twitter.com/jeremydmiller/status/568797862441586688
 
 I may be a bit of a control freak, but I think that there is too much magic
 here, and too few hooks to intervene to correct it, playing too close to my
 data to feel comfortable. This comes with the advantage of being able to
 replay your migrations in the future on a different database vendor, but I
-struggle to find a use case for it not involving parallel universes and time
-machines.
+struggle to find a valid use case for it not involving parallel universes and
+time machines.
 
 
 So what do I use instead of migrations?
@@ -269,50 +357,53 @@ and the safety of the data. The work involved consist in:
   know how to change the schema and the data associated.
 
 - If you have the database schema in source control, when you change the
-  schema you will usually want to associate a similar "schema patch".
+  schema you will usually want to associate a similar "schema patch". An ex
+  colleague of mine wrote a script to "prime" a migration with the right name
+  and a comment containing the diff of the schema, to give an idea of what to
+  do.
 
-- You can have a table recording the schema patches applied to the database,
-  and a script to look for unapplied patches, to run them, and record them on
-  deployment.
+- You can have a database table recording the schema patches already applied
+  to the database, and a script to look for unapplied patches, run them,
+  and record them into the table, to run on deployment.
 
 I have a `patch_db.py`_ script that I have used, with small variations, in
 several projects. It is meant to be executed as a database superuser, so that
-the privileges of the application user can be given only reduced privileges.
-A few features of this script:
+the application user can be given only limited privileges: enough to read and
+change the data it needs, no need to be a superuser or to own the tables be
+able to change their schema. A few features of this simple script:
 
 .. _patch_db.py: https://gist.github.com/dvarrazzo/86b06961fa3278293e193417adbf3daf
 
-- If the database had never been patched, the ``schema_patch`` table is
-  created and all the patches available are registered as already applied.
+- If the database had never been patched, it creates a ``schema_patch`` table
+  and registers the patches available as already applied.
 
-- If the table exists, new files are looked for in the patches directory and,
-  if not present in the patches table, applied in alphabetical order and
-  registered. You can use the date as prefix to make sure they are applied in
-  the correct order.
+- If the table exists, it compares the content of the patches directory with
+  the table content and applies and registers the missing patches in
+  alphabetical order. You can use the date as prefix to make sure they are
+  applied in the correct order.
 
-- Only one process at time can run the script: an advisory lock makes sure
-  that there won't be two concurrent processes both trying to apply the
-  database patches.
+- It keeps an advisory lock for the entire run to make sure that there will
+  not be two patching processes running concurrently by mistake.
 
 - The patching process is identifiable in PostgreSQL via its appname, so it
-  can be monitored and dealt with in case it gets stuck.
+  can be monitored and dealt with in case it behaves funny.
 
 - Patches can be applied one by one, with interactive user confirmation, or
   unattended for automatic deployment.
 
-- You can associate executable scripts to a patch, to run before or after, to
-  implement procedures difficult to implement in SQL: you can have
+- You can associate executable scripts to a patch, to run before or after it,
+  to implement procedures difficult to implement in SQL: you can have
   ``my_patch.pre.sh`` and ``my_patch.post.py`` to run respectively before and
-  after the ``my_patch.sql`` is applied, receiving a ``PATCH_DSN`` environment
-  variable to connect to.
+  after ``my_patch.sql`` is applied, receiving a ``PATCH_DSN`` environment
+  variable to know where to connect to.
 
 The script is independent from Django; if used in a Django project it might be
 reimplemented as a management command, but I have never felt compelled to do
 so.
 
-Once this script is integrated with your deployment procedures, here are a few
-examples of patches that can be produced, scanning the patches directory of
-projects I have worked with:
+Once this script is integrated with your deployment procedures, these are a
+few examples of patches that can be produced, scanning the patches directory
+of projects I have worked with:
 
 - Add a field to a table, populate it with data obtained querying other
   database tables.
@@ -325,12 +416,13 @@ projects I have worked with:
   data into them, and emptying the base table.
 
 - Add a new currency to the currencies table, change the name of that Balkan
-  nation there to "Republic of North Macedonia", or any other change to some
-  "configuration table".
+  nation there to "Republic of North Macedonia", remove that island from the
+  list of European Union nations, or any other change to some "configuration
+  table".
 
 - Fix data after a bug producing wrong data was discovered.
 
-- Add a new django group and set the group permissions, or add new objects'
+- Add a new Django group and set the group permissions, or add new objects'
   permissions to existing groups.
 
 - Create a normal column for a piece of data that was previously stored in
@@ -344,19 +436,126 @@ using Python models while the models themselves are being altered is a task of
 Shrödingeranean effort.
 
 
+Is it difficult to write patches?
+---------------------------------
+
+In my view, most of the times, writing a SQL patch is simpler than writing a
+patch in the Django migration system, something that in order to do
+successfully requires knowledge not so much of the database but rather of the
+migration system itself.
+
+Looking at a few examples, taken directly from Django's own `writing
+migrations`__ page:
+
+.. __: https://docs.djangoproject.com/en/3.0/howto/writing-migrations/
+
+`Adding a non-nullable field`__ in Django migrations involves creating the
+normal migration, i.e. the one creating a
+``field=models.UUIDField(default=uuid.uuid4, unique=True)``, creating other
+two empty ones (it is suggested to use ``makemigrations myapp --empty``
+because there is a certain amount of boilerplate involved), and pretty much
+have a sequence of:
+
+- create a field with the default, but nullable,
+- fill it with values (using a ``RunPython`` step),
+- make it non-nullable.
+
+There is also a bit of a race condition between object creating whilst the
+migration has been applied.
+
+.. __: https://docs.djangoproject.com/en/3.0/howto/writing-migrations/#migrations-that-add-unique-fields
+
+The same steps, in SQL, take much less boilerplate: in one patch you can:
+
+.. code:: postgres
+
+    BEGIN;
+    ALTER TABLE myapp_mymodel ADD uuid uuid;
+    UPDATE myapp_mymodel SET uuid = uuid_generate_v4();
+    ALTER TABLE myapp_mymodel ALTER uuid SET NOT NULL;
+    COMMIT;
+
+Or variations of the above (if you want the default generated by the
+database, a non-locking operation on a large table, an unique constraint...)
+
+----
+
+Writing `non-atomic migrations`__ can be either dealt with all in one SQL
+script using a PL/pgSQL ``DO`` statement, or with an additional script to
+replace the second step in the previous example (untested):
+
+.. code:: python
+
+    # migration add_uuid_nullable.post.py
+    cur = conn.cursor()
+    while 1:
+        cur.execute("""
+            UPDATE myapp_mymodel SET uuid = uuid_generate_v4()
+            FROM (
+                SELECT id FROM myapp_mymodel WHERE uuid IS NULL
+                ORDER BY id LIMIT 1000
+            ) x USING (id)
+            RETURNING id
+            """)
+            if not cur.fetchall():
+                break
+
+.. __: https://docs.djangoproject.com/en/3.0/howto/writing-migrations/#non-atomic-migrations
+
+----
+
+`Migrating data between third-party apps`__ gets in the way with the whole
+``get_model()`` machinery and you have to fight its error.
+
+It's much more simple if you leave Python out of the way:
+
+.. code:: postgres
+
+    ALTER TABLE oldapp_oldmodel RENAME TO newapp_newmodel;
+
+Or whatever ``INSERT`` and ``UPDATE`` it takes to get data into new tables.
+
+.. __: https://docs.djangoproject.com/en/3.0/howto/writing-migrations/#migrating-data-between-third-party-apps
+
+----
+
+`Changing a ManyToManyField to use a through model`__ is another examples when
+Django considers your data expendable and to jump through `sophisticated
+hoops`__ if you romantically want to hold on them.
+
+The whole example is 64 lines of code that make sense only if you know the
+internal model of the schema changing machinery and how to separate schema
+changes and Django models state operations (which IMO had no reason to be
+merged together in first place, and the second has just no reason to exist).
+
+Dropping the complications, everything you need is:
+
+.. code:: postgres
+
+    ALTER TABLE core_book_authors RENAME TO core_authorbook;
+    ALTER TABLE core_authorbook ADD is_primary bool default false;
+
+The first statement, by the way, is verbatim in a ``RunSQL`` in their example
+so I'd say this example wouldn't have been necessarily portable either. I
+really struggle to see the point of all this.
+
+.. __: https://docs.djangoproject.com/en/3.0/howto/writing-migrations/#changing-a-manytomanyfield-to-use-a-through-model
+.. __: https://docs.djangoproject.com/en/3.0/ref/migration-operations/#django.db.migrations.operations.SeparateDatabaseAndState
+
+
 Commands you don't want to use
 ------------------------------
 
-Once you have introduced your patching script and motivated your team in not
-believing in magic, these are a few operation you can do instead of the
-"blessed" ways involving Django migrations:
+Once you have introduced your migration procedures, and motivated your team
+into using them, these are a few operation you can use to replace the
+official ways involving Django migrations:
 
 - ``manage.py migrate``: the first time (e.g. new dev setup, unit tests) you
-  can run ``psql -f schema/database.sql``. If you do it in a test suite run
-  you will have tested your schema too. The following times (deployment in
-  staging and production, distributing changes to other developers) you can
-  run something similar to the proposed `patch_db.py`_, and you have tested
-  the patches too.
+  can run ``psql -f database.sql``. If you do it in a test suite run you will
+  have tested your schema too. If an initial schema is already in place
+  (deployment in staging and production, distributing changes to other
+  developers) you can run something similar to the proposed `patch_db.py`_,
+  and you have tested the patches too.
 
 - ``manage.py makemigrations``: run ``git diff schema/*.sql`` and work out
   what you have to do, like all the other times you wanted to use the Django
@@ -364,11 +563,11 @@ believing in magic, these are a few operation you can do instead of the
 
 - ``manage.py sqlmigrate``: replaced by ``cat``.
 
-- ``manage.py showmigrations``: replaced by ``patch_db.py --dry-run``
+- ``manage.py showmigrations``: you can use ``patch_db.py --dry-run``.
 
 - ``manage.py squashmigrations``... I am in awe of the complexity of
-  squashmigraitons__. It reduces your many migrations to an indetermined
-  number of less migrations, conditioned by the time you have been creative
+  squashmigraitons__. It reduces your many migrations to an undetermined
+  number of fewer migrations, conditioned by the time you have been creative
   and have used SQL or Python in them, operations you can mark as "elidable"
   if you want to have them dropped, and be careful of
   ``CircularDependencyError``, although you can use ``--no-optimize``...
@@ -382,29 +581,29 @@ believing in magic, these are a few operation you can do instead of the
   where they are: who cares. Even if they stay there, even thousand of them
   won't do any harm to your program start time: they are not automatically
   imported modules. If you want to keep them and not drown in patches you can
-  divide them by years and change one line to the ``patch_db`` script,
-  whatever.
+  divide them into month or year directories and change one line of the
+  ``patch_db`` script to find them, whatever.
 
 
 Tips to write a migration
 -------------------------
 
 Writing a complex migration consists in trying the operations to perform in a
-testing database and it's often an iterative procedure of trial and error,
-with error often destructive and the need of going back to the state before
-migrating and remember to add that semicolon.
+testing database which is often an iterative procedure of trial and error,
+with errors often destructive and the need of going back to the state before
+migrating, and remember to add that semicolon.
 
-A way to write a migration patch of the type described here consist roughly
+A way to write a migration patch of the type described here consists roughly
 in:
 
 - create a file in the ``schema/patches/`` directory called
   ``YYYY-MM-DD_some_meaninfgul_description.sql``. If you happen to write more
-  than one patch in the same day and the order matters you can add a ``~02``
-  to the second patch and so on, as ``~`` sorts after ``_``.
+  than one patch in the same day and their order matters you can add a ``~02``
+  after the date to the name of the second patch and so on, as ``~`` sorts
+  after ``_``.
 
-- Add on top of the file a ``BEGIN;`` statement.
-
-- Write the statement you think are valid.
+- Add a ``BEGIN;`` statement to the top of the file, followed by the
+  statements you want to test.
 
 - Connect to your test database with a psql shell and use ``\i
   /path/to/your/patch.sql`` to try and apply your patch.
@@ -412,19 +611,20 @@ in:
 - If applying the patch fails, run a ``ROLLBACK`` in psql, fix the error, try
   ``\i`` again.
 
-- If applying succeeds, you can explore the database to verify that the
-  changes applied have produced the right results. You may want to run a
-  ``SAVEPOINT x`` command now: in case you mistype a command while verifying
-  the results you can run ``ROLLBACK TO SAVEPOINT x`` and revert the
-  transaction to the state just after the patch was applied.
+- If applying succeeds you can explore the database to verify that the changes
+  applied have produced the right results. You may want to run a ``SAVEPOINT
+  x`` command now: in case you mistype a command while verifying the results
+  you can run ``ROLLBACK TO SAVEPOINT x`` and revert the transaction to the
+  state just after the patch was applied.
 
 - Your patch applied ok, but you don't like the result? ``ROLLBACK``, fix the
   patch, try again.
 
-- If you are happy of what you see, you can ``ROLLBACK`` this psql transaction
-  and add a ``COMMIT;`` to the patch script. You can now apply the patch using
-  ``patch_db``. If by mistake you commit manually here, you can still run
-  ``patch_db`` and "skip forever" the patch when asked for confirmation.
+- If you are happy of what you see you can ``ROLLBACK`` this psql transaction,
+  and add a ``COMMIT;`` to the end of the patch script, and run ``patch_db``
+  to apply for good the patch just created. If by mistake or intention you
+  committed the psql changes, you can run ``patch_db`` interactively and "skip
+  forever" the patch when asked for confirmation.
 
 
 Another random bit of advice
@@ -435,23 +635,24 @@ team I'm currently collaborating, which is using Django the canonical way and
 I am convinced they can use the tools they have better. Let's see if they get
 convinced to drop Django migrations...
 
-As I'm doing this brain dump, there is another trick that I feel to file under
-"know what your tool is doing": sometimes Django pages get slow because doing
-something apparently harmless like accessing a model attribute results in
-other queries run. If you do it in a loop it results in a "ripple load": you
-will run 50 queries, each one fetching one record, while you could have run a
-single query fetching 50 records, or just a query with an extra JOIN.
+As I'm writing down this brain dump, there is another trick that I feel to
+file under "know what your tool is doing": sometimes Django pages get slow
+because adding something apparently harmless such as accessing a model
+attribute results in unexpected queries run behind the scene. If you do it in
+a loop it results in a "ripple load": you will run 50 queries, each one
+fetching one record, while you could have run a single query fetching 50
+records, or just adding an extra JOIN to another query.
 
 How to identify this problem? While you are developing using the development
-server, you can log all the operations performed to the database adding this
-logger configuration to your ``settings.py``:
+server you can log all the operations performed to the database adding the
+following logger configuration to your ``settings.py``:
 
 .. code:: python
 
     LOGGING = {
         # ...
         'loggers': {
-            # ....
+            # ...
             'django.db': {
                 'handlers': ['console'],
                 'level': 'DEBUG',
@@ -459,37 +660,40 @@ logger configuration to your ``settings.py``:
         },
     }
 
-You will get used to the rhythm of blobs of SQL popping into the log at each
-request. But if you introduce by mistake a ripple load it will be very easy to
-spot: a fast train of short statement will blaze in the log console. Either it
-happens in Python code, or in a template, or as a result of an asynchronous
-ajax calls (so not counted in request-oriented tools such as the Django Debug
-Toolbar) it will be unmissable; looking at these statements it will be easy to
-understand what model caused it and the right `select_related()`__ to add.
+You will get used to the rhythm of blobs of SQL popping into the dev server
+log at each request. If you introduce by mistake a ripple load it will be
+very easy to spot: a fast train of short statement will blaze in the log
+console. Either it happens in Python code, or in a template, or as a result of
+an asynchronous ajax calls (so not included in request-oriented tools such as
+the Django Debug Toolbar) it will be unmissable; looking at these statements
+it will be easy to understand what model caused it and the right
+`select_related()`__ to add.
 
 .. __: https://docs.djangoproject.com/en/3.0/ref/models/querysets/#select-related
 
 You are welcome.
 
 
-Do you hate Django?
--------------------
+"Do you hate Django?"
+---------------------
 
 No, I don't, I still like it, although, with Python moving towards asyncio and
 :ref:`static typing <blog/first-experience-mypy>`, and with the established
-web architecture of a JSON API consumed by a JavaScript front-end, the
-appeal for other frameworks such as `FastAPI
-<https://fastapi.tiangolo.com/>`__ is increasing. As opinionated as I am, I
-quite like the Django ORM: very simple to use, well integrated with the Python
-objects it produces, and it allows to write monsters of nested queries with
-great ease.
+web architecture of JSON APIs consumed by JavaScript front-ends, the appeal
+for other frameworks such as `FastAPI <https://fastapi.tiangolo.com/>`__ is
+increasing. As opinionated about database as I am, I quite like the Django
+ORM: very simple to use, well integrated with the Python objects it produces,
+and it allows to write monsters of nested queries with great ease. Peeking at
+the logs of the SQL statements produced for you by the ``django.db`` logger
+commands some admiration.
 
 What I really don't like is when tools get in the way of someone's work.
 Sometimes the tools are complex because the problem they try to solve is. But
 you are free to ask yourself the question: do I really have that problem? You
-might get to the conclusion that no, you don't, and you can make choices to
-simplify your life.
+might get to the conclusion that you might not, and you can make choices
+against conventions to simplify your life.
 
-In the case of Django, the right economy for me is to use the ORM for querying
-and manipulating data, but to avoid using the Models to produce schema, and to
-stay well clear of migrations.
+In the case of Django, the right economy for me is to get to know inside out
+the ORM features and take full advantage of it to query and manipulate data,
+but to avoid using the Models to produce schema, using the native database
+language and tools instead, and to stay well clear of migrations.
