@@ -16,74 +16,74 @@ database
 ---
 body:
 
-Django is currently the most used full-stack web framework for Python. It has
+Django is currently the most commonly used full-stack web framework for Python. It has
 been around for a good 15 years, emerging as a winner from a period in which
-Python was already mature but its web development tools were comparatively
+Python was already mature, but its web development tools were comparatively
 much more immature and fragmented.
 
-Django allows to define the objects in your program as "models", using the
-``Model`` base class: they behave largely like normal Python classes, with
+Django allows the definition of objects in your program as "models" using the
+``Model`` base class. They behave largely like normal Python classes, with
 added support to save into, and retrieve from, the relational database backing
-your application. If you don't need such database support, well, you didn't
+your application. If you don't need such database support, you didn't
 need a full-stack web framework in first place.
 
 Django tries to be independent from the database you choose. It sounds like
-good idea, but only as long as it stays on paper. After working several years
-with Django systems, both written from scratch or inherited and to maintain, I
-am feeling more and more that the "blessed" way of working with databases and
-Django leads to using your database in a sub-optimal way, and to complicate
-unnecessarily the development and maintenance cycle of your project.
+a good idea, but only on paper. After working several years
+with Django systems, both written from scratch or inherited and maintained, I
+feel the "blessed" way of working with databases and
+Django leads you to using your database in a sub-optimal way, and unnecessarily complicates
+the development and maintenance cycle of your project.
 
 I think the divergence between wishful thinking and reality starts from a
 fundamental misunderstanding between you and Django, which is not written in
-the contract you have never signed anyway:
+any contract you have ever signed anyway:
 
 .. pull-quote::
 
     "independence from the relational database" is a feature needed by Django
     as a framework, *not by the program you are writing*.
 
-Django needs it, because a web framework not tied to a single database vendor
-is more valuable than one tied to a specific one, that's fair enough. *But you
+Django needs it because a web framework not tied to a single database vendor
+is more valuable than one tied to a specific one - and that's fair enough. *But you
 don't:* your web program, most likely than not, will not have to switch from
-one DB to the other. So, `You Ain't Gonna Need It™`__. Portability at all costs
+one database to another. So, `You Ain't Gonna Need It™`__. Portability at all costs
 leads to at least two problems:
 
 .. __ : https://www.martinfowler.com/bliki/Yagni.html
 
-1) you will not able to use all the features offered by your relational
-database, and
+1) You will not able to use all the features offered by your relational
+database.
 
-2) every change to your models, or to your database schema, will be more
-complicated that it should be.
+2) Every change to your models, or to your database schema, will be more
+complicated than it should be.
 
 
-You ain't gonna need it
+You Ain't Gonna Need It
 -----------------------
 
-How many times you have worked to a project and, after 1-2 years of
-development, you have changed database to a different one?
+How many times have you worked on a project and, after 1-2 years of
+development, you have changed to a different database?
 
 I can tell you how many times it happened to me, I counted them: exactly
 never.
 
 Replacing your database vendor is a major, traumatic occurrence, almost as
 much as rewriting your program in a different language. If you replace your
-database, more likely than not, it is because you are interested to the
-features of the new database, you need to use them, so using the common
+database, more likely than not, it is because you are interested in the
+features of the new databas. You need to use them so using the common
 functionalities between the old and the new one will not solve any of your
 problems.
 
-Did you maybe start your project with SQLite, and now your project grew enough
-that you need a bigger database? If so then you are still at the phase in
-which your project is a toy, you haven't done anything yet that requires
-thinking in terms of concurrency. Even if you have to rewrite a few things
+Did you maybe start your project with SQLite and now your project grew enough
+to need a bigger database? If so then you are still at the phase in
+which your project is a toy: you haven't done anything yet that requires
+thinking in terms of concurrency. Even if you have to rewrite a few things,
 it's not going to be a lot.
 
-Do you have a large MySQL project and you have to migrate to PostgreSQL?
+Do you have a large MySQL project and now you have to migrate to PostgreSQL?
 That's not gonna happen: you have probably tweaked MySQL, have expertise in
-MySQL; maybe PostgreSQL is a better database in some aspects, but not so much
-that you want to migrate all your data and start from scratch with the
+MySQL (maybe PostgreSQL is a better database in some aspects), but not so much
+that you want to migrate all your data and start from scratch without
 `frobbing, twiddling, tweaking`__ the database configuration. Did you say
 you have High Availability and Disaster Recovery configured? That's to be
 converted too of course.
@@ -97,8 +97,8 @@ decision making and talks them into buying some sort of expensive license, but
 that's not a technical problem, it's a political one, and it's up to you to
 decide if you are comfortable with it.
 
-Have you got PostgreSQL in production but you want to test with SQLite because
-it's an easier to set up? If so your tests are just a tick-box exercise, you
+Have you got PostgreSQL in production, but you want to test with SQLite because
+it's easier to set up? If so, your tests are just a tick-box exercise: you
 are not testing anything remotely plausible and resembling your live system.
 
 Choosing a database happens in the first days of your projects, it will not
@@ -107,44 +107,44 @@ available with your database, not only the ones common enough that Django
 created a Python wrapper for it.
 
 
-Use all teh features
+Use all the features
 --------------------
 
 Scanning the schema of a Django program I've written and maintained for a few
 years I see:
 
-- schemas (as in the "directory of the tables", not all the other meanings)
-- custom domains
-- collations
-- triggers
-- permissions
-- partial indexes
-- constraint exclusions
-- views
-- stored procedures
-- partitioned tables
+- Schemas (as in the "directory of the tables", not all the other meanings)
+- Custom domains
+- Collations
+- Triggers
+- Permissions
+- Partial indexes
+- Constraint exclusions
+- Views
+- Stored procedures
+- Partitioned tables
 
-If these features were used it's because they allowed to implement in a
-simpler way certain features that were needed for the program. Audit for
+If these features were used, it's because they allowed me to implement
+certain features in a simpler way that were needed for the program. Audit for
 instance: Django doesn't have an audit feature except for the changes made in
 the admin. Even if you added some form of manual auditing to each ``save()``
 method, it will not capture changes made outside Django. It wouldn't be very
-secure either: Django uses a single user to access the database, so if someone
-manages to hijack that user they would be able to change data in the database
+secure either: Django uses a single user to access the database so if someone
+manages to hijack that user, they would be able to change the data in the database
 and alter the audit tables to hide their traces.
 
 In PostgreSQL you can:
 
 - Create an "audit" user: it will have different permissions than the user of
   the Django application.
-- Create an "audit" schema, revoking write permission to all the objects it
+- Create an "audit" schema: revoking write permission to all the objects it
   will contain from the Django user.
-- Create a function to append a record to an audit table, owned by the "audit"
-  user but callable by the Django user.
+- Create a function to append a record to an audit table owned by the "audit"
+  user, but callable by the Django user.
 - Add a trigger to the tables to audit.
 
 This setup requires Postgres-specific knowledge, which is fair for a feature
-that has to watch over the database: for instance you can `use an extension
+that has to watch over the database. For instance you can `use an extension
 <https://github.com/dvarrazzo/pgaudit>`__ to automate the creation and
 maintenance of the audit triggers and functions.
 
@@ -152,33 +152,33 @@ maintenance of the audit triggers and functions.
 So where do I put the schema?
 -----------------------------
 
-Into a SQL file!
+Into an SQL file!
 
-Like, with its tiny ``.sql`` extension!
+With its tiny ``.sql`` extension!
 
-And with comments! Explaining you why a certain index or constraint exist!
+And with comments! Explaining why a certain index or constraint exist!
 
 With constraints named meaningfully, available for manipulation, not
 ``auth_group_permissions_group_id_b120cbf9_fk_auth_group_id``.
 
 Sounds civilised to me.
 
-The nice thing of doing so is that, if you do things carefully enough, Django
+The nice thing of doing this is that, if you do things carefully enough, Django
 will not notice anything at all.
 
 Take the above audit examples: Django is not meant to interact with it:
 everything will just happen under its nose. You can use views instead of
 tables for read-only models, you can use domains instead of more basic data
-types for your fields. Django won't see your triggers triggering, your
-constraints constraining, your permissions permitting... Except when things go
-wrong, which will result in an error 500 and a Python traceback, ugly, but
-better than bad data in the database. And it won't see your procedures
-proceeding, your domains dominating... you get the idea.
+types for your fields: Django won't see your triggers triggering, your
+constraints constraining, your permissions permitting - except when things go
+wrong, which will result in an 500 error and a Python traceback. This is at least
+better than bad data in the database. Also it won't see your procedures
+proceeding, your domains dominating...you get the idea.
 
-Using psql to import the schema into an empty database you can modularize the
-code and use ``\i`` to import "submodules". A typical pattern for me is to have:
+Using psql to import the schema into an empty database means you can modularise the
+code and use ``\i`` to import "submodules". A typical pattern for me is to have
 a ``database.sql`` to create global objects (users, extensions, schemas),
-sets the basic permissions, and import the details into target schemas.
+set the basic permissions and import the details into target schemas.
 
 .. code:: postgres
 
@@ -203,11 +203,11 @@ sets the basic permissions, and import the details into target schemas.
     \i myapp.sql    -- your app models
     reset search_path;
 
-The ``database.sql`` doesn't create the database itself, so you can create an
-empty one anywhere it's needed, then you can use ``psql -f database.sql
+The ``database.sql`` doesn't create the database itself so you can create an
+empty one anywhere it's needed. Then you can use ``psql -f database.sql
 "postgres://connection/url"`` to select the right one. The ``myapp.sql``
 shouldn't contain any reference to the schema ``myapp`` where the objects are
-created, so it can be easily changed. Postgres doesn't have a statement like
+created so it can be easily changed. Postgres doesn't have a statement like
 ``CREATE USER ... IF NOT EXIST``: in ``users.sql`` you can simulate it with
 something like:
 
@@ -227,12 +227,12 @@ Migrations
 ----------
 
 Django has an amazingly complex system to `perform model migrations`__. It is
-complex among the other reasons because:
+complex amongst other reasons because:
 
 .. __: https://docs.djangoproject.com/en/3.0/topics/migrations/
 
-- it actually migrates *models* not *schemas*. Even if you change a field's help
-  text it generates a migration.
+- It actually migrates *models* not *schemas*. Even if you change a field's help
+  text, it generates a migration.
 
   .. code:: python
 
@@ -245,24 +245,24 @@ complex among the other reasons because:
                 field=models.BooleanField(help_text='I only changed this'),
             ),
 
-  That's not useful at all for the database but Django will create it for you,
+  That's not useful at all for the database, but Django will create it for you
   and if you remove it, it will add it back. Similarly, changing a `choices
   list`__, a display label, results in migrations with no database operation,
-  only Python operation, and practically no SQL purpose.
+  only a Python operation, and practically no SQL purpose.
 
   .. __: https://docs.djangoproject.com/en/3.0/ref/models/fields/#choices
 
-- It allows to access the state of the model at times intermediate between
-  migrations, using `get_model`_\ ``(appname, modelname)`` and write some
-  Python code with the returned model. But if that code also happens to use
+- It allows access to the state of the model at times intermediate between
+  migrations, using `get_model`_\ ``(appname, modelname)`` and with some
+  Python code in the returned model. But if that code also happens to use
   any code inside your application, importing models with a normal Python
   ``import``, things will crash because of a mismatch between model
-  definitions and schema in the DB. But they won't crash immediately: only
-  later, when you will apply some unrelated migration. And not when that
+  definitions and schema in the database. But they won't crash immediately: only
+  later when you will apply some unrelated migration. And not when that
   migration is needed: only after it has already been applied and it doesn't
   have anything more to do in its lifetime: it is implemented as a model that
   Django will keep on importing over and over. In a project I'm currently
-  working I had to add this function into our codebase:
+  working on, I had to add this function into our codebase:
 
   .. _get_model: https://docs.djangoproject.com/en/3.0/ref/applications/#django.apps.AppConfig.get_models
 
@@ -278,8 +278,8 @@ complex among the other reasons because:
         else:
             return True
 
-  And use it whack-a-mole to avoid already applied migrations to explode,
-  adding them early bailouts like:
+  And use it as a whack-a-mole to avoid already applied migrations from exploding,
+  adding early bailouts like:
 
   .. code:: python
 
@@ -295,13 +295,13 @@ complex among the other reasons because:
         ]
 
 - It detects changes to your models and infers how to change the schema.
-  This is pretty much impossible to do in automated way, except in the
-  simplest cases, so the feature is incomplete, and when it thinks that it
-  knows what it's doing, often it doesn't, and it's hard to tell it to stop.
+  This is pretty much impossible to do in an automated way, except in the
+  simplest cases. So the feature is incomplete, and when it thinks it
+  knows what it's doing, often it doesn't and it's hard to tell it to stop.
 
-  In a case I had, my model ``Foo`` needed some extra pepper to its attribute
+  In a case I experienced, my model ``Foo`` needed some extra pepper to its attribute
   ``bar``. So we thought to fetch the data from the database into a hidden
-  ``_bar`` attribute, and then have a Python property to expose it:
+  ``_bar`` attribute and then have a Python property to expose it:
 
   .. code:: diff
 
@@ -317,21 +317,21 @@ complex among the other reasons because:
     +    def bar(self):
     +        return something_more()
 
-  No change needed to the database, but Django insisted to create migration
-  consisting pretty much in::
+  No change needed to the database, but Django insisted on creating migration
+  consisting pretty much of:
 
     ALTER TABLE foo DROP COLUMN bar;
     ALTER TABLE foo ADD COLUMN bar;
 
-  and goodbye to your data. But who needs a ``bar``. I think I could have
+  So goodbye to your data! But who needs a ``bar`` anyway. Although I think I could've
   used a bar, and a few drinks, if that migration had hit production.
 
 Much of the complexity of this system is designed to give you a specific
-feature: migrations abstracted from your database. In my view, if there is
-something less likely to happen than a to write a complex app to run on
-interchangeable databases, is the need to repeat the same history of
+feature: migrations abstracted from your database. In my opinion, if there is
+something less likely to happen than writing a complex app to run on
+interchangeable databases, it's the need to repeat the same history of
 migrations. The cost you pay for this YAGNI feature is a cumbersome and
-fragile system trying to have a life of its own, and fighting yours. It is a
+fragile system trying to have a life of its own whilst fighting yours. It is a
 direct application of `Jeremy Miller's observation`__ that *any extensibility
 point that’s never used isn’t just wasted effort, it’s likely to also get in
 your way as well*.
@@ -339,7 +339,7 @@ your way as well*.
 .. __: https://twitter.com/jeremydmiller/status/568797862441586688
 
 I may be a bit of a control freak, but I think that there is too much magic
-here, and too few hooks to intervene to correct it, playing too close to my
+here and too few hooks to intervene to correct it, all playing too close with my
 data to feel comfortable. This comes with the advantage of being able to
 replay your migrations in the future on a different database vendor, but I
 struggle to find a valid use case for it not involving parallel universes and
@@ -350,32 +350,32 @@ So what do I use instead of migrations?
 ---------------------------------------
 
 You can use SQL files! Yes, same extensions as before. It takes some
-discipline but it rewards with great control of the behaviour of the database
-and the safety of the data. The work involved consist in:
+discipline, but it rewards with great control of the behaviour of the database
+and the safety of the data. The work involved consists in:
 
-- Knowing your database and its data definition and manipulation language, to
+- Knowing your database and its data definition and manipulation language: to
   know how to change the schema and the data associated.
 
 - If you have the database schema in source control, when you change the
-  schema you will usually want to associate a similar "schema patch". An ex
-  colleague of mine wrote a script to "prime" a migration with the right name
+  schema, you will usually want to associate a similar "schema patch". An
+  ex-colleague of mine wrote a script to "prime" a migration with the right name
   and a comment containing the diff of the schema, to give an idea of what to
   do.
 
 - You can have a database table recording the schema patches already applied
-  to the database, and a script to look for unapplied patches, run them,
+  to the database and a script to look for unapplied patches: run them,
   and record them into the table, to run on deployment.
 
 I have a `patch_db.py`_ script that I have used, with small variations, in
-several projects. It is meant to be executed as a database superuser, so that
+several projects. It is meant to be executed as a database superuser so that
 the application user can be given only limited privileges: enough to read and
-change the data it needs, no need to be a superuser or to own the tables be
-able to change their schema. A few features of this simple script:
+change the data it needs. No need to be a superuser or to own the tables to be
+able to change their schema. A few features of this simple script include:
 
 .. _patch_db.py: https://gist.github.com/dvarrazzo/86b06961fa3278293e193417adbf3daf
 
 - If the database had never been patched, it creates a ``schema_patch`` table
-  and registers the patches available as already applied.
+  and registers the patches available, as already applied.
 
 - If the table exists, it compares the content of the patches directory with
   the table content and applies and registers the missing patches in
@@ -385,8 +385,8 @@ able to change their schema. A few features of this simple script:
 - It keeps an advisory lock for the entire run to make sure that there will
   not be two patching processes running concurrently by mistake.
 
-- The patching process is identifiable in PostgreSQL via its appname, so it
-  can be monitored and dealt with in case it behaves funny.
+- The patching process is identifiable in PostgreSQL via its appname so it
+  can be monitored and dealt with, in case it behaves unexpectedly.
 
 - Patches can be applied one by one, with interactive user confirmation, or
   unattended for automatic deployment.
@@ -401,47 +401,47 @@ The script is independent from Django; if used in a Django project it might be
 reimplemented as a management command, but I have never felt compelled to do
 so.
 
-Once this script is integrated with your deployment procedures, these are a
+Once this script is integrated with your deployment procedures, there are these
 few examples of patches that can be produced, scanning the patches directory
 of projects I have worked with:
 
 - Add a field to a table, populate it with data obtained querying other
   database tables.
 
-- Move a field to another table, split a table into two joined table, change a
+- Move a field to another table, split a table into two joined tables, change a
   relation from one-to-many to many-to-many without losing the current
   relations.
 
-- Partition a previously unpartitioned data by creating partitions, moving
+- Partition previously unpartitioned data by creating partitions, moving
   data into them, and emptying the base table.
 
 - Add a new currency to the currencies table, change the name of that Balkan
-  nation there to "Republic of North Macedonia", remove that island from the
+  nation to "Republic of North Macedonia", remove that island from the
   list of European Union nations, or any other change to some "configuration
   table".
 
 - Fix data after a bug producing wrong data was discovered.
 
-- Add a new Django group and set the group permissions, or add new objects'
+- Add a new Django group and set the group permissions or add new objects'
   permissions to existing groups.
 
-- Create a normal column for a piece of data that was previously stored in
+- Create a normal column for a piece of data that was previously stored in an
   unstructured way into a JSON field, remove the data from the JSON and move
   it to the new field.
 
-In practice, Django migrations create automatically only the simplest of the
+In practice, Django migrations create automatically only the simplest of 
 operations, like adding a new (empty) column or dropping a column. Renaming a
 column is already an operation fraught with perils, and manipulating data
-using Python models while the models themselves are being altered is a task of
-Shrödingeranean effort.
+using Python models while the models themselves are being altered, is a task of
+Shrödingeranean complexity.
 
 
 Is it difficult to write patches?
 ---------------------------------
 
-In my view, most of the times, writing a SQL patch is simpler than writing a
-patch in the Django migration system, something that in order to do
-successfully requires knowledge not so much of the database but rather of the
+Most of the time writing an SQL patch is simpler than writing a
+patch in the Django migration system. This is something that, in order to achieve
+successfully, requires knowledge not so much of the database, but rather of the
 migration system itself.
 
 Looking at a few examples, taken directly from Django's own `writing
@@ -451,14 +451,14 @@ migrations`__ page:
 
 `Adding a non-nullable field`__ in Django migrations involves creating the
 normal migration, i.e. the one creating a
-``field=models.UUIDField(default=uuid.uuid4, unique=True)``, creating other
-two empty ones (it is suggested to use ``makemigrations myapp --empty``
-because there is a certain amount of boilerplate involved), and pretty much
+``field=models.UUIDField(default=uuid.uuid4, unique=True)``, creating
+two empty ones (it's suggested to use ``makemigrations myapp --empty``
+because there's a certain amount of boilerplate involved), and pretty much
 have a sequence of:
 
-- create a field with the default, but nullable,
-- fill it with values (using a ``RunPython`` step),
-- make it non-nullable.
+- Create a field with the default, but nullable
+- Fill it with values (using a ``RunPython`` step)
+- Make it non-nullable
 
 There is also a bit of a race condition between object creating whilst the
 migration has been applied.
