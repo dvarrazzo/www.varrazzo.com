@@ -500,8 +500,8 @@ replace the second step in the previous example (untested):
             ) x USING (id)
             RETURNING id
             """)
-            if not cur.fetchall():
-                break
+        if not cur.fetchall():
+            break
 
 .. __: https://docs.djangoproject.com/en/3.0/howto/writing-migrations/#non-atomic-migrations
 
