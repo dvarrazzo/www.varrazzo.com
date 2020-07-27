@@ -36,7 +36,7 @@ the development and maintenance cycle of your project.
 
 I think the divergence between wishful thinking and reality starts from a
 fundamental misunderstanding between you and Django, which is not written in
-any contract you have ever signed anyway:
+the contract you haven't signed with them anyway:
 
 .. pull-quote::
 
@@ -82,7 +82,7 @@ it's not going to be a lot.
 
 Do you have a large MySQL project and now you have to migrate to PostgreSQL?
 That's not gonna happen: you have probably tweaked MySQL, have expertise in
-MySQL (maybe PostgreSQL is a better database in some aspects), but not so much
+MySQL. Maybe PostgreSQL might be a better database in some aspects, but not so much
 that you want to migrate all your data and start from scratch without
 `frobbing, twiddling, tweaking`__ the database configuration. Did you say
 you have High Availability and Disaster Recovery configured? That's to be
@@ -124,8 +124,9 @@ years I see:
 - Stored procedures
 - Partitioned tables
 
-If these features were used, it's because they allowed me to implement
-certain features in a simpler way that were needed for the program. Audit for
+If these features were used, it's because they allowed to implement
+certain features needed for the program in a simpler way than what possible in
+the language (if even would have been possible there). Audit for
 instance: Django doesn't have an audit feature except for the changes made in
 the admin. Even if you added some form of manual auditing to each ``save()``
 method, it will not capture changes made outside Django. It wouldn't be very
@@ -144,7 +145,8 @@ In PostgreSQL you can:
 - Add a trigger to the tables to audit.
 
 This setup requires Postgres-specific knowledge, which is fair for a feature
-that has to watch over the database. For instance you can `use an extension
+that has to watch over the database data whichever the origin of the change
+is. But being PostgreSQL extensible as it is, you can `use an extension
 <https://github.com/dvarrazzo/pgaudit>`__ to automate the creation and
 maintenance of the audit triggers and functions.
 
@@ -171,7 +173,7 @@ everything will just happen under its nose. You can use views instead of
 tables for read-only models, you can use domains instead of more basic data
 types for your fields: Django won't see your triggers triggering, your
 constraints constraining, your permissions permitting - except when things go
-wrong, which will result in an 500 error and a Python traceback. This is at least
+wrong, which will result in an error 500 and a Python traceback. This is at least
 better than bad data in the database. Also it won't see your procedures
 proceeding, your domains dominating...you get the idea.
 
@@ -204,12 +206,11 @@ set the basic permissions and import the details into target schemas.
     reset search_path;
 
 The ``database.sql`` doesn't create the database itself so you can create an
-empty one anywhere it's needed. Then you can use ``psql -f database.sql
-"postgres://connection/url"`` to select the right one. The ``myapp.sql``
+empty one anywhere it's needed, then you can use ``psql -f database.sql
+"postgres://connection/url"`` to populate it. The ``myapp.sql`` file
 shouldn't contain any reference to the schema ``myapp`` where the objects are
-created so it can be easily changed. Postgres doesn't have a statement like
-``CREATE USER ... IF NOT EXIST``: in ``users.sql`` you can simulate it with
-something like:
+created so the schama can be easily changed. Postgres doesn't have a statement like
+``CREATE USER ... IF NOT EXIST``: in ``users.sql`` you can simulate it with:
 
 .. code:: postgres
 
@@ -231,7 +232,7 @@ complex amongst other reasons because:
 
 .. __: https://docs.djangoproject.com/en/3.0/topics/migrations/
 
-- It actually migrates *models* not *schemas*. Even if you change a field's help
+- It actually migrates *Python models* not *database schemas*. Even if you change a field's help
   text, it generates a migration.
 
   .. code:: python
@@ -440,7 +441,7 @@ Is it difficult to write patches?
 ---------------------------------
 
 Most of the time writing an SQL patch is simpler than writing a
-patch in the Django migration system. This is something that, in order to achieve
+patch in the Django migration system. The latter is something that, in order to achieve
 successfully, requires knowledge not so much of the database, but rather of the
 migration system itself.
 
@@ -579,7 +580,7 @@ official ways involving Django migrations:
   Once the migrations have been applied to all your testing and production
   systems and all your developers' databases, just remove them. Or leave them
   where they are: who cares. Even if they stay there, even thousand of them
-  won't do any harm to your program start time: they are not automatically
+  won't do any harm to your program's start-up time: they are not automatically
   imported modules. If you want to keep them and not drown in patches you can
   divide them into month or year directories and change one line of the
   ``patch_db`` script to find them, whatever.
@@ -695,5 +696,5 @@ against conventions to simplify your life.
 
 In the case of Django, the right economy for me is to get to know inside out
 the ORM features and take full advantage of it to query and manipulate data,
-but to avoid using the Models to produce schema, using the native database
+but to avoid using the Models to produce the database schema, using the native database
 language and tools instead, and to stay well clear of migrations.
