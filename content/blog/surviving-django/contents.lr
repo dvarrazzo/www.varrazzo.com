@@ -321,6 +321,8 @@ complex amongst other reasons because:
   No change needed to the database, but Django insisted on creating migration
   consisting pretty much of:
 
+  .. code:: postgres
+
     ALTER TABLE foo DROP COLUMN bar;
     ALTER TABLE foo ADD COLUMN bar;
 
