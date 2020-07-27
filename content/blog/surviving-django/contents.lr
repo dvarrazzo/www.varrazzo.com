@@ -699,7 +699,7 @@ In the case of Django, the right economy for me is:
 - Get to know the ORM features inside out and take full advantage of it to
   query and manipulate data.
 
-- Avoiding using the Models to produce the database schema, use the native
+- Avoid using the Models to produce the database schema, use the native
   database language and tools instead.
 
 - Stay well clear of migrations.
