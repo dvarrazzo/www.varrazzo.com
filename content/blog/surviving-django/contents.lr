@@ -566,7 +566,7 @@ official ways of involving Django migrations:
 
 - ``manage.py showmigrations``: you can use ``patch_db.py --dry-run``.
 
-- ``manage.py squashmigrations``...I am in awe of the complexity of
+- ``manage.py squashmigrations``: ...I am in awe of the complexity of
   squashmigraitons__. It reduces your many migrations to an undetermined
   number of fewer migrations, conditioned by the time you have been creative
   and have used SQL or Python in them. You can mark operations as "elidable",
@@ -591,8 +591,8 @@ Tips to write a migration
 
 Writing a complex migration consists of trying the operations to perform in a
 testing database, which is often an iterative procedure of trial and error,
-with bugs often being destructive as well as the need to go back to the state before
-migrating - and don't forget to add that semicolon!
+where mistakes are made, requiring to go back to the state before
+migrating, and don't forget to add that semicolon!
 
 A way to write a migration patch of the type described here consists roughly
 of the below:
@@ -694,7 +694,12 @@ you are free to ask yourself this question: do I really have that problem? You
 might get to the conclusion that you might not and you can make choices
 against conventions to simplify your life.
 
-In the case of Django, the right economy for me is to get to know 
-the ORM features inside out and take full advantage of it to query and manipulate data,
-whilst also avoiding the use of the Models to produce the database schema and using the native database
-language and tools instead - and to also stay well clear of migrations.
+In the case of Django, the right economy for me is:
+
+- Get to know the ORM features inside out and take full advantage of it to
+  query and manipulate data.
+
+- Avoiding using the Models to produce the database schema, use the native
+  database language and tools instead.
+
+- Stay well clear of migrations.
