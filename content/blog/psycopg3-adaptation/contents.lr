@@ -1,0 +1,157 @@
+_model: blog-post
+---
+title: psycopg3 and adaptation choices
+---
+pub_date: 2020-11-07
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/adapters.jpg
+---
+_discoverable: yes
+---
+tags:
+
+software
+psycopg
+development
+---
+body:
+
+One of the main behavioural differences between psycopg2 and 3, and a big
+enought cause of incompatibility to require a "3", is the use of server-side
+binding vs. client-side (psycopg2 predates the FE-BE protocol supporting it).
+Passing Python objects to the server as separate arguments leads sometimes to
+a behaviour of the server different to what people is used to using psql and
+psycopg2. An example: what do you think
+
+.. code:: python
+
+    cursor.execute("select %s, %s", ["hello", 10])
+
+should fetch? I assume it would be desirable to have a record ``("hello",
+10)`` back - consistently to what you would return if you merged argument
+client-side and queried for ``select 'hello', 10``. However keeping this
+bahaviour predictable proved already tricky. When passing arguments to merge
+server-side, the client must pass their string (or binary) representation and,
+optionally, the oid of their types. The most intuitive thing to do would be to
+associate the text type oid (25) to Python strings. This works well for
+queries like the above one, but it proves too strict a type definition in
+context where a cast from text is not allowed. For instance this will fail:
+
+.. code:: python
+
+    cursor.execute("create table testjson(data jsonb)")
+    cursor.execute("insert into testjson (data) values (%s)", ["{}"])
+
+The latter will raise the same exception you would get in psql if you execute
+``insert into testjson (data) values ('{}'::text)``. The reason why a ``values
+('{}')`` works as expected in psql is that the untyped literal is interpreted
+as unknown, and the server can always cast from unknown to any other type. If
+we wanted to insert the data above the query should be rewritten as:
+
+.. code:: python
+
+    cursor.execute("insert into testjson (data) values (%s::jsonb)", ["{}"])
+
+About a week ago I started the task to write `a Django backend for
+psycopg3`__: running its test suite is proving a great way to observe the
+behaviour of server-side binding in a plethora of different environment. The
+problem of the non-implicit cast from text to jsonb made porting the backend
+from psycopg2 to 3 `quite a tricky matter`__.
+
+.. __: https://github.com/dvarrazzo/django/commits/psycopg3
+.. __: https://github.com/dvarrazzo/django/commit/1ca8b71ba9bc6acfe239dd42f751037644e59e13
+
+In order to provide an experience more similar to the use of psql and of
+psycopg2, one possibility is to not pass an oid type for the strings, leaving
+it unknown. When I tried with that approach, passing strings to jsonb fields
+(which is not necessarily what you would do, but it's what Django does it,
+probably to uniform JSON dumping across different adapter) became immediately
+much simpler. So it seems a good choice, but not an overall win: our "hello
+world" query:
+
+.. code:: python
+
+    cursor.execute("select %s, %s", ["hello", 10])
+
+fails with PostgreSQL 9.6 and older versions, returning an error such as
+*could not determine data type of parameter $1*. PostgreSQL 10 and following
+are more permissive and convert unknown to text on output.
+
+It seems like there is a choice to make here: mine at the moment is to keep
+the latter behaviour, both because that's what allows to write the simpler
+code with the majority of the supported PostgreSQL versions. People using 9.6
+and previous version would need to adjust to:
+
+.. code:: python
+
+    cursor.execute("select %s::text, %s", ["hello", 10])
+
+but the use case of inserting data into tables seems a more important use case
+than parroting back a string after a database roundtrip.
+
+What about the numbers? That's a problem thorny in a different way. Python
+integers are of arbitrary size, so they map better to a subset of the
+``numeric`` type than to ``int4`` or ``int8``. However there is a similar
+problem, where seemingly familiar expression don't behave as expected. If this
+works in psql::
+
+    select data -> 'a' -> 2 from testjson;
+
+a similar statement with 2 as a parameter will fail with an error like
+*operator does not exist: jsonb -> numeric*. Passing unknown as oid would
+work, but now our greeting would return instead ``('hello', '10')``, with the
+number converted to string. This is probably too much of a departure from the
+expected behaviour; at least, unlike the test-to-json case, there is an
+automatic cast from ``numeric`` to integer, so an ``insert into
+integer_field`` works as expected. Only operators and functions whose
+arguments are declared ``integer`` and there is no ``numeric`` version trip
+into an error: JSON's ``->``, binary operators such as ``>>`` and ``&``, and
+few others::
+
+    piro=# select current_date, current_date + 1;
+     current_date |  ?column?
+    --------------+------------
+     2020-11-07   | 2020-11-08
+    (1 row)
+
+    piro=# select current_date + 1::numeric;
+    ERROR:  operator does not exist: date + numeric
+    LINE 1: select current_date + 1::numeric;
+                                ^
+    HINT:  No operator matches the given name and argument types. You might
+    need to add explicit type casts.
+
+Note that when Postgres says ``integer`` it means 4 bytes signed: defaulting
+the Python ``int`` to the ``bigint`` oid solves no problem - the same
+functions would fail the same way, and defaulting it to ``int4`` I feel it
+would overflow too easily in a 64 bits world.
+
+How to fix that? as the hint suggests, the user would have to either add a
+cast to the query, which would look like:
+
+.. code:: python
+
+    cur.execute("select current_date + %s::int", [offset])
+
+or to specify an object that would get converted in Postgres to the oid of
+``integer``: in psycopg3 I'm testing with adding subclasses of ``int`` called
+``Int4``, ``Int8`` etc. to map more closely on the Postgres types:
+
+.. code:: python
+
+    cur.execute("select current_date + %s", [Int4(offset)])
+
+My choices so far are then:
+
+- cast Python ``str`` to unknown by default (only alternative: ``text``)
+- cast Python ``int`` to ``numeric`` by default (alternatives: ``int4``,
+  ``int8``, ``unknown``).
+
+Being the adaptation system flexible, people are able to override these
+choices, but I don't expect many to do, and doing it process-wise would be an
+interoperation problem across libraries. The behaviour out-of-the-box is
+obviously important and I would like to get the tradeoffs right.
+
+What do you think?
