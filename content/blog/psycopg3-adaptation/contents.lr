@@ -22,7 +22,7 @@ One of the main behavioural differences between psycopg2 and 3, and a big
 enought cause of incompatibility to require a "3", is the use of server-side
 binding vs. client-side (psycopg2 predates the FE-BE protocol supporting it).
 Passing Python objects to the server as separate arguments leads sometimes to
-a behaviour of the server different to what people is used to using psql and
+a behaviour of the server different to what people are used to using psql and
 psycopg2. An example: what do you think
 
 .. code:: python
@@ -32,7 +32,7 @@ psycopg2. An example: what do you think
 should fetch? I assume it would be desirable to have a record ``("hello",
 10)`` back - consistently to what you would return if you merged argument
 client-side and queried for ``select 'hello', 10``. However keeping this
-bahaviour predictable proved already tricky. When passing arguments to merge
+behaviour predictable proved already tricky. When passing arguments to merge
 server-side, the client must pass their string (or binary) representation and,
 optionally, the oid of their types. The most intuitive thing to do would be to
 associate the text type oid (25) to Python strings. This works well for
@@ -46,9 +46,10 @@ context where a cast from text is not allowed. For instance this will fail:
 
 The latter will raise the same exception you would get in psql if you execute
 ``insert into testjson (data) values ('{}'::text)``. The reason why a ``values
-('{}')`` works as expected in psql is that the untyped literal is interpreted
-as unknown, and the server can always cast from unknown to any other type. If
-we wanted to insert the data above the query should be rewritten as:
+('{}')`` works as expected in psql is because the untyped literal is
+interpreted as unknown, and the server can always cast from unknown to any
+other type. If we wanted to insert the data above the query should be
+rewritten as:
 
 .. code:: python
 
@@ -56,7 +57,7 @@ we wanted to insert the data above the query should be rewritten as:
 
 About a week ago I started the task to write `a Django backend for
 psycopg3`__: running its test suite is proving a great way to observe the
-behaviour of server-side binding in a plethora of different environment. The
+behaviour of server-side binding in a plethora of different environments. The
 problem of the non-implicit cast from text to jsonb made porting the backend
 from psycopg2 to 3 `quite a tricky matter`__.
 
@@ -150,8 +151,9 @@ My choices so far are then:
   ``int8``, ``unknown``).
 
 Being the adaptation system flexible, people are able to override these
-choices, but I don't expect many to do, and doing it process-wise would be an
-interoperation problem across libraries. The behaviour out-of-the-box is
-obviously important and I would like to get the tradeoffs right.
+choices, but I don't expect many people to do it, and doing it process-wise
+might cause interoperation problems across libraries. The behaviour
+out-of-the-box is obviously important and I would like to get the tradeoffs
+right.
 
 What do you think?
