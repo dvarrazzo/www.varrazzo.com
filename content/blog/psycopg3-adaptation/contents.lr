@@ -67,7 +67,7 @@ from psycopg2 to 3 `quite a tricky matter`__.
 In order to provide an experience more similar to the use of psql and of
 psycopg2, one possibility is to not pass an oid type for the strings, leaving
 it unknown. When I tried with that approach, passing strings to jsonb fields
-(which is not necessarily what you would do, but it's what Django does it,
+(which is not necessarily what you would do, but it's what Django does,
 probably to uniform JSON dumping across different adapter) became immediately
 much simpler. So it seems a good choice, but not an overall win: our "hello
 world" query:
