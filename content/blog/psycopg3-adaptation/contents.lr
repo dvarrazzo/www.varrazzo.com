@@ -90,7 +90,23 @@ and previous version would need to adjust to:
     cursor.execute("select %s::text, %s", ["hello", 10])
 
 but the use case of inserting data into tables seems a more important use case
-than parroting back a string after a database roundtrip.
+than parroting back a string after a database round-trip.
+
+.. admonition:: Choices to cast Python ``str`` type:
+
+    To ``unknown``:
+
+    * pro: passed without casting to most data types and functions
+    * con: requires a cast to roundtrip back with PostgreSQL 9.6 and previous
+
+    To ``text``:
+
+    * pro: roundtrips with PostgreSQL 9.6 and previous
+    * con: may require several casts for most of data type, both in insert and
+      functions
+
+    ``unknown`` seems the winner.
+
 
 What about the numbers? That's a problem thorny in a different way. Python
 integers are of arbitrary size, so they map better to a subset of the
@@ -129,7 +145,7 @@ the Python ``int`` to the ``bigint`` oid solves no problem - the same
 functions would fail the same way, and defaulting it to ``int4`` I feel it
 would overflow too easily in a 64 bits world.
 
-How to fix that? as the hint suggests, the user would have to either add a
+How to fix that? As the hint suggests, the user would have to either add a
 cast to the query, which would look like:
 
 .. code:: python
@@ -144,16 +160,47 @@ or to specify an object that would get converted in Postgres to the oid of
 
     cur.execute("select current_date + %s", [Int4(offset)])
 
-My choices so far are then:
+.. admonition:: Choices to cast Python ``int`` type:
 
-- cast Python ``str`` to unknown by default (only alternative: ``text``)
-- cast Python ``int`` to ``numeric`` by default (alternatives: ``int4``,
-  ``int8``, ``unknown``).
+    To ``unknown``:
+
+    * +1: can express the full range of the unbounded Python ``int``
+    * +2: can be passed without cast to most data types and functions
+    * -1: roundtrips back to string, error on PostgreSQL < 10
+
+    To ``decimal``:
+
+    * +1: can express the full range of the unbounded Python ``int``
+    * +1: can be passed without cast to most data types
+    * +1: requires a cast for some functions
+    * -0.5: roundtrips back to ``Decimal`` (but maybe we could cast to int if
+      scale = 0?)
+
+    To ``int8``:
+
+    * +1: can be passed without cast to most data types
+    * +1: roundtrips back to ``int``
+    * -1: requires a cast for some functions
+    * -0.5: can't express values not fitting in 64 bits (relatively limited
+      use case: if the target column is ``numeric`` then it would be wise for
+      the user to pass a ``Decimal``)
+
+    To ``int4``:
+
+    * +2: can be passed without cast to most data types and functions
+    * +1: roundtrips back to ``int``
+    * -1: limited range: couldn't be used to pass a value not fitting into 32
+      bytes from Python to a ``bigint``.
+
+    Winner: unclear. The only I feel to exclude is ``int4``, which
+    unfortunately is the only types which makes most functions work. Maybe
+    ``decimal``, but only if it turns out easy to cast back values with scale
+    = 0 to integer.
 
 Being the adaptation system flexible, people are able to override these
-choices, but I don't expect many people to do it, and doing it process-wise
-might cause interoperation problems across libraries. The behaviour
-out-of-the-box is obviously important and I would like to get the tradeoffs
-right.
+choices, but I don't expect many people wanting to do it, and doing it
+process-wise might cause interoperation problems across libraries. The
+behaviour out-of-the-box is obviously important and I would like to get the
+trade-offs right.
 
 What do you think?
