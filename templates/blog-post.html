@@ -9,6 +9,37 @@
 <div class="container mt70 mb70">
   <div class="row">
     <div id="content" class="col-md-9">
+
+      {% if 'psycopg' in this.tags %}
+      <div class="admonition admonition-sponsor">
+        <p>
+        The <a href="https://psycopg.org/psycopg3" target="_blank"
+          >psycopg3 project</a>
+        is currently
+        <a href="https://github.com/psycopg/psycopg3" target="_blank"
+          >under active development</a>.
+        </p>
+
+        <p>
+        Sponsoring this project will help achieve swift completion and
+        ensure the maintenance of psycopg2, psycopg3 and other related
+        projects.
+        </p>
+
+        <p>
+        If you use Python and PostgreSQL, and you would like to support the
+        creation of the most advanced adapter between the two systems,
+        <a href="https://github.com/sponsors/dvarrazzo/" target="_blank"
+          >please consider becoming a sponsor</a>. Thank you!
+        </p>
+
+        <iframe src="https://github.com/sponsors/dvarrazzo/button"
+                title="Sponsor the project" style="border: 0"
+                width="116" height="35">
+        </iframe>
+      </div>
+      {% endif %}
+
       {{- this.body }}
       {{- render_comments() }}
     </div>

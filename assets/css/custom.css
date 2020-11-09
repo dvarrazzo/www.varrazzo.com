@@ -94,6 +94,19 @@ div.admonition p.last {
 	margin-bottom: 0;
 }
 
+div.admonition-sponsor {
+  font-size: 115%;
+  padding: 1em;
+}
+
+div.admonition-sponsor p {
+  padding-left: 0;
+}
+
+div.admonition-sponsor iframe {
+  margin-top: 0.5em;
+}
+
 /* images in the articles */
 img.align-center,
 div.figure.align-center img {
