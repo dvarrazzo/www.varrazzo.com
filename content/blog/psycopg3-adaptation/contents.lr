@@ -107,6 +107,7 @@ than parroting back a string after a database round-trip.
 
     ``unknown`` seems the winner.
 
+----
 
 What about the numbers? That's a problem thorny in a different way. Python
 integers are of arbitrary size, so they map better to a subset of the
@@ -145,8 +146,8 @@ the Python ``int`` to the ``bigint`` oid solves no problem - the same
 functions would fail the same way, and defaulting it to ``int4`` I feel it
 would overflow too easily in a 64 bits world.
 
-How to fix that? As the hint suggests, the user would have to either add a
-cast to the query, which would look like:
+How to fix that, if you are an end user? As the hint suggests, the user would
+have to either add a cast to the query, which would look like:
 
 .. code:: python
 
@@ -160,47 +161,93 @@ or to specify an object that would get converted in Postgres to the oid of
 
     cur.execute("select current_date + %s", [Int4(offset)])
 
+
+.. role:: strike
+    :class: strike
+
 .. admonition:: Choices to cast Python ``int`` type:
 
     To ``unknown``:
 
     * +1: can express the full range of the unbounded Python ``int``
     * +2: can be passed without cast to most data types and functions
-    * -1: roundtrips back to string, error on PostgreSQL < 10
+    * -2: it round-trips back to string, error on PostgreSQL < 10
 
-    To ``decimal``:
+    To ``numeric``:
 
     * +1: can express the full range of the unbounded Python ``int``
     * +1: can be passed without cast to most data types
-    * +1: requires a cast for some functions
-    * -0.5: roundtrips back to ``Decimal`` (but maybe we could cast to int if
-      scale = 0?)
+    * -1: requires a cast for some functions
+    * :strike:`-1: it round-trips to 'Decimal'`
+    * +0.5: **it can round-trip back to int**, with additional care - more to
+      follow
 
     To ``int8``:
 
-    * +1: can be passed without cast to most data types
-    * +1: roundtrips back to ``int``
-    * -1: requires a cast for some functions
     * -0.5: can't express values not fitting in 64 bits (relatively limited
       use case: if the target column is ``numeric`` then it would be wise for
       the user to pass a ``Decimal``)
+    * +1: can be passed without cast to most data types
+    * -1: requires a cast for some functions
+    * +1: it round-trips back to ``int``
 
     To ``int4``:
 
-    * +2: can be passed without cast to most data types and functions
-    * +1: roundtrips back to ``int``
     * -1: limited range: couldn't be used to pass a value not fitting into 32
       bytes from Python to a ``bigint``.
+    * +2: can be passed without cast to most data types and functions
+    * +1: it round-trips back to ``int``
 
-    Winner: unclear. The only I feel to exclude is ``int4``, which
-    unfortunately is the only types which makes most functions work. Maybe
-    ``decimal``, but only if it turns out easy to cast back values with scale
-    = 0 to integer.
+    Winner: probably ``numeric``, with ``int8`` runner-up?
 
-Being the adaptation system flexible, people are able to override these
+What about the observation on ``numeric``? If we dump ``int`` -> ``numeric``
+to the db, and load back ``numeric`` -> ``decimal`` from it, we end up with
+integers round-tripping to ``Decimal``, which could easily create errors in
+Python contexts which are not ready to deal with fixed-point arithmetic.
+However, upon receiving a ``numeric`` from the database, we can check what
+number it is: if it has no decimal digit it may be returned to Python as
+``int``, if it has any decimal digit it can returned as ``Decimal``.
+
+This mechanism can be as trivial as `looking if there is a '.'`__ in the data
+returned by the database; however in many cases the is job made simpler (or at
+least more efficient) by the presence of the ``numeric`` modifiers:
+``numeric`` comes in three flavours:
+
+- ``numeric``: arbitrary precision (number of digits) and scale (number of
+  digits after the decimal point),
+
+- ``numeric(``\ *n*\ ``)``: limited precision, no digit after the decimal
+  point (equivalent to ``numeric(``\ *n*\ ``, 0)``),
+
+- ``numeric(``\ *n*\ ``,`` *m*\ ``)``: limited precision, fixed number of
+  digits after the decimal point.
+
+.. __: https://github.com/psycopg/psycopg3/commit/5ced659f4838cf72c1981518ae2804942ebbd07b
+
+The modifier information is returned in many contexts (among which the most
+important: selecting data from tables): if we know the scale `we can decide
+upfront`__ to load the entire column as ``int`` if the scale is 0, ``Decimal``
+otherwise. If the modifier is unknown we can look at the presence of the dot.
+
+.. __: https://github.com/psycopg/psycopg3/commit/a9444144f7d0581284ccab198ad0355436e6822a
+
+Returning an ``int`` in a context where ``Decimal`` are expected doesn't seem
+a big problem: throwing an integer to a fixed-point calculation doesn't wreak
+havoc has it does throwing a ``Decimal`` in a context of ``flaot``
+calculations. Running the entire Django test suite after this change caused no
+test to fail, which gives me some comfort.
+
+----
+
+Being the adaptation system flexible, users are able to override these
 choices, but I don't expect many people wanting to do it, and doing it
 process-wise might cause interoperation problems across libraries. The
 behaviour out-of-the-box is obviously important and I would like to get the
 trade-offs right.
 
 What do you think?
+
+.. admonition:: Note
+
+    This article was modified after experimenting with the ``numeric`` to
+    ``int`` strategy. Thank you for rubber-ducking. 🦆

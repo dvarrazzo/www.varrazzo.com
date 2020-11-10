@@ -70,6 +70,14 @@ a.landing.entrance:hover {
     text-decoration: none;
 }
 
+span.strike {
+  text-decoration: line-through;
+}
+
+hr {
+  border-top: 1px solid #bbb;
+}
+
 div.admonition, div.system-message {
 	background-color: #ffc;
 	padding: 0.5em;
@@ -93,6 +101,14 @@ div.admonition p.admonition-title {
 div.admonition p.last {
 	margin-bottom: 0;
 }
+
+#content ul {
+    padding-left: 3.5em;
+}
+#content ul > li {
+    padding-left: 0.25em;
+}
+
 
 div.admonition-sponsor {
   font-size: 115%;
