@@ -1,0 +1,22 @@
+{% extends "page.html" %}
+{% from "macros/blog.html" import render_comments %}
+
+{% block main %}
+<div class="container fullwidth pt140 pb140" data-background="{{this.image|url}}">
+  <div class="pt140 pb140">
+    <div class="entrance">
+      <h2 class="title">{{this.title}}</h2>
+    </div>
+  </div>
+</div>
+
+<div class="container mt70 mb70">
+  <div class="row">
+    <div id="content" class="col-md-8 col-md-offset-2">
+      {{- this.body }}
+      {{- render_comments() }}
+    </div>
+</div>
+{% endblock %}
+
+{# vim: set filetype=htmldjango: #}

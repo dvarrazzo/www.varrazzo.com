@@ -1,0 +1,100 @@
+_model: page
+---
+_template: page-narrow.html
+---
+title: Italian full-text search for PostgreSQL
+---
+tags:
+---
+image: ./cortona.jpg
+---
+body:
+
+.. admonition:: Note:
+
+	Unsurprisingly, you can read this :ref:`in Italian </fts_italiano>` too!
+
+This package provides a dictionary and the other files required to
+perform *full text search* in Italian documents using the PostgreSQL_
+database.
+
+Using the provided dictionary, search operations in Italian documents can
+keep into account morphological variations of Italian words, such as verb
+conjugations.
+
+.. _PostgreSQL: http://www.postgresql.org
+.. _Tsearch2: http://www.sai.msu.su/~megera/postgres/gist/tsearch/V2/
+.. _Snowball: http://snowball.tartarus.org/
+
+
+Spelling Dictionary Informations
+================================
+
+This vocabulary has been generated from the MySpell OpenOffice.org vocabulary,
+provided by the `progetto linguistico`_.
+
+.. _progetto linguistico: http://linguistico.sourceforge.net/
+
+The dictionary had to undergo an huge amount of transformations, and is now
+quite unrecognizable from the original. Above all, all the verbal forms,
+including irregular verbs, are now reduced to the infinite form. Furthermore,
+for each verb, the construction with pronominal and reflexive particles are
+recognized on gerund, present and past participle, imperative and infinite.
+
+Great care has also been taken in reducing the different forms of adjectives
+(male and female, singular and plural, superlatives) to a single normal form,
+and to unify different forms of male and female (es. *ricercatore* and
+*ricercatrice*: male and female form of "researcher").
+
+Furthermore, in the original dictionary, many unrelated male and female nouns
+were joined together as they were an adjective (es. *caso/casi* + *casa/case*,
+with the unrelated meanings of "case(s)" and "house(s)"). Such false friends
+have been mostly split apart to avoid false positives in search results, but
+some of them may still lie around in the dictionary (this is a kind of error
+that no Python script can help fixing...).
+
+Some statistics about the current dictionary edition:
+
+- **66,929** distinct roots,
+- **7,300** completely conjugated verbs
+- **1,943,826** distinct recognized terms
+- **62** flags in the affix file
+- **10,365** production rules in the affix file.
+
+
+Presentation at PGDay
+---------------------
+
+The dictionary was presented at PGDay_ 2007, the first Italian PostgreSQL
+conference. The slideshow_ is available for download.
+
+.. _PGDay: http://www.pgday.it
+.. _slideshow: ../fts_italiano/fts-pgday.odp
+
+
+Download, installation, usage
+=============================
+
+You can find all the info on the `GitHub project`__.
+
+.. __: https://github.com/dvarrazzo/italian_fts/blob/master/README.rst
+
+
+License
+=======
+
+The Italian Dictionary for Full-Text Search is distributed under GPL license.
+
+
+Acknowledgments
+===============
+
+I wish to thank **Davide Prina** and **Gianluca Turconi**, because without
+their `progetto linguistico`_ i wouldn't have had anything to work upon.
+
+I also hearty thank **Oleg Bartunov** and **Teodor Sigaev**, the Tsearch2_
+authors.
+
+And many thanks to Develer_, one of the finest hackers assembly in Italy!
+
+.. _Develer: http://www.develer.com

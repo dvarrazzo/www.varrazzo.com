@@ -1,0 +1,100 @@
+_model: page
+---
+_template: page-narrow.html
+---
+title: Full-text search in italiano per PostgreSQL
+---
+tags:
+---
+image: ./san-quirico.jpg
+---
+body:
+
+.. admonition:: Note:
+
+	This page is available :ref:`in English </italian_fts>` too.
+
+Questo pacchetto fornisce un dizionario e gli altri file necessari
+per effettuare la *ricerca full text* in documenti in italiano utilizzando
+il database PostgreSQL_.
+
+La ricerca tiene in considerazione le variazioni morfologiche delle
+parole italiane, ad esempio le coniugazioni verbali, per restituire i
+documenti corrispondenti ai criteri di una ricerca.
+
+.. _PostgreSQL: http://www.postgresql.org
+.. _Tsearch2: http://www.sai.msu.su/~megera/postgres/gist/tsearch/V2/
+.. _Snowball: http://snowball.tartarus.org/
+
+
+Informazioni sul dizionario
+===========================
+
+Il presente dizionario è stato generato partendo dal dizionario MySpell di
+OpenOffice.org, curato dal `progetto linguistico`_.
+
+.. _progetto linguistico: http://linguistico.sourceforge.net/
+
+Il dizionario ha subito una enorme quantità di trasformazioni, ed è ormai
+praticamente irriconoscibile rispetto all'originale. In particolare tutte le
+forme verbali, compresi i verbi irregolari, vengono fatte risalire
+all'infinito. Inoltre per ogni verbo vengono riconosciute le forme pronominali
+e riflessive applicabili sull'infinito, l'imperativo, il gerundio e il
+participio presente e passato.
+
+Altra cura è stata posta nel ricondurre le diverse persone degli aggettivi e
+dei loro superlativi ad una forma normale, ad unificare le forme di maschile
+e femminile diverse (ricercatore = ricercatrice, sindaco = sindachessa).
+
+Molti sostantivi apparivano inoltre unificati per ottenere il massimo risparmio
+del numero di radici (es. caso/casi + casa/case). Tali sostantivi sono stati
+divisi per evitare falsi positivi (purtroppo alcuni "falsi amici" di questo
+genere potrebbero ancora gironzolare per il dizionario, perché per individuare
+questo genere di problemi non c'è script Python che tenga).
+
+Qualche statistica sulla corrente edizione del dizionario:
+
+- **66.929** radici distinte;
+- **7.300** verbi completamente coniugati;
+- **1.943.826** termini distinti riconosciuti:
+- **62** flag nel file degli affissi;
+- **10.365** regole di produzioni nel file degli affissi.
+
+
+Presentazione al PGDay
+----------------------
+
+Il dizionario è stato presentato al PGDay_ 2007, la prima conferenza italiana
+dedicata al PostgreSQL. La presentazione_ è disponibile per il download.
+
+.. _PGDay: http://www.pgday.it
+.. _presentazione: ./fts-pgday.odp
+
+
+Download, Installazione, Uso
+============================
+
+Tutte le informazioni sono sul `progetto in GitHub`__
+
+.. __: https://github.com/dvarrazzo/italian_fts/blob/master/LEGGIMI.rst
+
+
+
+Licenza
+=======
+
+Il Dizionario Ricerca di Testo in Italiano è distribuito con licenza GPL.
+
+
+Ringraziamenti
+==============
+
+Desidero ringraziare **Davide Prina** e **Gianluca Turconi** perché senza il
+loro `progetto linguistico`_ non avrei avuto un punto di partenza.
+
+Ringrazio anche **Oleg Bartunov** e **Teodor Sigaev**, autori del progetto
+Tsearch2_
+
+E mille grazie alla Develer_, il posto più buono dove mettere un hacker!
+
+.. _Develer: http://www.develer.com

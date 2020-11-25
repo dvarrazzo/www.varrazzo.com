@@ -11,8 +11,8 @@ from lektor.context import get_ctx, url_to
 def ref_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     # match "model/id" or "label <model/id>"
     m = re.match(
-        r"(?i)(?:([a-z0-9_-]+)/([a-z0-9_-]+))"
-        r"|(?:([^<]+?)\s*<([a-z0-9_-]+)/([a-z0-9_-]+)>)",
+        r"(?i)(?:([a-z0-9_-]*)/([a-z0-9_-]+))"
+        r"|(?:([^<]+?)\s*<([a-z0-9_-]*)/([a-z0-9_-]+)>)",
         text,
     )
     if m is None:
@@ -43,7 +43,7 @@ def ref_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     if not label:
         label = entry["title"]
 
-    url = entry.parent.path + "/" + entry["_slug"] + "/"
+    url = entry.parent.path.rstrip("/") + "/" + entry["_slug"] + "/"
     roles.set_classes(options)
     node = nodes.reference(rawtext, label, refuri=url, **options)
     return [node], []

@@ -1,6 +1,4 @@
-_model:
-
-portfolio
+_model: portfolio
 
 ---
 description: A list of free-software projects
@@ -128,6 +126,9 @@ If you would like to have new features developed please get in touch.
 
 - `py-setproctitle <https://github.com/dvarrazzo/py-setproctitle>`__:
   customize process names in Python programs
+
+- :ref:`italian_fts </fts_italiano>`: A PostgreSQL extension for high quality
+  Italian full-text search.
 
 #### row2 ####
 title: experimental software
