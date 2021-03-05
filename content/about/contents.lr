@@ -5,6 +5,7 @@ body:
 I am an Italian software developer, with mathematical background, currently
 based in London.
 
+
 .. raw:: html
 
     <a class="button mb10 mt20" href="/software/">
@@ -19,6 +20,7 @@ projects </software/>`__.
 In my blog you can find a  `series of articles about software development
 </blog/tag/software/>`__.
 
+
 .. raw:: html
 
     <a class="button mb10 mt20" href="https://github.com/sponsors/dvarrazzo/">
@@ -26,10 +28,40 @@ In my blog you can find a  `series of articles about software development
         Funding
     </a>
 
-I would love to pay more attention to some of my free-software projects: if you
-would like to encourage their development, or to steer it towards features you
-are interested into, please `consider a sponsorship
-<https://github.com/sponsors/dvarrazzo>`__.
+I am currently trying to make most of my living from the development and
+maintenance of Free Software projects. The main one is currently  psycopg3_,
+which I aim to make the state of the art in the communication between the
+Python_ language and the PostgreSQL_ database.
+
+There are several other established Free Software project I maintain, as well
+as ideas for new projects to come. If you would like to encourage their
+development, or to steer it towards features you are interested in, please
+`consider a sponsorship`__.
+
+.. _psycopg3: https://psycopg.org/psycopg3/
+.. _Python: https://www.python.org/
+.. _PostgreSQL: https://www.postgresql.org/
+.. _sponsorship: https://github.com/sponsors/dvarrazzo
+.. __: sponsorship_
+
+
+.. raw:: html
+
+    <a class="button mb10 mt20" href="https://codice.lieve.info">
+        <i class="fa fa-pencil fa-lg"></i>
+        Contracts
+    </a>
+
+In order to complement my work on Free Software I am also open to contract
+work through my personal company `Codice Lieve`_, incorporated in London.
+
+I specialise in Free Software technologies, web services, full-stack
+development, distributed systems. Please `get in touch </contact/>`__ to
+receive a complete résumé.
+
+
+.. _Codice Lieve: https://codice.lieve.info/
+
 
 .. raw:: html
 
