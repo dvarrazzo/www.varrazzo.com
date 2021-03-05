@@ -18,14 +18,16 @@ travel
 ---
 body:
 
-As it is regularly happening these times, my partner and I started what we
-believed to be a short journey, but we found ourselves locked away from home,
-for months on end.
+As it is :ref:`regularly happening these times <blog/life-covid-nz>`, my
+partner and I started what we believed to be a short journey, but we found
+ourselves locked away from home, for months on end.
 
 This time we went to visit my family for the Christmas break and boundaries
 were closed behind us just a few days later. Thankfully it's a time in which
-I'm developing a personal software project so my work and life pattern can
+I'm developing `a personal software project`__ so my work and life pattern can
 interlock in unusually free ways.
+
+.. __: https://psycopg.org/psycopg3/
 
 After some time with my family we decided to take a place for ourselves in a
 town not far away, where we are supposed to stay about one month. I have made
