@@ -1,8 +1,8 @@
-{% macro render_sidebar() %}
+{% macro render_sidebar(recent=True, tags=True) %}
 <div class="sidebar-inner">
   <div class="widget-area">
-    {{- render_widget_recent() }}
-    {{- render_widget_tags() }}
+    {%- if recent %}{{- render_widget_recent() }}{% endif %}
+    {%- if tags %}{{- render_widget_tags() }}{% endif %}
   </div>
 </div>
 {%- endmacro %}
