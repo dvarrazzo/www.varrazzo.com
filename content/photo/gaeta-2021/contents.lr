@@ -1,0 +1,27 @@
+_model: gallery-grid
+---
+columns: 3
+---
+description: A month in Gaeta, Italy, Feb-Mar 2021.
+
+---
+gutter: 5
+---
+title: A Window on the Sea
+---
+type: gallery
+---
+entries:
+---
+body:
+
+Gaeta, Italy, Feb-Mar 2021.
+
+---
+thumbnail_quality: 50
+---
+thumbnail_width: 382
+---
+footer_class: has-border
+---
+header_class: has-border

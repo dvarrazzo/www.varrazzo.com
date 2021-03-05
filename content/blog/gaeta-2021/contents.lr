@@ -1,0 +1,40 @@
+_model: blog-post-gallery
+---
+title: A window on the sea
+---
+pub_date: 2021-03-05
+---
+author: Daniele Varrazzo
+---
+image: /img/blog/ship-moon.jpeg
+---
+_discoverable: yes
+---
+tags:
+
+life
+photo
+travel
+---
+body:
+
+As it is regularly happening these times, my partner and I started what we
+believed to be a short journey, but we found ourselves locked away from home,
+for months on end.
+
+This time we went to visit my family for the Christmas break and boundaries
+were closed behind us just a few days later. Thankfully it's a time in which
+I'm developing a personal software project so my work and life pattern can
+interlock in unusually free ways.
+
+After some time with my family we decided to take a place for ourselves in a
+town not far away, where we are supposed to stay about one month. I have made
+some photography, which is good as I hadn't for some time. Post-processing is
+arranged using software on my phone. It's not the way I enjoy to do things
+(and not so subtle as result), but I find it fitting to use arranged means
+instead of sticking with a preferred, but unavailable, favourite way.
+
+Gaeta, Italy, Feb-Mar 2021.
+
+---
+gallery: /photo/gaeta-2021/
