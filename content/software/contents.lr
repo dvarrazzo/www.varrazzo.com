@@ -41,13 +41,42 @@ welcome <https://github.com/sponsors/dvarrazzo/>`__.
     </a>
 
 #### row2 ####
+title: psycopg3
+----
+title_style: balloon
+----
+image: /img/software/psycopg3.jpg
+----
+image_position: right
+----
+background: light
+----
+body:
+
+I have been :ref:`thinking about a psycopg2 successor
+<blog/thinking-psycopg3>` for a long time. In my blog you can find a `series
+of articles </blog/tag/psycopg/>`__ about its development and major
+milestones.
+
+The development of psycopg3_ has started a few months ago and the project is
+keeping a good pace. This has been only possible so far thanks to the project
+sponsors_.
+
+If you are a Python/PostgreSQL developer or company and would like to contribute to the development of the next generation of the driver please `consider a sponsorship`__.
+
+.. _psycopg3: https://www.psycopg.org/psycopg3/
+.. _sponsors: https://www.psycopg.org/sponsors/
+.. __: https://github.com/sponsors/dvarrazzo/
+
+
+#### row2 ####
 title: psycopg2
 ----
 title_style: balloon
 ----
 image: /img/software/psycopg.jpg
 ----
-image_position: right
+image_position: left
 ----
 background: light
 ----
@@ -68,33 +97,6 @@ Please refer to the `psycopg homepage`__ for any information about the project.
 .. _psycopg2: https://www.psycopg.org/
 .. _Python: https://www.python.org/
 .. _PostgreSQL: https://www.postgresql.org/
-
-
-#### row2 ####
-title: psycopg3
-----
-title_style: balloon
-----
-image: /img/software/psycopg3.jpg
-----
-image_position: left
-----
-background: light
-----
-body:
-
-I have been thinking about a psycopg2 successor for a long time and the
-development of psycopg3_ has recently started.
-
-.. _psycopg3: https://www.psycopg.org/psycopg3/
-
-I would like to design the interface based on years of understanding where
-psycopg2 users have found the most problems, using more up-to-date
-communication protocols to the database server, maybe taking the chance to
-review the whole DB-API standard and bring it to a modern time.
-
-In my blog you can find a `series of articles </blog/tag/psycopg/>`__ about
-psycopg3 development.
 
 
 #### row2 ####
