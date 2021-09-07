@@ -251,3 +251,18 @@ What do you think?
 
     This article was modified after experimenting with the ``numeric`` to
     ``int`` strategy. Thank you for rubber-ducking. 🦆
+
+.. admonition:: Note
+
+    This article was written with the Psycopg 2 model in mind, where there is
+    a direct mapping from the parameter type to the adaptation function.
+
+    After further expermentation with Psycopg 3, this model proved
+    inadequately rigid. Psycopg 3 has improved since: at the time of the `beta
+    1 release
+    <https://www.psycopg.org/articles/2021/08/30/psycopg-30-beta1-released/>`__,
+    it implements an adaptation algorithm which can use the parameter value to
+    select the right PostgreSQL type.
+
+    You can find the current state of the affairs in the `Psycopg 3
+    documentation <https://www.psycopg.org/psycopg3/docs/advanced/adapt.html>`__
