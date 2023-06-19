@@ -10,12 +10,12 @@ class MaybePlugin(Plugin):
     description = u"Lektor plugin to add maybeasset/maybeurl Jinja filters."
 
     def on_setup_env(self, **extra):
-        maybeasset = jinja2.contextfilter(
+        maybeasset = jinja2.pass_context(
             lambda ctx, *a, **kw: maybeasset_filter(*a, **kw)
         )
         self.env.jinja_env.filters["maybeasset"] = maybeasset
 
-        maybeurl = jinja2.contextfilter(
+        maybeurl = jinja2.pass_context(
             lambda ctx, *a, **kw: maybeurl_filter(*a, **kw)
         )
         self.env.jinja_env.filters["maybeurl"] = maybeurl
