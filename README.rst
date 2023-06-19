@@ -13,7 +13,8 @@ In order to change the website:
 - hack on the website (pages are in the `content` directory)
 - commit and push
 
-Travis will |build| the website and push it to the `github pages repos`__,
-served as https://www.varrazzo.com/.
+The following must be unbroken:
 
-.. __: https://github.com/dvarrazzo/dvarrazzo.github.io
+Travis used to build the website and push it to the `github pages repos`__,
+served as https://www.varrazzo.com/... but now it's no more and you will have
+to do it yourself.
