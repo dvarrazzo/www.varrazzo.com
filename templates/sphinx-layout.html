@@ -4,6 +4,7 @@
 {#- It is passed in by make instead #}
 {%- extends "!layout.html" %}
 {%- block scripts %}
+{%- if '${TRACKING_ID}' }}
     <script async src="https://www.googletagmanager.com/gtag/js?id=${TRACKING_ID}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -12,4 +13,5 @@
       gtag('config', '${TRACKING_ID}');
     </script>
     {{- super() }}
+{%- endif }}
 {%- endblock %}
